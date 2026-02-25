@@ -1,0 +1,408 @@
+{
+  "course_metadata": {
+    "course_id": "1",
+    "version": "1",
+    "title": "Mobile Robots",
+    "specialization": "Mechatronics",
+    "degree_level": "Undergraduate",
+    "duration": "15 weeks",
+    "hours_per_week": 2,
+    "science_to_practice_ratio": 3,
+    "language": "bilingual EN+AR",
+    "prerequisites": [
+      "array of course_ids or concept_ids"
+    ],
+    "created_date": "17.2.2026",
+    "created_by": "Ahmad Abbadi"
+  },
+  "phase3_design_spine": [
+    {
+      "module_id": "MOD-009",
+      "module_number": 9,
+      "module_title": "Mapping & SLAM",
+      "module_title_ar": "رسم الخرائط والتحديد المتزامن للموقع",
+      "phase3_generated_date": "2026-02-18",
+      "science_to_practice_ratio": 3,
+      "design_spine_level": "critical",
+      "dramatic_arc_summary": "ACT 1 (S040,S041): Choosing a map representation → ACT 2 (S038): The chicken-and-egg revelation → ACT 3 (S030,S039): EKF-SLAM works then catastrophically diverges → ACT 4 (S042,S043): Scaling to real warehouses → ACT 5 (S044): CLIMAX — loop closure snaps the map into global consistency → EPILOGUE (S036,S045): Cameras and robot fleets",
+      "design_problem": {
+        "problem_statement": "Deploy a fleet of 50 Autonomous Mobile Robots (AMRs) in a previously unmapped 10,000 m² fulfillment center. Each robot must: (1) build a usable probabilistic map from raw LiDAR data, (2) localise to ±5 cm accuracy within that map simultaneously, (3) update the map as shelving changes weekly, (4) scale to 500+ landmarks without computational overload, (5) correct accumulated drift without human intervention, (6) optionally operate with cameras instead of LiDAR, and (7) coordinate with 49 peer robots sharing a common map.",
+        "real_world_context": "Locus Robotics LocusONE — Warehouse Agentic AI. Operational in 250+ warehouses globally (DHL, GEODIS, Walmart, Nike). 5 billion+ picks completed. 100,000+ robots shipped globally as of 2025.",
+        "context": "Cross-referenced with Waymo Driver 6th Generation (urban GPS-denied SLAM). Both problems share the same SLAM mathematical core — differing in scale, sensor modality, and environment dynamics.",
+        "context_url": "https://locusrobotics.com/locusone/warehouse-agentic-ai",
+        "waymo_cross_reference_url": "https://waymo.com/waymo-driver/",
+        "target_user_role": "engineer",
+        "industry_domain": {
+          "rank": 2,
+          "domain_name": "Warehouse & Logistics Automation",
+          "domain_name_ar": "أتمتة المستودعات واللوجستيات",
+          "market_size_2026": "$18.2 billion (AMRs only)",
+          "growth_rate": "34.4% CAGR 2025–2030",
+          "source": "v3_1_references_MOBILE_ROBOTS.json, industry_domains[1]"
+        }
+      },
+      "failure_modes": [
+        {
+          "failure_id": "F009-001",
+          "failure_number": 1,
+          "failure_title": "Use a GPS + CAD Floor Plan",
+          "failure_type": ["Type 1 — Physical constraint violation", "Type 2 — Mathematical infeasibility"],
+          "naive_approach": "Pull the architectural CAD file from the facilities team. Connect a commercial GPS module. Tell the robot: 'Here is your map; use GPS to know where you are on it.'",
+          "critical_questions": [
+            "What is the typical indoor GPS accuracy and how does it compare to the required ±5 cm?",
+            "How does a CAD floor plan differ from the robot's actual operating environment?",
+            "What happens to a static map when warehouse shelving is rearranged weekly?",
+            "How does the robot register its own coordinate frame to the CAD coordinate frame?"
+          ],
+          "why_it_fails": "Indoor GPS accuracy degrades to 10–50 m due to signal multipath and attenuation from metal shelving and concrete walls — three orders of magnitude worse than the required ±5 cm. CAD floor plans are static snapshots that do not reflect dynamic obstacles (pallets, forklifts, temporary barriers). Weekly shelving reconfigurations make the CAD map incorrect within hours of deployment. Additionally, no mechanism exists to register the robot's odometric frame to the CAD coordinate frame without an external reference.",
+          "failure_consequence": "The robot navigates into a pallet not present in the CAD and triggers an emergency stop. Operations halts. The static map representation is proven inadequate: it cannot capture probabilistic uncertainty about the actual environment.",
+          "resolving_concept_ids": ["S040", "S041"],
+          "resolving_concepts": [
+            {
+              "concept_id": "S040",
+              "concept_name": "Occupancy Grid Mapping",
+              "concept_name_ar": "خريطة شبكة الاشغال",
+              "scientific_principle": "Discretize the environment into a grid of cells. Each cell stores a log-odds probability of occupancy updated incrementally from LiDAR inverse sensor model: l(x) ← l(x) + l_occ if ray endpoint; l(x) ← l(x) + l_free if ray passes through. Built entirely from robot's own sensors — no CAD, no GPS required. Uncertainty is first-class.",
+              "key_equation": "l_t(x) = l_{t-1}(x) + log[p(x|z_t) / (1 - p(x|z_t))] - l_0",
+              "science_to_practice_split": "30% math (log-odds formula derivation), 70% implementation (code the grid update loop in Python)",
+              "citation": {
+                "resource_id": "THRUN_BURGARD_FOX",
+                "location": "Chapter 10: Occupancy Grid Mapping, Pages 421–460",
+                "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+              },
+              "implementation_reference": {
+                "resource_id": "PYTHONROBOTICS",
+                "location": "Mapping module: Gaussian Grid Map, detailed implementation",
+                "url": "https://github.com/AtsushiSakai/PythonRobotics"
+              }
+            },
+            {
+              "concept_id": "S041",
+              "concept_name": "Map Representations: Metric vs Topological",
+              "concept_name_ar": "تمثيلات الخرائط: المترية مقابل الطوبولوجية",
+              "scientific_principle": "Metric maps (occupancy grids) are dense and precise but memory-intensive — 10,000 m² at 5 cm resolution requires 4 million cells (16 MB at float32). Topological maps (graph of places/edges) are sparse and compact but lose metric precision. Hybrid metric-topological maps combine local metric accuracy with global topological structure. Production systems (Locus Robotics, Amazon Robotics) use hybrid representations.",
+              "decision_rule": "Occupancy grid → dense metric, local navigation and obstacle avoidance. Topological graph → sparse, global path planning and loop closure. Hybrid → production deployment.",
+              "science_to_practice_split": "20% math (representation tradeoffs), 80% design exercise (choose representation for given constraints)",
+              "citation": {
+                "resource_id": "SIEGWART_BOOK",
+                "location": "Chapter 6: Mapping, Pages 311–380",
+                "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+              },
+              "supporting_citation": {
+                "resource_id": "KELLY_BOOK",
+                "location": "Chapter 6: Mapping, Pages 286–340",
+                "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091"
+              }
+            }
+          ]
+        },
+        {
+          "failure_id": "F009-002",
+          "failure_number": 2,
+          "failure_title": "Map First, Then Navigate",
+          "failure_type": ["Type 2 — Mathematical infeasibility"],
+          "naive_approach": "Phase A: push the robot manually through the warehouse for 2 hours, recording LiDAR scans to build an occupancy grid. Phase B: upload the grid and let the robot navigate autonomously.",
+          "critical_questions": [
+            "What information do you need to register two LiDAR scans into a common coordinate frame?",
+            "What accumulates in odometry over 500 m of travel at 2% drift rate?",
+            "Why can't you simply build the map first and localize second?",
+            "What does the SLAM posterior p(x_{1:t}, m | z_{1:t}, u_{1:t}) express?"
+          ],
+          "why_it_fails": "Building a map from LiDAR scans requires knowing the robot's pose at each scan to register them into a common frame. But to know the pose, you need a map to localize against. This is the chicken-and-egg problem. The manual push 'solution' hides the dependency: odometry (wheel encoders) drift at ~2% of distance travelled. After 500 m of warehouse traversal, accumulated error reaches ~10 m. Scans registered with 10 m pose error produce a deformed, unusable map — straight corridors curve, walls don't close.",
+          "failure_consequence": "The pre-built map is geometrically deformed. The robot fails to localize against it immediately. Phase B never begins. The engineer learns: mapping and localization are not separable — they must be solved jointly.",
+          "resolving_concept_ids": ["S038"],
+          "resolving_concepts": [
+            {
+              "concept_id": "S038",
+              "concept_name": "SLAM Problem Formulation",
+              "concept_name_ar": "صياغة مشكلة SLAM",
+              "scientific_principle": "SLAM is one joint estimation problem, not two sequential ones. Two formulations: Full SLAM: p(x_{1:t}, m | z_{1:t}, u_{1:t}) estimates entire trajectory and map jointly. Online SLAM: p(x_t, m | z_{1:t}, u_{1:t}) estimates only current pose and map — more tractable. As the robot builds the map, it simultaneously refines its pose estimate; as pose improves, map quality improves. Loop closure (foreshadowed here) provides the global correction mechanism that resolves accumulated drift.",
+              "key_equation": "SLAM posterior: p(x_{1:t}, m | z_{1:t}, u_{1:t})",
+              "bilingual_note": {
+                "en": "SLAM = Simultaneous Localization and Mapping",
+                "ar": "التحديد المتزامن للموقع ورسم الخرائط",
+                "key_word_en": "Simultaneous",
+                "key_word_ar": "متزامن",
+                "pedagogical_note": "Emphasize: simultaneous = at the same time. The two problems are solved together, not sequentially."
+              },
+              "science_to_practice_split": "60% math (posterior formulation, chicken-and-egg explanation), 40% discussion (class debate on why sequential fails)",
+              "citation": {
+                "resource_id": "THRUN_BURGARD_FOX",
+                "location": "Chapter 10: Occupancy Grid Mapping, Pages 421–430 — SLAM problem statement",
+                "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+              },
+              "supporting_citation": {
+                "resource_id": "SLAM_TUTORIAL",
+                "location": "Part 1: Introduction to SLAM problem formulation",
+                "url": "https://www.simultaneouslocalizationmapping.com/"
+              }
+            }
+          ]
+        },
+        {
+          "failure_id": "F009-003",
+          "failure_number": 3,
+          "failure_title": "Naive EKF-SLAM with Euclidean Distance Data Association",
+          "failure_type": ["Type 3 — Performance degradation → filter divergence"],
+          "naive_approach": "Implement EKF-SLAM from a tutorial. State vector x = [robot_x, robot_y, robot_θ, landmark_1_x, landmark_1_y, ..., landmark_N_x, landmark_N_y]. For each new observation, match it to the nearest landmark in the map by Euclidean distance. Run in the first 1,000 m² of the warehouse.",
+          "critical_questions": [
+            "What does Euclidean distance ignore that Mahalanobis distance includes?",
+            "What happens to the EKF state estimate after one wrong data association is accepted?",
+            "Why does the filter become more confident as it becomes more wrong (filter divergence)?",
+            "What are the off-diagonal blocks of the EKF-SLAM covariance matrix encoding?"
+          ],
+          "why_it_fails": "Euclidean distance for data association ignores the filter's uncertainty structure. Near Aisle 7, two shelving corners are geometrically similar and close. The robot observes one but matches it to the other by Euclidean distance. The EKF update pulls the robot's estimated position toward a wrong location. The covariance matrix accepts this wrong update as valid — it cannot distinguish wrong association from noisy correct association. After one bad association, the state is corrupted. Subsequent updates compound the error while paradoxically shrinking the uncertainty (divergence): the filter becomes confidently wrong.",
+          "failure_consequence": "Robot is convinced it is in the shipping bay while physically in the receiving area. Emergency stop triggered after near-collision with a forklift. The engineer learns: data association is the most critical and failure-prone component of SLAM — it cannot be treated as a bookkeeping detail.",
+          "resolving_concept_ids": ["S030", "S039"],
+          "resolving_concepts": [
+            {
+              "concept_id": "S030",
+              "concept_name": "Data Association for SLAM",
+              "concept_name_ar": "ربط البيانات في SLAM",
+              "scientific_principle": "Replace Euclidean distance with Mahalanobis distance, which measures separation in terms of the filter's own uncertainty: d²_M(z, ẑ) = (z - ẑ)ᵀ S⁻¹ (z - ẑ), where S = H P Hᵀ + R is the innovation covariance. Decision rules: d_M < threshold → match to existing landmark; d_M > threshold → initialise new landmark; multiple candidates → Hungarian algorithm for globally optimal assignment; ambiguous → multi-hypothesis tracking (defer decision until more data). Critical invariant: wrong association accepted with high confidence = unrecoverable filter divergence.",
+              "key_equation": "d²_M = (z - ẑ)ᵀ (H P Hᵀ + R)⁻¹ (z - ẑ)",
+              "science_to_practice_split": "40% math (Mahalanobis derivation, gating threshold selection), 60% design exercise (matching scenarios with ambiguous landmarks)",
+              "citation": {
+                "resource_id": "THRUN_BURGARD_FOX",
+                "location": "Chapter 11: FastSLAM, Pages 461–510 (data association section)",
+                "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+              },
+              "supporting_citation": {
+                "resource_id": "SLAM_TUTORIAL",
+                "location": "Part 4: EKF-SLAM Implementation, Data Association section",
+                "url": "https://www.simultaneouslocalizationmapping.com/"
+              }
+            },
+            {
+              "concept_id": "S039",
+              "concept_name": "EKF-SLAM Algorithm",
+              "concept_name_ar": "خوارزمية SLAM باستخدام مرشح كالمان الممتد",
+              "scientific_principle": "EKF-SLAM maintains an augmented state: x̂ = [robot pose (3) ; landmark 1 (2) ; ... ; landmark N (2)]ᵀ with dimension 3+2N. Covariance P ∈ ℝ^{(3+2N)×(3+2N)} — off-diagonal blocks encode robot-landmark and landmark-landmark correlations. These cross-correlations are why SLAM is more powerful than independent estimation: observing one landmark improves all correlated estimates. Prediction propagates robot pose via motion model; update applies EKF correction to entire augmented state for each correctly associated observation. Complexity: O(N²) per timestep — the scaling bottleneck that will trigger the next failure mode.",
+              "key_equations": {
+                "augmented_state": "x̂ = [x_r ; m_1 ; m_2 ; ... ; m_N]ᵀ ∈ ℝ^{3+2N}",
+                "prediction": "x̂_{t|t-1} = f(x̂_{t-1}, u_t), P_{t|t-1} = F P_{t-1} Fᵀ + Q",
+                "update": "K = P_{t|t-1} Hᵀ (H P_{t|t-1} Hᵀ + R)⁻¹; x̂_t = x̂_{t|t-1} + K(z_t - h(x̂_{t|t-1})); P_t = (I - KH) P_{t|t-1}",
+                "complexity": "O(N²) per update step"
+              },
+              "science_to_practice_split": "50% math (augmented state derivation, cross-correlation insight), 50% code (PythonRobotics EKF-SLAM step-through)",
+              "citation": {
+                "resource_id": "THRUN_BURGARD_FOX",
+                "location": "Chapter 10: EKF-SLAM, Pages 430–460",
+                "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+              },
+              "implementation_reference": {
+                "resource_id": "PYTHONROBOTICS",
+                "location": "SLAM module: EKF-SLAM with animation",
+                "url": "https://github.com/AtsushiSakai/PythonRobotics"
+              },
+              "supporting_citation": {
+                "resource_id": "SLAM_TUTORIAL",
+                "location": "Part 4: EKF-SLAM Implementation, step-by-step with Python",
+                "url": "https://www.simultaneouslocalizationmapping.com/"
+              }
+            }
+          ]
+        },
+        {
+          "failure_id": "F009-004",
+          "failure_number": 4,
+          "failure_title": "Scaling EKF-SLAM to 500 Landmarks — Computational Collapse",
+          "failure_type": ["Type 3 — Performance degradation", "Type 5 — Economic infeasibility"],
+          "naive_approach": "Keep EKF-SLAM as-is. Deploy it in the full 10,000 m² warehouse with 500 distinguishable landmarks (shelving corners, pillars, door frames). 'Same algorithm, more landmarks.'",
+          "critical_questions": [
+            "How does the covariance matrix size grow with the number of landmarks N?",
+            "What assumption does EKF make about the shape of the uncertainty distribution? When does this assumption break?",
+            "How does FastSLAM use Rao-Blackwellization to factorize the SLAM posterior?",
+            "What is the role of the pose graph's sparse structure in making graph-SLAM more efficient than EKF-SLAM?"
+          ],
+          "why_it_fails": "O(N²) complexity: with N=500 landmarks, the covariance matrix P is 1003×1003. Each LiDAR update requires ~1,000,000 operations. The robot's onboard computer takes 1.3 seconds per scan; the LiDAR fires at 10 Hz (every 100 ms). The system runs at 0.77 Hz — 13× too slow for real-time. Additionally, EKF's unimodal Gaussian assumption fails when the robot becomes momentarily lost near a featureless wall: true uncertainty is bimodal (two candidate positions), but EKF forces a single Gaussian, randomly selecting the wrong mode 50% of the time, triggering divergence.",
+          "failure_consequence": "System runs at 0.77 Hz instead of 10 Hz. Robot's state estimate falls behind reality. After 20 minutes of operation the robot's map represents where it was, not where it is. Collision. The engineer must replace EKF-SLAM with a more scalable approach.",
+          "resolving_concept_ids": ["S042", "S043"],
+          "resolving_concepts": [
+            {
+              "concept_id": "S042",
+              "concept_name": "FastSLAM: Particle Filter SLAM",
+              "concept_name_ar": "FastSLAM: SLAM بمرشح الجزيئات",
+              "scientific_principle": "FastSLAM uses Rao-Blackwellization to factorize the SLAM posterior: p(x_{1:t}, m | z, u) = p(x_{1:t} | z, u) × ∏ᵢ p(mᵢ | x_{1:t}, z). Given the entire trajectory, each landmark can be estimated independently. Implementation: K particles each represent a trajectory hypothesis; each particle carries N independent 2D EKFs (one per landmark). Complexity: O(K × N × log N) — with K=100 particles, N=500 landmarks: approximately 200× faster than EKF-SLAM. Multi-modal support: particles naturally represent multiple pose hypotheses simultaneously, resolving the robot-lost scenario. FastSLAM 2.0 samples poses from the filtered posterior (not the motion prior) for greater efficiency.",
+              "key_equations": {
+                "rao_blackwellization": "p(x_{1:t}, m | z_{1:t}, u_{1:t}) = p(x_{1:t} | z_{1:t}, u_{1:t}) × ∏ᵢ p(mᵢ | x_{1:t}, z_{1:t})",
+                "complexity": "O(K × N × log N) vs O(N²) for EKF-SLAM",
+                "weight_update": "w^[k] = p(z_t | x_t^[k], m^[k]) × p(x_t^[k] | x_{t-1}^[k], u_t) / q(x_t^[k] | x_{t-1}^[k], z_t, u_t)"
+              },
+              "science_to_practice_split": "55% math (Rao-Blackwellization derivation, particle weight equations), 45% code (FastSLAM particles in PythonRobotics)",
+              "citation": {
+                "resource_id": "THRUN_BURGARD_FOX",
+                "location": "Chapter 11: FastSLAM, Pages 461–510",
+                "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+              },
+              "implementation_reference": {
+                "resource_id": "PYTHONROBOTICS",
+                "location": "SLAM module: FastSLAM 1.0 and FastSLAM 2.0 implementations",
+                "url": "https://github.com/AtsushiSakai/PythonRobotics"
+              }
+            },
+            {
+              "concept_id": "S043",
+              "concept_name": "Graph-Based SLAM and Pose Graph Optimization",
+              "concept_name_ar": "SLAM المستند على الرسم البياني وتحسين الرسم البياني للموضع",
+              "scientific_principle": "Graph-SLAM separates the SLAM problem into front-end (scan matching, data association) and back-end (global optimization). Nodes: robot poses at different timesteps. Edges: relative transformation constraints from odometry and scan matching. Optimization: minimize total constraint error: x* = argmin Σᵢⱼ || h(xᵢ, xⱼ) - zᵢⱼ ||²_Ωᵢⱼ. Sparse matrix structure makes optimization O(N) for linear trajectories. Solvers: Levenberg-Marquardt, g2o, iSAM2. Key advantage: back-end optimization can be run infrequently (e.g., triggered only by loop closures) rather than at every sensor timestep.",
+              "key_equation": "x* = argmin Σᵢⱼ (h(xᵢ, xⱼ) - zᵢⱼ)ᵀ Ωᵢⱼ (h(xᵢ, xⱼ) - zᵢⱼ)",
+              "comparison_table": {
+                "description": "EKF-SLAM vs FastSLAM vs Graph-SLAM",
+                "columns": ["Dimension", "EKF-SLAM", "FastSLAM", "Graph-SLAM"],
+                "rows": [
+                  ["Complexity", "O(N²)", "O(K·N·logN)", "O(N) sparse"],
+                  ["Multimodal support", "No", "Yes (particles)", "N/A (batch)"],
+                  ["Loop closure", "Hard (state grows)", "Moderate", "Natural (add edge)"],
+                  ["Implementation complexity", "Simple", "Moderate", "Complex"],
+                  ["Memory scaling", "Quadratic", "K × N EKFs", "Linear (sparse)"]
+                ]
+              },
+              "science_to_practice_split": "45% math (least-squares graph formulation, sparse structure), 55% tool demonstration (g2o visualization, before/after loop closure)",
+              "citation": {
+                "resource_id": "THRUN_BURGARD_FOX",
+                "location": "Chapter 11: FastSLAM, Pages 461–510 (graph optimization variants)",
+                "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+              },
+              "implementation_reference": {
+                "resource_id": "PYTHONROBOTICS",
+                "location": "SLAM module: Graph-based SLAM implementation with optimization loop",
+                "url": "https://github.com/AtsushiSakai/PythonRobotics"
+              }
+            }
+          ]
+        },
+        {
+          "failure_id": "F009-005",
+          "failure_number": 5,
+          "failure_title": "Drift, Scale Ambiguity, and Fleet Isolation — Three Terminal Failures",
+          "failure_type": ["Type 3 — Performance degradation", "Type 2 — Mathematical infeasibility", "Type 5 — Economic infeasibility"],
+          "naive_approach": "Sub-A: Run FastSLAM for 8 hours in the full warehouse with no mechanism to detect or correct drift. Sub-B: Replace LiDAR with monocular cameras to reduce hardware cost from $3,000 to $200 per unit; use raw RGB image matching directly. Sub-C: Deploy 50 robots each running independent FastSLAM instances with no inter-robot communication or shared map.",
+          "critical_questions": [
+            "How does odometry drift accumulate over 8 hours and 20 km of travel?",
+            "What specific event can globally correct accumulated SLAM drift — and why is this event named 'loop closure'?",
+            "Why does monocular visual SLAM have an unresolvable scale ambiguity? What sensor configuration resolves it?",
+            "Why is a fleet of N independent SLAM robots collectively dumber than a single shared-map robot? What information is wasted?",
+            "What computational and coordination problems arise when 50 robots maintain incompatible maps of the same space?"
+          ],
+          "why_it_fails": "Sub-A (drift): 2% odometry drift over 20 km of cumulative travel = 400 m of accumulated error. Map 'stretches' from the starting corner outward. No mechanism exists to recognise that the robot has returned to a known location. Sub-B (scale): monocular camera images have an unresolvable scale ambiguity — the same image is consistent with a 10 cm or 10 m environment. Feature matching fails in low-light areas (warehouse night shift). Sub-C (fleet): 50 independent maps are mutually inconsistent. Robot #12 marks a region as free; Robot #37 marks the same region occupied (layout changed between their visits). Fleet throughput is 60% of theoretical maximum.",
+          "failure_consequence": "Sub-A: picking accuracy degrades; SLA missed; customer complaints escalate. Sub-B: SLAM collapses in visually uniform areas; scale is unconstrained; robots unable to navigate reliably. Sub-C: inter-robot collisions; redundant computational effort; global fleet intelligence is zero. All three failures require architectural solutions — not parameter tuning.",
+          "resolving_concept_ids": ["S044", "S036", "S045"],
+          "resolving_concepts": [
+            {
+              "concept_id": "S044",
+              "concept_name": "Loop Closure Detection",
+              "concept_name_ar": "كشف إغلاق الحلقة",
+              "dramatic_role": "CLIMAX — this is the emotional and mathematical peak of the module. The map 'snaps' into global consistency.",
+              "scientific_principle": "Loop closure is the mechanism by which a robot recognises a previously visited place and injects a global constraint into the map. Step 1 — Place recognition: compare current sensor signature to all past signatures using (a) feature-based: match LiDAR keypoints to stored keypoints, (b) appearance-based: Bag-of-Words on ORB/BRIEF descriptors encoded into a visual vocabulary (DBoW2), (c) geometric verification: RANSAC to confirm a consistent relative transformation (inlier ratio > 70% required to accept). Step 2 — Constraint injection: add a new edge to the pose graph between the current pose and the matched historical pose, with measured transformation and tight uncertainty. Step 3 — Global optimization: run g2o or LM optimizer. The loop closure edge pulls all intermediate poses into consistency. Effect: 8 hours of drift corrected in ~200 ms. CRITICAL WARNING: false loop closure (false positive) inserts a wrong constraint and catastrophically distorts the map. Require geometric verification before accepting any closure.",
+              "key_procedure": {
+                "step_1": "Place recognition using Bag-of-Words similarity score ≥ threshold",
+                "step_2": "Geometric verification via RANSAC (inlier ratio > 70%)",
+                "step_3": "Inject pose graph edge with measured relative transformation",
+                "step_4": "Trigger global pose graph optimization (g2o/iSAM2)",
+                "result": "Global map consistency restored; accumulated drift corrected"
+              },
+              "false_positive_mitigation": "Require geometric verification (RANSAC inlier ratio > 0.7) before accepting any loop closure. Use multi-hypothesis verification: require K≥3 independent geometric checks across a temporal window.",
+              "science_to_practice_split": "40% math (BoW similarity, information matrix, g2o optimization), 60% demonstration (animated 'snap' visualization of map before and after loop closure)",
+              "citation": {
+                "resource_id": "SLAM_TUTORIAL",
+                "location": "Part 4: EKF-SLAM Implementation, Loop Closure section",
+                "url": "https://www.simultaneouslocalizationmapping.com/"
+              },
+              "supporting_citation": {
+                "resource_id": "THRUN_BURGARD_FOX",
+                "location": "Chapter 11: FastSLAM, Pages 461–510 (loop closure detection and algorithms)",
+                "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+              }
+            },
+            {
+              "concept_id": "S036",
+              "concept_name": "Visual SLAM",
+              "concept_name_ar": "التحديد المتزامن للموقع ورسم الخرائط البصري",
+              "scientific_principle": "Visual SLAM (e.g., ORB-SLAM2, LSD-SLAM) replaces LiDAR with camera images. Pipeline: (1) Tracking — extract ORB features, estimate camera pose via PnP against local map. (2) Local mapping — triangulate new 3D map points from stereo/motion parallax, refine with local bundle adjustment. (3) Loop closing — detect loops via DBoW2 (Bag-of-Words visual dictionary), compute Sim(3) similarity transformation, run pose graph optimization. Scale ambiguity resolution: stereo cameras (known baseline) provide metric scale from the first frame. Monocular systems require motion-based scale estimation (ambiguous up to global scale factor). Low-light fallback: NIR illuminator + NIR-sensitive camera, or event cameras (neuromorphic sensors). LiDAR vs Camera tradeoff: LiDAR = metric depth + illumination-invariant + expensive ($3,000–$75,000); Camera = texture-rich + cheap ($50–$500) + illumination-dependent + scale-ambiguous monocular. Production choice (2026): stereo camera + low-cost 2D LiDAR hybrid.",
+              "pipeline_steps": [
+                "Feature extraction: ORB descriptors at FAST keypoints",
+                "Tracking: PnP pose estimation against local map",
+                "Local mapping: triangulation + local bundle adjustment",
+                "Place recognition: DBoW2 Bag-of-Words similarity",
+                "Loop closure: Sim(3) optimization + global pose graph update"
+              ],
+              "science_to_practice_split": "30% math (PnP formulation, triangulation geometry, Sim(3) group), 70% system pipeline tour (ORB-SLAM2 architecture walkthrough)",
+              "citation": {
+                "resource_id": "MONOCULAR_SLAM_PAPER",
+                "location": "Understanding Monocular SLAM Implementation in Python OpenCV",
+                "url": "https://learnopencv.com/monocular-slam-in-python/"
+              },
+              "supporting_citation": {
+                "resource_id": "SLAM_TUTORIAL",
+                "location": "Part 1: Advanced Topics - Visual SLAM section",
+                "url": "https://www.simultaneouslocalizationmapping.com/"
+              }
+            },
+            {
+              "concept_id": "S045",
+              "concept_name": "Multi-Robot Coordination and Swarm Robotics",
+              "concept_name_ar": "تنسيق متعدد الروبوتات وروبوتات السرب",
+              "scientific_principle": "Three core problems: (1) Map merging — align two robots' maps via cross-robot place recognition; if Robot A and Robot B both recognise the same landmark, their coordinate frames can be registered. (2) Relative localization — shared map server (central), inter-robot UWB ranging, or vision-based peer robot detection (decentralized). (3) Task assignment — Hungarian algorithm for globally optimal assignment of N robots to N tasks in O(N³); auction-based (Contract Net Protocol) for scalable decentralized assignment. Collision avoidance: ORCA (Optimal Reciprocal Collision Avoidance) — each robot plans velocity changes assuming cooperative peers, guaranteeing collision-free motion in the decentralized case. Production reference: Locus LocusONE uses central 'Warehouse Agentic AI' — central orchestration assigns pick tasks, manages inter-robot traffic, maintains shared occupancy map updated in real time.",
+              "three_core_problems": {
+                "map_merging": "Cross-robot place recognition to align coordinate frames",
+                "relative_localization": "Central map server OR inter-robot UWB/vision ranging",
+                "task_assignment": "Hungarian algorithm O(N³) — optimal; Contract Net — scalable decentralized"
+              },
+              "collision_avoidance": "ORCA: Optimal Reciprocal Collision Avoidance — decentralized, cooperative assumption",
+              "science_to_practice_split": "30% math (Hungarian algorithm, ORCA velocity cones), 70% system design (fleet architecture exercise, design a shared-map system for 50 robots)",
+              "citation": {
+                "resource_id": "LOCUS_WAREHOUSE_AI",
+                "location": "Locus Robotics: Warehouse Agentic AI, Multi-Robot Orchestration",
+                "url": "https://locusrobotics.com/locusone/warehouse-agentic-ai"
+              }
+            }
+          ]
+        }
+      ],
+      "concept_coverage_audit": {
+        "total_concepts_in_module": 10,
+        "concepts_covered_as_resolving": 10,
+        "coverage_percent": 100,
+        "coverage_map": [
+          {"concept_id": "S040", "failure_id": "F009-001", "role": "resolving"},
+          {"concept_id": "S041", "failure_id": "F009-001", "role": "resolving"},
+          {"concept_id": "S038", "failure_id": "F009-002", "role": "resolving"},
+          {"concept_id": "S030", "failure_id": "F009-003", "role": "resolving"},
+          {"concept_id": "S039", "failure_id": "F009-003", "role": "resolving"},
+          {"concept_id": "S042", "failure_id": "F009-004", "role": "resolving"},
+          {"concept_id": "S043", "failure_id": "F009-004", "role": "resolving"},
+          {"concept_id": "S044", "failure_id": "F009-005", "role": "resolving (CLIMAX)"},
+          {"concept_id": "S036", "failure_id": "F009-005", "role": "resolving"},
+          {"concept_id": "S045", "failure_id": "F009-005", "role": "resolving"}
+        ]
+      },
+      "science_to_practice_balance": {
+        "ratio": 3,
+        "ratio_label": "Balanced — theory motivates implementation",
+        "per_concept_split": [
+          {"concept_id": "S040", "theory_percent": 30, "practice_percent": 70},
+          {"concept_id": "S041", "theory_percent": 20, "practice_percent": 80},
+          {"concept_id": "S038", "theory_percent": 60, "practice_percent": 40},
+          {"concept_id": "S030", "theory_percent": 40, "practice_percent": 60},
+          {"concept_id": "S039", "theory_percent": 50, "practice_percent": 50},
+          {"concept_id": "S042", "theory_percent": 55, "practice_percent": 45},
+          {"concept_id": "S043", "theory_percent": 45, "practice_percent": 55},
+          {"concept_id": "S044", "theory_percent": 40, "practice_percent": 60},
+          {"concept_id": "S036", "theory_percent": 30, "practice_percent": 70},
+          {"concept_id": "S045", "theory_percent": 30, "practice_percent": 70}
+        ],
+        "module_average_theory_percent": 40,
+        "module_average_practice_percent": 60
+      }
+    }
+  ],
+  "phase4_lessons": [],
+  "phase5_transcripts": [],
+  "phase6_assessment": {
+    "conceptual_traps": [],
+    "assessment_bank": [],
+    "professional_stack": [],
+    "kpis": []
+  }
+}

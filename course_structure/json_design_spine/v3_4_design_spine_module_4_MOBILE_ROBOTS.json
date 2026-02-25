@@ -1,0 +1,222 @@
+{
+  "course_metadata": {
+    "course_id": "1",
+    "version": "3.4",
+    "title": "Mobile Robots",
+    "phase": "Phase 3 — Design Spine",
+    "generated_date": "2026-02-18",
+    "generated_by": "Course Architect Engine v2.0",
+    "science_to_practice_ratio": 3
+  },
+  "phase3_design_spine": [
+    {
+      "module_id": "MOD-004",
+      "module_title": "Sensor Modeling, Measurement & Fusion",
+      "module_title_ar": "نمذجة الاستشعار والقياس والدمج",
+      "science_to_practice_ratio": 3,
+      "spine_required": true,
+      "spine_strength": "strong",
+      "design_problem": {
+        "problem_statement": "A Starship delivery robot is operating in a university campus. Its sensor suite is progressively stripped away. Starting with NO sensors (blind), we restore them one at a time — LIDAR first, then IMU, then GPS, then camera features — and watch how the state estimate quality changes at each step. The final goal: fuse all sensors into a single consistent state estimate using an EKF. Each sensor added is a lesson. Each sensor removed is a failure.",
+        "real_world_context": "Starship Technologies campus delivery robot deploys on university and corporate campuses across 4 continents. Their sensor stack (LIDAR + stereo camera + GPS + IMU) is a textbook multi-sensor fusion architecture.",
+        "context_url": "https://www.starship.xyz/",
+        "target_user_role": "engineer"
+      },
+      "concepts_covered": ["S025", "S026", "S027", "S028", "S029", "S034", "S014", "S021"],
+      "failure_modes": [
+        {
+          "failure_id": "F-004-01",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Use LIDAR raw point cloud directly: if a point is at distance d, assume the obstacle is exactly at distance d from the robot.",
+          "critical_questions": [
+            "LIDAR pulses hit glass windows and return unexpectedly — why?",
+            "The robot detects an obstacle at 2.5 m, but is it a wall or a student walking by?",
+            "How does laser beam divergence affect the accuracy of range measurements at long distances?",
+            "What is the probability distribution over the true distance given a noisy sensor reading?"
+          ],
+          "why_it_fails": "Raw LIDAR readings are not ground truth — they are probabilistic measurements contaminated by beam divergence, multi-path reflections, atmospheric scattering, and sensor noise. Treating them as exact measurements causes the robot to either miss real obstacles (false negatives from specular reflections) or react to phantom obstacles (false positives from multi-path).",
+          "failure_consequence": "Robot sees a reflection in a glass door as a wall 0.5 m ahead, stops, cannot proceed. Or: ignores a student because the scan hit the student's black jacket (low reflectivity), causing a near-collision.",
+          "resolving_concept_id": "S025",
+          "resolving_concept_name": "LIDAR Range Sensing Models",
+          "resolving_concept_name_ar": "نماذج استشعار المسافة بالليدار",
+          "scientific_principle": "The LIDAR sensor model p(z|x, m) represents the probability of measurement z given robot pose x and map m. It decomposes into four components: (1) correct range with Gaussian noise; (2) unexpected obstacles (exponential distribution); (3) max-range failures (spike at z_max); (4) random noise (uniform distribution). Proper weighting of these components produces a statistically valid measurement model for Bayesian filtering.",
+          "citation": {
+            "resource_id": "THRUN_BURGARD_FOX",
+            "location": "Chapter 6: Robot Perception, Section 6.3.1–6.3.3, Pages 141–168 — Beam model, likelihood field model",
+            "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+          },
+          "real_world_example": {
+            "description": "Waymo's LIDAR processing pipeline uses a learned beam model that accounts for weather-dependent measurement distributions — rain and fog change the effective range distribution significantly.",
+            "url": "https://waymo.com/research/",
+            "relevance_score": 5
+          }
+        },
+        {
+          "failure_id": "F-004-02",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "When LIDAR is unavailable (blocked by a large package being carried), fall back to IMU only for short-duration navigation. Integrate acceleration twice to get position.",
+          "critical_questions": [
+            "What happens to position error when you integrate acceleration twice?",
+            "What is a gyroscope bias and how does it grow over time?",
+            "After 30 seconds of IMU-only navigation, what is the expected position error?"
+          ],
+          "why_it_fails": "IMU measures angular rate and linear acceleration, not position. Double integration of noisy acceleration: position error ∝ t². A typical MEMS IMU with 0.01 m/s² noise produces 4.5 m position error in 30 seconds. Additionally, gyroscope bias (constant offset error) causes heading to drift linearly: θ_error = bias × t.",
+          "failure_consequence": "The robot carrying a heavy package uses IMU-only for 45 seconds (LIDAR occluded). Heading error accumulates at 0.2°/s. Robot believes it is still on the path but has deviated 3 m into a parked bicycle rack.",
+          "resolving_concept_id": "S026",
+          "resolving_concept_name": "IMU and Inertial Dead Reckoning",
+          "resolving_concept_name_ar": "وحدة القياس بالقصور الذاتي والملاحة بالقصور الذاتي",
+          "scientific_principle": "IMU integration model: v̂ = v₀ + ∫(a_measured − b_a − η_a)dt; p̂ = p₀ + ∫v̂ dt. Gyro bias b_ω drifts as a random walk. Position error from double integration of noise η~N(0,σ²): σ_pos ≈ σ_a × t²/√2. IMU is excellent for short-duration, high-frequency motion estimation between LIDAR scans but must be corrected by external reference (GPS, LIDAR scan matching) to prevent drift.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 4: Sensors for Mobile Robots, Section 4.1.3, Pages 168–178 — IMU noise model, bias, integration error",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-004-03",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Add GPS for global position reference — GPS gives position in meters with sub-meter accuracy, that's enough.",
+          "critical_questions": [
+            "What is the GPS signal quality in an urban canyon (buildings on all sides)?",
+            "GPS gives position — but at what update rate?",
+            "What happens when GPS jumps by 3 m between two consecutive readings?"
+          ],
+          "why_it_fails": "Consumer GPS provides 3–5 m accuracy in open sky and degrades severely in urban canyons due to multipath. GPS update rate is 1–10 Hz, insufficient for real-time control (100 Hz required). GPS does not provide heading directly. In built environments, GPS is available for global positioning but cannot serve as the primary navigation sensor.",
+          "failure_consequence": "On a campus with tall buildings, GPS multipath causes the robot to believe it is 8 m from its true position. It attempts to re-route via a building wall, triggering a collision stop.",
+          "resolving_concept_id": "S027",
+          "resolving_concept_name": "GPS and Global Localization",
+          "resolving_concept_name_ar": "نظام التحديد العالمي والتوطين الكوني",
+          "scientific_principle": "GPS trilateration: position estimated from pseudo-range measurements to ≥4 satellites. Error sources: satellite geometry (DOP), atmospheric delay (ionosphere/troposphere), multipath. RTK-GPS achieves cm-level accuracy by differential correction. In sensor fusion: GPS provides a low-frequency, drifting-bounded absolute position constraint. It anchors long-term accuracy while IMU + odometry handle high-frequency motion.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 4: Sensors for Mobile Robots, Section 4.1.6, Pages 190–200 — GPS principles, error sources, DGPS",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-004-04",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Use raw LIDAR points to match against the map by comparing all scan points to all map points simultaneously — exhaustive search for the best alignment.",
+          "critical_questions": [
+            "How do you determine which LIDAR point corresponds to which wall or object in the map?",
+            "What happens if the LIDAR sees a person walking through the scene?",
+            "What are 'features' and why are they more robust for matching than raw points?"
+          ],
+          "why_it_fails": "Exhaustive point-to-point matching is O(n²) in complexity and fails with dynamic objects. Moving people cause point matches that are geometrically invalid (person at position X now will not be there in the next scan). Features — corners, edges, line endpoints — are geometric invariants that persist across frames and are computationally tractable to match.",
+          "failure_consequence": "Scan matching runs at 0.1 Hz (10× too slow) because of O(n²) exhaustive search. The navigation stack runs on 30-second-old LIDAR data, causing catastrophic position estimate lag.",
+          "resolving_concept_id": "S028",
+          "resolving_concept_name": "Feature Extraction and Landmark Detection",
+          "resolving_concept_name_ar": "استخراج المميزات واكتشاف المعالم",
+          "scientific_principle": "Geometric features reduce O(n) scan points to O(k) landmarks where k ≪ n. Extraction methods: line fitting (RANSAC, Hough transform), corner detection (Harris, FAST), and circle fitting (for cylindrical landmarks). Each landmark is represented as a compact descriptor encoding position and identity. Feature-based matching is O(k log k) vs O(n²) for raw point matching.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 5: Mobile Robot Localization, Section 5.4.1, Pages 239–248 — Feature extraction from LIDAR",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-004-05",
+          "failure_type": "Type 2 — Mathematical infeasibility",
+          "naive_approach": "After extracting features from two consecutive LIDAR scans, match them by proximity alone — each feature in scan N matches the nearest feature in scan N-1.",
+          "critical_questions": [
+            "What if two pillars are identical and 2 m apart — which scan feature matches which?",
+            "How do you handle the case where a feature visible in scan N was occluded in scan N-1?",
+            "What mathematical criterion ensures the best match is found?"
+          ],
+          "why_it_fails": "Nearest-neighbor matching fails in environments with repeated structures (corridors with identical pillars, parallel walls). It also fails when the robot has moved significantly between scans — the nearest feature in scan N may not be the geometrically corresponding feature in scan N-1. Without a statistical matching criterion, the data association step is unreliable.",
+          "failure_consequence": "The robot matches pillar A in the current scan to pillar B in the previous scan (both look identical). The resulting 2 m 'displacement' corrupts the position estimate, causing localization divergence.",
+          "resolving_concept_id": "S029",
+          "resolving_concept_name": "Feature Matching Methods",
+          "resolving_concept_name_ar": "طرق مطابقة المميزات",
+          "scientific_principle": "Feature matching methods: (1) NNDR (Nearest Neighbor Distance Ratio) — match only if best match distance < ratio × second best; (2) RANSAC — find matching hypothesis consistent with maximum inliers despite outliers; (3) ICP (Iterative Closest Point) — alternates between association and transformation estimation. For camera features: SIFT/SURF/ORB descriptors encode local appearance for appearance-based matching.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 5: Mobile Robot Localization, Section 5.4.2, Pages 248–260 — Feature matching, ICP, NNDR",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-004-06",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Use each sensor independently and switch between them based on which one is currently 'most accurate' — use GPS when outdoors, LIDAR when indoors.",
+          "critical_questions": [
+            "What happens at the doorway transition between indoor LIDAR and outdoor GPS?",
+            "How do you combine LIDAR at 10 Hz and GPS at 1 Hz in a consistent way?",
+            "What is lost when you discard GPS entirely the moment you go indoors?"
+          ],
+          "why_it_fails": "Sensor switching creates discontinuities in the state estimate — the robot's position 'jumps' at sensor transitions. Each sensor provides complementary information: GPS is absolute but slow; LIDAR is relative but high-frequency; IMU is accurate for short durations but drifts. Only by fusing all sensors simultaneously can the estimator exploit their complementary properties.",
+          "failure_consequence": "At the building entrance, the robot switches from GPS to LIDAR. The GPS estimate is 2 m east of the LIDAR-based estimate. The position 'jumps' by 2 m, causing the PID controller to command maximum velocity toward the GPS position. The robot crashes into the door frame.",
+          "resolving_concept_id": "S034",
+          "resolving_concept_name": "Sensor Fusion Architecture and Motivation",
+          "resolving_concept_name_ar": "معمارية دمج المستشعرات ومبرراتها",
+          "scientific_principle": "Sensor fusion combines measurements from multiple sensors into a single, consistent state estimate that is better than any individual sensor alone. Architecture types: (1) Centralized: all raw measurements fused in one filter; (2) Decentralized: local estimators feed a global fusion node; (3) Federated: independent sub-filters with information sharing. The fusion gain G_k trades off between predicted state and measurement, weighted by respective uncertainties.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 5: Mobile Robot Localization, Section 5.2, Pages 212–222 — Sensor fusion architectures, motivations",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-004-07",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Fuse odometry and LIDAR by simple averaging: position = 0.5 × (odometry_position + lidar_position).",
+          "critical_questions": [
+            "Should we weight a fresh LIDAR scan and a 5-second-old odometry estimate equally?",
+            "How do we handle the fact that LIDAR gives (x, y, θ) but IMU gives only (ẋ, ẏ, θ̇)?",
+            "What is the optimal linear combination of two Gaussian estimates with different variances?"
+          ],
+          "why_it_fails": "Simple averaging treats all sensors as equally reliable regardless of their current uncertainty. It ignores that LIDAR uncertainty is bounded while odometry uncertainty grows over time. It cannot handle sensors that measure different state variables (velocity vs position). The Extended Kalman Filter provides the mathematically optimal fusion under Gaussian assumptions.",
+          "failure_consequence": "With simple averaging, a 5-second-old odometry estimate (high uncertainty) is weighted equally with a fresh LIDAR scan (low uncertainty). The fused estimate is artificially shifted toward the stale odometry value, causing 1.5 m systematic error.",
+          "resolving_concept_id": "S021",
+          "resolving_concept_name": "EKF for Multi-Sensor Fusion",
+          "resolving_concept_name_ar": "مرشح كالمان الموسع لدمج المستشعرات المتعددة",
+          "scientific_principle": "EKF sensor fusion: state x = [x, y, θ, v, ω]^T. Predict: x̂_k|k-1 = f(x_{k-1}, u_k); P_k|k-1 = F·P_{k-1}·F^T + Q. Update for each sensor i: K_i = P·H_i^T·(H_i·P·H_i^T + R_i)^{-1}; x_k = x̂ + K_i·(z_i − h_i(x̂)). Each sensor's update is weighted by its own noise matrix R_i relative to the current prediction uncertainty P. Sensors with low R_i (accurate sensors) exert stronger influence.",
+          "citation": {
+            "resource_id": "THRUN_BURGARD_FOX",
+            "location": "Chapter 3: Gaussian Filters, Section 3.3.2, Pages 58–70 — Extended Kalman Filter, multi-sensor update",
+            "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+          }
+        },
+        {
+          "failure_id": "F-004-08",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Even with sensor fusion, ignore the odometry component — just rely on LIDAR scans and GPS.",
+          "critical_questions": [
+            "Between two LIDAR scans (100 ms gap), how does the robot know where it is?",
+            "During a LIDAR outage (sensor blocked), what provides motion prediction?",
+            "How do wheel encoder measurements fit into the EKF architecture?"
+          ],
+          "why_it_fails": "Odometry (wheel encoders) provides the motion prediction step of the Kalman Filter. Without it, the filter has no model for how the robot moves between sensor updates. The prediction step is essential for maintaining state continuity between measurement updates. Odometry is the backbone of the EKF motion model even when its long-term drift is bounded by LIDAR/GPS corrections.",
+          "failure_consequence": "Without odometry prediction, the EKF has no prior between LIDAR scans. A sudden 0.3 m motion in 100 ms causes the LIDAR update to fail (innovation exceeds gate threshold). Filter resets, causing localization loss.",
+          "resolving_concept_id": "S014",
+          "resolving_concept_name": "Odometry and Dead Reckoning",
+          "resolving_concept_name_ar": "قياس المسافة المقطوعة والملاحة الميتة",
+          "scientific_principle": "In the EKF fusion architecture, odometry serves as the process model: x̂_{k|k-1} = x̂_{k-1} + f_odom(ω_L, ω_R, Δt). This prediction step updates the state estimate before each measurement correction. Odometry provides high-frequency (50–200 Hz) motion information while LIDAR and GPS provide lower-frequency (1–20 Hz) corrections. The combined system achieves the update rate of odometry with the long-term accuracy of LIDAR/GPS.",
+          "citation": {
+            "resource_id": "KELLY_BOOK",
+            "location": "Chapter 5: Dead Reckoning Navigation, Section 5.4, Pages 225–235 — Odometry as EKF process model",
+            "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091"
+          }
+        }
+      ],
+      "concept_coverage_check": {
+        "S025": {"covered": true, "failure_id": "F-004-01"},
+        "S026": {"covered": true, "failure_id": "F-004-02"},
+        "S027": {"covered": true, "failure_id": "F-004-03"},
+        "S028": {"covered": true, "failure_id": "F-004-04"},
+        "S029": {"covered": true, "failure_id": "F-004-05"},
+        "S034": {"covered": true, "failure_id": "F-004-06"},
+        "S021": {"covered": true, "failure_id": "F-004-07"},
+        "S014": {"covered": true, "failure_id": "F-004-08"}
+      },
+      "spine_narrative_arc": "S025 (model LIDAR noise) → S026 (model IMU drift) → S027 (model GPS error) → S028 (extract features from sensors) → S029 (match features across time) → S034 (motivate fusion architecture) → S021 (implement EKF fusion) → S014 (odometry as the backbone prediction model)",
+      "validation": {
+        "all_concepts_covered": true,
+        "citations_complete": true,
+        "real_world_anchor": "Starship Technologies campus delivery robot — multi-sensor suite in structured outdoor environment",
+        "spine_strength_respected": true,
+        "generated_date": "2026-02-18"
+      }
+    }
+  ]
+}

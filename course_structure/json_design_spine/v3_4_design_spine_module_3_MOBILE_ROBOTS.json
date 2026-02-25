@@ -1,0 +1,217 @@
+{
+  "course_metadata": {
+    "course_id": "1",
+    "version": "3.4",
+    "title": "Mobile Robots",
+    "phase": "Phase 3 — Design Spine",
+    "generated_date": "2026-02-18",
+    "generated_by": "Course Architect Engine v2.0",
+    "science_to_practice_ratio": 3
+  },
+  "phase3_design_spine": [
+    {
+      "module_id": "MOD-003",
+      "module_title": "Robot Kinematics & Motion Models",
+      "module_title_ar": "الحركية والنماذج الحركية للروبوت",
+      "science_to_practice_ratio": 3,
+      "spine_required": true,
+      "spine_strength": "strong",
+      "design_problem": {
+        "problem_statement": "An Amazon Robotics AMR (differential drive, 0.5 m wheelbase) is commanded to execute a precise pick-and-place mission: travel exactly 2.0 m forward along aisle A7, turn exactly 90° right, then stop at shelf slot B3. After executing the command sequence, telemetry shows the robot stopped 18 cm past the target slot and 12° misaligned. The warehouse management system flags a collision risk. Diagnose the failure and redesign the motion model.",
+        "real_world_context": "Amazon Robotics warehouse automation — Proteus and Hercules AMR fleet. Positional accuracy of ±5 cm is required for shelf slot picking. Systematic position error causes downstream logistic failures.",
+        "context_url": "https://www.aboutamazon.com/news/operations/amazon-robotics",
+        "target_user_role": "engineer"
+      },
+      "concepts_covered": ["S006", "S009", "S010", "S011", "S012", "S013", "S014", "S015"],
+      "failure_modes": [
+        {
+          "failure_id": "F-003-01",
+          "failure_type": "Type 2 — Mathematical infeasibility",
+          "naive_approach": "Describe the robot's position as a single distance from the start point along the intended path. Command '2 m forward + 90° turn' is just two numbers: Δd = 2.0 m, Δθ = 90°.",
+          "critical_questions": [
+            "If the robot turns by 45° during what was supposed to be straight motion, where is it now?",
+            "How do we describe 'position' when the robot is not pointing in the direction we expect?",
+            "What is the minimum set of numbers needed to know exactly where the robot is in the warehouse?"
+          ],
+          "why_it_fails": "A single scalar distance cannot represent a 2D pose. The robot's state requires a coordinate frame: position (x, y) plus orientation (θ). Without a rigorous frame definition (world frame, body frame, sensor frames), position commands are ambiguous — '2 m forward' means different things depending on which direction 'forward' is currently pointing.",
+          "failure_consequence": "The motion command is interpreted in the wrong reference frame. The robot executes '2 m along world X-axis' instead of '2 m along body heading', ending up in the wrong aisle entirely.",
+          "resolving_concept_id": "S006",
+          "resolving_concept_name": "Coordinate Frames and Homogeneous Transformations",
+          "resolving_concept_name_ar": "الأطر الإحداثية والتحويلات المتجانسة",
+          "scientific_principle": "Homogeneous transformation matrices T ∈ SE(2) encode a rigid body's pose as a combined rotation R ∈ SO(2) and translation t ∈ ℝ². Frame transformations chain: T_world_sensor = T_world_body × T_body_sensor. All robot motion commands and sensor readings must be expressed in a consistent, explicitly defined frame.",
+          "citation": {
+            "resource_id": "LYNCH_PARK_BOOK",
+            "location": "Chapter 3: Rigid-Body Motions, Section 3.1–3.3, Pages 63–100 — SE(2), homogeneous coordinates, frame transforms",
+            "url": "https://modernrobotics.org/"
+          }
+        },
+        {
+          "failure_id": "F-003-02",
+          "failure_type": "Type 2 — Mathematical infeasibility",
+          "naive_approach": "Command the robot by setting left wheel speed = right wheel speed = v. For a turn, set one wheel to v and the other to 0. Just scale the speeds intuitively.",
+          "critical_questions": [
+            "Given left wheel speed ω_L = 3 rad/s and right wheel speed ω_R = 4 rad/s and wheel radius r = 0.033 m, what is the robot's linear velocity and angular velocity?",
+            "What path does the robot actually trace in the world frame?",
+            "How far apart must the wheels be to achieve a 90° turn in exactly 0.5 m of travel?"
+          ],
+          "why_it_fails": "Intuitive speed scaling gives no mathematical relationship between wheel velocities and robot pose change. Without the kinematic model, there is no way to compute wheel commands that achieve a desired (x, y, θ) trajectory. The forward kinematics and inverse kinematics of the differential drive must be derived from geometry.",
+          "failure_consequence": "Wheel speed ratios are chosen by trial-and-error. The robot turns 73° instead of 90° because the wheelbase was not accounted for in the turn calculation.",
+          "resolving_concept_id": "S009",
+          "resolving_concept_name": "Differential Drive Kinematics",
+          "resolving_concept_name_ar": "حركيات القيادة التفاضلية",
+          "scientific_principle": "For a differential drive robot with wheel radius r and wheelbase l:\n  v = r(ω_R + ω_L)/2  [linear velocity]\n  ω = r(ω_R - ω_L)/l  [angular velocity]\nForward kinematics: (ẋ, ẏ, θ̇) = f(ω_L, ω_R, θ). Inverse: given desired (v, ω), compute (ω_L, ω_R). This is the fundamental motion model for all subsequent localization and control.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 3: Mobile Robot Kinematics, Section 3.2.1, Pages 55–68 — Differential drive forward and inverse kinematics",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-003-03",
+          "failure_type": "Type 2 — Mathematical infeasibility",
+          "naive_approach": "Try to command the robot to move diagonally (e.g., 45° heading change while simultaneously translating sideways) to correct a small lateral position error — treat it like commanding a holonomic drone.",
+          "critical_questions": [
+            "Can a differential drive robot move sideways?",
+            "How many velocity commands does a differential drive robot accept?",
+            "Why can the robot reach any (x, y, θ) configuration in the plane despite not being able to move sideways instantaneously?"
+          ],
+          "why_it_fails": "The differential drive robot has a non-holonomic constraint: its velocity must always be in the direction it is currently facing. The robot cannot move sideways — the constraint equation ẋ sinθ − ẏ cosθ = 0 must hold at all times. Attempting to send a sideways velocity command violates the constraint and is physically impossible.",
+          "failure_consequence": "The lateral correction command is physically impossible to execute. The robot's wheels skid, IMU detects unexpected acceleration, and the safety monitor triggers an emergency stop.",
+          "resolving_concept_id": "S010",
+          "resolving_concept_name": "Non-Holonomic Constraints",
+          "resolving_concept_name_ar": "القيود غير الهولونومية",
+          "scientific_principle": "A non-holonomic constraint is a velocity constraint that cannot be integrated into a position constraint: Pfaffian form A(q)q̇ = 0. For differential drive: the no-slip condition ẋ sinθ − ẏ cosθ = 0. Despite 2 controllable DOF, the robot can still reach any (x, y, θ) configuration via a sequence of feasible motions — this is small-time local controllability (Chow's theorem).",
+          "citation": {
+            "resource_id": "MURRAY_BOOK",
+            "location": "Chapter 1: Introduction to Nonholonomic Mechanics, Section 1.2, Pages 1–20 — Pfaffian constraints, controllability",
+            "url": "https://www.cse.lehigh.edu/~trink/Courses/RoboticsII/reading/murray-li-sastry-94-complete.pdf"
+          }
+        },
+        {
+          "failure_id": "F-003-04",
+          "failure_type": "Type 1 — Physical constraint violation",
+          "naive_approach": "For faster warehouse navigation, replace the differential drive robot with a car-like Ackermann robot — it goes faster in straight lines.",
+          "critical_questions": [
+            "What is the minimum turning radius of an Ackermann robot?",
+            "Can it reverse into a tight shelf slot like a forklift?",
+            "What additional constraint does the Ackermann geometry introduce?"
+          ],
+          "why_it_fails": "Ackermann steering geometry has a minimum turning radius r_min = l/tan(δ_max) determined by the wheelbase l and maximum steering angle δ_max. In tight warehouse aisles (1.5–2 m wide), this minimum radius may be larger than the available space. The robot physically cannot make the required turn.",
+          "failure_consequence": "The robot cannot navigate 90° turns in standard warehouse aisles without a multi-point turn, which blocks the aisle for other robots and causes a traffic deadlock.",
+          "resolving_concept_id": "S011",
+          "resolving_concept_name": "Ackermann Steering Geometry",
+          "resolving_concept_name_ar": "هندسة توجيه أكرمان",
+          "scientific_principle": "Ackermann geometry ensures all four wheels roll without slip during a turn by constraining inner/outer wheel steer angles: cot(δ_o) − cot(δ_i) = l_w/l where l_w is track width and l is wheelbase. The bicycle model simplifies this to a single equivalent front wheel. Turning radius R = l/tan(δ). Critical for path planning: all paths must respect this geometric constraint.",
+          "citation": {
+            "resource_id": "SICILIANO_BOOK",
+            "location": "Chapter 11: Mobile Robots, Section 11.2.2, Pages 469–474 — Ackermann steering, bicycle model",
+            "url": "https://link.springer.com/book/10.1007/978-1-84628-642-1"
+          }
+        },
+        {
+          "failure_id": "F-003-05",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "For maximum flexibility, use 4 mecanum (Swedish) wheels — the robot can then move in any direction at any time.",
+          "critical_questions": [
+            "What is the kinematic model for 4 mecanum wheels at 45°?",
+            "What happens to the wheel forces if the floor has a small bump?",
+            "Why do omni-wheel robots require a flat, clean floor?"
+          ],
+          "why_it_fails": "Omnidirectional robots achieve holonomic motion through passive rollers on mecanum wheels, but the kinematic model requires all 4 wheels to maintain ground contact simultaneously. On uneven warehouse floors, one wheel lifts and the model becomes invalid — the robot drifts unpredictably. Additionally, omni-wheels have higher rolling resistance and are noisier than standard wheels.",
+          "failure_consequence": "On the slightly uneven concrete warehouse floor, the robot drifts 8 cm per meter of travel. After 20 m, it is in a completely wrong aisle.",
+          "resolving_concept_id": "S012",
+          "resolving_concept_name": "Omnidirectional Robot Kinematics",
+          "resolving_concept_name_ar": "حركيات الروبوت متعدد الاتجاهات",
+          "scientific_principle": "For a 4-mecanum-wheel robot (wheel angle α = 45°, radius r, platform radius l):\n  [v_x, v_y, ω]^T = (r/4) × J × [ω₁, ω₂, ω₃, ω₄]^T\nThe Jacobian J relates body velocities to wheel speeds. The model assumes no slip at each roller contact point — an assumption that fails on uneven terrain. Selection criterion: use omni-drive only on clean, flat floors when omnidirectional agility is required.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 3: Mobile Robot Kinematics, Section 3.2.3, Pages 73–80 — Omnidirectional wheel kinematics",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-003-06",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "After selecting differential drive, plan paths as straight-line segments. The robot turns in place at each waypoint, then drives straight to the next one.",
+          "critical_questions": [
+            "What is the robot's effective workspace — can it reach all shelf slots in the warehouse?",
+            "How does the non-holonomic constraint affect path planning in tight spaces?",
+            "What is the difference between the robot's configuration space and its workspace?"
+          ],
+          "why_it_fails": "The robot's reachable workspace is the full 2D floor plane (any x, y reachable), but its maneuverability in tight spaces is limited by the non-holonomic constraint. Some configurations require multi-move sequences. Without analyzing maneuverability, path planners may generate geometrically valid but kinematically infeasible paths.",
+          "failure_consequence": "The path planner generates a direct path to slot B3 that requires a 180° turn in 0.3 m of space. The robot cannot execute this and halts, blocking the aisle.",
+          "resolving_concept_id": "S013",
+          "resolving_concept_name": "Mobile Robot Maneuverability and Workspace",
+          "resolving_concept_name_ar": "قابلية المناورة ومساحة العمل للروبوت المتنقل",
+          "scientific_principle": "Maneuverability is characterized by two sub-metrics: (1) mobility δ_m — how many instantaneously achievable velocity directions exist; (2) steerability δ_s — how many steerable wheels exist. Total maneuverability μ = δ_m + δ_s. For differential drive: μ = 2 (high maneuverability). The workspace analysis must account for non-holonomic constraints when planning in tight environments.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 3: Mobile Robot Kinematics, Section 3.3, Pages 81–90 — Maneuverability analysis",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-003-07",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Command the wheels to spin the right amount and trust that the robot ends up at the target. No position feedback — it's just geometry.",
+          "critical_questions": [
+            "After 10 m of travel, where is the robot really?",
+            "How do small errors in wheel encoder ticks accumulate over distance?",
+            "What is the mathematical model for position error growth?"
+          ],
+          "why_it_fails": "Open-loop control ignores cumulative integration errors. Wheel encoder tick counts are converted to distance via r = wheel radius — but encoder resolution, gear backlash, and slight wheel diameter variations cause small per-tick errors that integrate unboundedly over distance. After 2 m, a 1% wheel radius error produces 2 cm position error. After 50 m, it is 50 cm.",
+          "failure_consequence": "After a 50-waypoint pick-and-place cycle, the robot is 80 cm from where it thinks it is. It attempts to pick from shelf B3 but reaches into B5, knocking product off the shelf.",
+          "resolving_concept_id": "S014",
+          "resolving_concept_name": "Odometry and Dead Reckoning",
+          "resolving_concept_name_ar": "قياس المسافة المقطوعة والملاحة الميتة",
+          "scientific_principle": "Dead reckoning integrates the kinematic model over time:\n  x(t+Δt) = x(t) + v·cos(θ)·Δt\n  y(t+Δt) = y(t) + v·sin(θ)·Δt\n  θ(t+Δt) = θ(t) + ω·Δt\nErrors are unbounded without external correction. Error covariance grows as Σ_k = F·Σ_{k-1}·F^T + Q where F is the Jacobian and Q is process noise. Odometry alone is necessary but not sufficient — it must be fused with exteroceptive sensing (LIDAR, cameras) for bounded error.",
+          "citation": {
+            "resource_id": "KELLY_BOOK",
+            "location": "Chapter 5: Dead Reckoning Navigation, Section 5.1–5.3, Pages 191–230 — Odometry model, error accumulation, covariance propagation",
+            "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091"
+          }
+        },
+        {
+          "failure_id": "F-003-08",
+          "failure_type": "Type 1 — Physical constraint violation",
+          "naive_approach": "After adding sensor fusion to correct odometry, assume that wheel encoder ticks always accurately measure ground contact distance — slip is just a minor noise term.",
+          "critical_questions": [
+            "What happens to odometry when one wheel spins on a wet spot?",
+            "How does the encoder reading differ from actual ground displacement during slip?",
+            "What force must be transmitted to prevent slip?"
+          ],
+          "why_it_fails": "Wheel slip breaks the fundamental assumption of odometry: that encoder rotation corresponds directly to ground displacement. When the friction force required to accelerate the robot exceeds μ×N (coefficient of friction × normal force), the wheel slips. During slip, encoder ticks increase but the robot does not move — the odometry model overestimates traveled distance.",
+          "failure_consequence": "The robot accelerates across a wet patch at aisle crossing. Right wheel slips. Odometry registers 0.3 m travel but actual displacement is 0.05 m. Robot believes it is 0.25 m ahead of its actual position. The corrected position is now too far from the LIDAR map — the localization filter diverges.",
+          "resolving_concept_id": "S015",
+          "resolving_concept_name": "Wheel Slip and Traction Control",
+          "resolving_concept_name_ar": "انزلاق العجلات والتحكم في الجر",
+          "scientific_principle": "Slip ratio λ = (v_wheel − v_ground)/max(v_wheel, v_ground). Traction force F_traction ≤ μ_s × N. Slip detection: compare IMU acceleration to expected acceleration from wheel speeds. Slip mitigation: traction control reduces wheel torque to keep λ < λ_threshold. Odometry correction: use IMU as ground truth during detected slip events.",
+          "citation": {
+            "resource_id": "KELLY_BOOK",
+            "location": "Chapter 6: Traction and Slip, Section 6.1–6.2, Pages 231–262 — Slip models, traction control, IMU-assisted odometry",
+            "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091"
+          }
+        }
+      ],
+      "concept_coverage_check": {
+        "S006": {"covered": true, "failure_id": "F-003-01"},
+        "S009": {"covered": true, "failure_id": "F-003-02"},
+        "S010": {"covered": true, "failure_id": "F-003-03"},
+        "S011": {"covered": true, "failure_id": "F-003-04"},
+        "S012": {"covered": true, "failure_id": "F-003-05"},
+        "S013": {"covered": true, "failure_id": "F-003-06"},
+        "S014": {"covered": true, "failure_id": "F-003-07"},
+        "S015": {"covered": true, "failure_id": "F-003-08"}
+      },
+      "spine_narrative_arc": "S006 (define the frame) → S009 (model the motion) → S010 (respect the constraints) → S011 (alternative: Ackermann has different constraints) → S012 (alternative: omni removes constraints but adds terrain limits) → S013 (characterize the workspace) → S014 (accumulate position from motion) → S015 (correct for physical slip failures)",
+      "validation": {
+        "all_concepts_covered": true,
+        "citations_complete": true,
+        "failure_types_diverse": ["Type 2", "Type 2", "Type 2", "Type 1", "Type 3", "Type 3", "Type 3", "Type 1"],
+        "real_world_anchor": "Amazon Robotics AMR — warehouse positional accuracy requirement (±5 cm)",
+        "spine_strength_respected": true,
+        "generated_date": "2026-02-18"
+      }
+    }
+  ]
+}

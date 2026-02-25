@@ -1,0 +1,164 @@
+{
+  "course_metadata": {
+    "course_id": "1",
+    "version": "3.4",
+    "title": "Mobile Robots",
+    "phase": "Phase 3 — Design Spine",
+    "generated_date": "2026-02-18",
+    "generated_by": "Course Architect Engine v2.0",
+    "science_to_practice_ratio": 3
+  },
+  "phase3_design_spine": [
+    {
+      "module_id": "MOD-005",
+      "module_title": "Probabilistic Robotics & State Estimation",
+      "module_title_ar": "الروبوتات الاحتمالية وتقدير الحالة",
+      "science_to_practice_ratio": 3,
+      "spine_required": true,
+      "spine_strength": "critical",
+      "design_problem": {
+        "problem_statement": "A Waymo robotaxi is blindfolded: all exteroceptive sensors (LIDAR, cameras, radar) are disabled. The vehicle must travel 5 steps (motion commands) along a corridor using odometry alone. After each step, it receives a single noisy sonar ping from the corridor end wall. The question repeated at every step: Where is the car now? Not 'where it was commanded to go' — but 'where it actually is, in probabilistic terms.' Build the mathematical framework that answers this question rigorously.",
+        "real_world_context": "Sensor redundancy and graceful degradation is a regulatory requirement for autonomous vehicles (FMVSS, EU AV Framework). The ability to maintain a valid state estimate under partial sensor failure is a key safety argument presented to regulators.",
+        "context_url": "https://waymo.com/safety/",
+        "target_user_role": "engineer"
+      },
+      "concepts_covered": ["S016", "S017", "S018", "S019", "S022"],
+      "failure_modes": [
+        {
+          "failure_id": "F-005-01",
+          "failure_type": "Type 2 — Mathematical infeasibility",
+          "naive_approach": "Represent the car's position as a single number — the best guess of where it is. Update the guess deterministically: new_position = old_position + commanded_displacement.",
+          "critical_questions": [
+            "If you don't know exactly where you started, how confident should you be in your position estimate?",
+            "What mathematical object represents 'I think I'm here, but I'm not sure how sure I am'?",
+            "How do you combine two uncertain estimates (e.g., two sonar pings) into one?",
+            "What is the mathematical rule for updating a belief when new information arrives?"
+          ],
+          "why_it_fails": "A point estimate (single number) cannot represent uncertainty. It has no way to encode 'I think I'm at position 5 m but it could be anywhere between 4 and 6 m.' Without a probability distribution, there is no principled way to combine uncertain sensor data with uncertain motion predictions. Two engineers using the same sensor data but different starting guesses will disagree with no mathematical tool to resolve the disagreement.",
+          "failure_consequence": "The system is overconfident — it reports position = 5.0 m with no uncertainty bound. When the true position is 5.4 m, the downstream planner assumes it can safely pass a 0.2 m gap, leading to a collision.",
+          "resolving_concept_id": "S016",
+          "resolving_concept_name": "Probability and Statistics Foundations",
+          "resolving_concept_name_ar": "أسس الاحتمالات والإحصاء",
+          "scientific_principle": "The state is represented as a probability distribution: bel(x) = p(x_t | z_{1:t}, u_{1:t}). Key distributions for robotics: Gaussian N(μ, σ²) for unimodal beliefs; uniform for maximum ignorance; mixture models for multimodal beliefs. Bayes' theorem: p(x|z) = p(z|x)p(x)/p(z). Marginalization, conditioning, and the law of total probability are the core operations. Entropy H(X) = -Σ p(x) log p(x) quantifies uncertainty.",
+          "citation": {
+            "resource_id": "THRUN_BURGARD_FOX",
+            "location": "Chapter 2: Recursive State Estimation, Section 2.1–2.3, Pages 9–32 — Probability review for robotics",
+            "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+          }
+        },
+        {
+          "failure_id": "F-005-02",
+          "failure_type": "Type 2 — Mathematical infeasibility",
+          "naive_approach": "Represent the position uncertainty as a list of possible positions. Update each possible position manually by adding the commanded displacement and multiplying by the sensor reading probability.",
+          "critical_questions": [
+            "The vehicle's state is (x, y, θ, v, ω) — 5 numbers. How many 'possible positions' are there in a continuous space?",
+            "After 10 update steps, the list of possibilities grows — how do you manage this computationally?",
+            "The motion command is u = [v, ω]. The state update requires computing a matrix product. What matrix?",
+            "How do you represent the covariance of two correlated state variables (x and θ both uncertain and correlated)?"
+          ],
+          "why_it_fails": "Manual enumeration of possibilities fails in continuous state spaces — there are infinitely many possible positions. Matrix algebra provides the compact, efficient representation: the state vector x and covariance matrix Σ together fully describe a Gaussian belief. Without linear algebra, implementing even the simplest Kalman Filter update is computationally infeasible.",
+          "failure_consequence": "Discretizing a 5D state space at 0.1 m resolution requires 10¹⁵ cells — computationally impossible to update in real time.",
+          "resolving_concept_id": "S017",
+          "resolving_concept_name": "Linear Algebra for Robotics",
+          "resolving_concept_name_ar": "الجبر الخطي للروبوتات",
+          "scientific_principle": "State vector x ∈ ℝⁿ; covariance matrix Σ ∈ ℝⁿˣⁿ (symmetric positive definite). State prediction: x_{k+1} = A·x_k + B·u_k + w_k. Key operations: matrix multiplication (O(n²)), matrix inversion (O(n³)), eigendecomposition (for covariance visualization). The Kalman gain K = P·H^T·(H·P·H^T + R)^{-1} is computed via matrix operations. Cholesky decomposition enables efficient positive-definite matrix operations. These operations make the Kalman Filter O(n³) per update step.",
+          "citation": {
+            "resource_id": "LYNCH_PARK_BOOK",
+            "location": "Appendix B: Linear Algebra, Pages 561–580 — Matrices, eigenvalues, positive-definite matrices for robotics",
+            "url": "https://modernrobotics.org/"
+          }
+        },
+        {
+          "failure_id": "F-005-03",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "After each sonar ping, completely replace the position estimate with the new sensor reading. The latest measurement is always the best estimate.",
+          "critical_questions": [
+            "What if the sonar gives a clearly wrong reading (reflection from a passing car)?",
+            "How do you incorporate all past sensor readings, not just the latest one?",
+            "What is the mathematical rule that tells you exactly how much to trust the new measurement vs your prior belief?"
+          ],
+          "why_it_fails": "Replacing the estimate with each new measurement discards all prior information. A single outlier measurement would wildly shift the estimate. Bayes' theorem provides the mathematically optimal rule: the posterior is proportional to the likelihood times the prior. The recursive implementation (Bayes Filter) updates the belief incrementally, never discarding accumulated information.",
+          "failure_consequence": "A sonar reflection from a passing truck returns distance 15 m (the truck, not the corridor wall). The system snaps its position estimate to 15 m — the car believes it is at the corridor end and executes an emergency stop.",
+          "resolving_concept_id": "S018",
+          "resolving_concept_name": "Bayes Filters and Recursive Bayesian Estimation",
+          "resolving_concept_name_ar": "مرشحات بايز والتقدير البايزي التكراري",
+          "scientific_principle": "Bayes Filter algorithm:\n  Predict: bel̄(x_t) = ∫ p(x_t | u_t, x_{t-1}) · bel(x_{t-1}) dx_{t-1}\n  Update:  bel(x_t) = η · p(z_t | x_t) · bel̄(x_t)\nThe predict step propagates uncertainty through the motion model. The update step multiplies by the likelihood of the observation. The normalizer η = 1/p(z_t) ensures the result integrates to 1. This is the foundation of all Kalman filters and particle filters — they differ only in how they represent bel(x).",
+          "citation": {
+            "resource_id": "THRUN_BURGARD_FOX",
+            "location": "Chapter 2: Recursive State Estimation, Section 2.4, Pages 24–35 — Bayes Filter derivation and algorithm",
+            "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+          }
+        },
+        {
+          "failure_id": "F-005-04",
+          "failure_type": "Type 5 — Economic infeasibility",
+          "naive_approach": "Implement the Bayes Filter with a probability distribution over a 1D position grid of 1000 cells. Each update multiplies 1000 probabilities. For 5D state space, scale to 1000⁵ = 10¹⁵ cells.",
+          "critical_questions": [
+            "The Bayes Filter works perfectly in 1D — why does it fail in 5D?",
+            "What if the belief is always close to a Gaussian shape? What parameters fully describe a Gaussian?",
+            "What does 'linear system' mean, and when does it guarantee an exact Gaussian posterior?"
+          ],
+          "why_it_fails": "The grid-based Bayes Filter scales exponentially with state dimension (curse of dimensionality). For the Waymo robotaxi state (x, y, θ, v, ω), a 1 cm resolution grid requires 10¹⁵ cells — impossible at any update rate. The Kalman Filter solves this exactly: when the system is linear and noise is Gaussian, the optimal filter computes only n numbers (state mean) and n² numbers (covariance matrix), giving O(n³) instead of O(resolution^n) complexity.",
+          "failure_consequence": "The grid-based filter would require 10¹⁵ × 8 bytes = 8 petabytes of RAM and 10¹⁵ floating-point operations per update step. At 50 Hz update rate, this is physically impossible — the filter simply cannot run.",
+          "resolving_concept_id": "S019",
+          "resolving_concept_name": "Kalman Filter as a State Estimator",
+          "resolving_concept_name_ar": "مرشح كالمان كمقدر للحالة",
+          "scientific_principle": "The Kalman Filter is the optimal Bayes Filter for linear-Gaussian systems. Given:\n  x_k = A·x_{k-1} + B·u_k + w_k,  w_k ~ N(0, Q)\n  z_k = H·x_k + v_k,              v_k ~ N(0, R)\nThe 5-step KF algorithm:\n  1. x̂_{k|k-1} = A·x̂_{k-1} + B·u_k   [predict mean]\n  2. P_{k|k-1} = A·P_{k-1}·A^T + Q      [predict covariance]\n  3. K_k = P·H^T·(H·P·H^T + R)^{-1}    [Kalman gain]\n  4. x̂_k = x̂_{k|k-1} + K_k·(z_k − H·x̂_{k|k-1}) [update mean]\n  5. P_k = (I − K_k·H)·P_{k|k-1}       [update covariance]\nThe Kalman gain K optimally balances model prediction and measurement.",
+          "citation": {
+            "resource_id": "THRUN_BURGARD_FOX",
+            "location": "Chapter 3: Gaussian Filters, Section 3.2, Pages 36–53 — Kalman Filter derivation, optimality proof",
+            "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+          },
+          "real_world_example": {
+            "description": "The original Kalman Filter was developed for Apollo mission spacecraft navigation. NASA used it to fuse accelerometer and star tracker data in real-time on 1960s hardware — proving that the O(n³) complexity is tractable for small n.",
+            "url": "https://ntrs.nasa.gov/citations/19860003843",
+            "relevance_score": 5
+          }
+        },
+        {
+          "failure_id": "F-005-05",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Model the robot's motion as: position_next = position_now + commanded_velocity × time. Assume the robot goes exactly where commanded.",
+          "critical_questions": [
+            "What happens to position uncertainty during aggressive acceleration?",
+            "Wheel slip adds unexpected velocity — how does this appear in the motion model?",
+            "How does the probability distribution over position change shape when the robot moves fast vs slow?"
+          ],
+          "why_it_fails": "Treating commanded velocity as ground truth ignores motion noise: wheel slip, actuation delays, mechanical compliance, and surface irregularity all cause actual motion to deviate from commanded motion. The probabilistic motion model must account for this noise or the filter's uncertainty estimate will be systematically underestimated — the filter will be overconfident and will reject valid sensor readings.",
+          "failure_consequence": "The motion model says 'the car moved exactly 1 m'. The Kalman Filter's covariance matrix shows no uncertainty growth from motion. After the sonar measurement (which shows the car moved 1.3 m), the innovation is 0.3 m — far exceeding the assumed noise. The filter labels the correct measurement as an outlier and ignores it. Localization diverges.",
+          "resolving_concept_id": "S022",
+          "resolving_concept_name": "Probabilistic Motion Models",
+          "resolving_concept_name_ar": "النماذج الحركية الاحتمالية",
+          "scientific_principle": "The velocity motion model: p(x_t | u_t, x_{t-1}) accounts for noise in each velocity component. For a velocity command (v, ω), the noisy actual velocity is: v̂ = v + ε_α₁v²+α₂ω²; ω̂ = ω + ε_α₃v²+α₄ω². The resulting position distribution is non-Gaussian (banana-shaped for large motions) but can be Gaussian-approximated locally. The odometry motion model uses encoder readings directly rather than velocity commands, typically achieving lower uncertainty.",
+          "citation": {
+            "resource_id": "THRUN_BURGARD_FOX",
+            "location": "Chapter 5: Robot Motion, Section 5.3–5.4, Pages 120–138 — Velocity motion model, odometry motion model",
+            "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+          }
+        }
+      ],
+      "concept_coverage_check": {
+        "S016": {"covered": true, "failure_id": "F-005-01"},
+        "S017": {"covered": true, "failure_id": "F-005-02"},
+        "S018": {"covered": true, "failure_id": "F-005-03"},
+        "S019": {"covered": true, "failure_id": "F-005-04"},
+        "S022": {"covered": true, "failure_id": "F-005-05"}
+      },
+      "spine_narrative_arc": "S016 (probability is the language) → S017 (linear algebra is the tool) → S018 (Bayes Filter is the algorithm) → S019 (Kalman Filter is the efficient solution) → S022 (motion model is the noise model for the prediction step)",
+      "blindfolded_robot_scenario_persistence": {
+        "step_1": "After Failure F-005-01: robot has a point estimate. Fails on outlier.",
+        "step_2": "After Failure F-005-02: robot has a distribution but too slow in 5D.",
+        "step_3": "After Failure F-005-03: robot updates correctly via Bayes rule.",
+        "step_4": "After Failure F-005-04: Kalman Filter makes it tractable.",
+        "step_5": "After Failure F-005-05: motion noise is properly modeled — the blindfold can come off."
+      },
+      "validation": {
+        "all_concepts_covered": true,
+        "citations_complete": true,
+        "real_world_anchor": "Waymo sensor failure scenario — regulatory safety argument for graceful degradation",
+        "spine_strength_respected": true,
+        "generated_date": "2026-02-18"
+      }
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "course_metadata": {
+    "course_id": "1",
+    "version": "3.4",
+    "title": "Mobile Robots",
+    "phase": "Phase 3 — Design Spine",
+    "generated_date": "2026-02-18",
+    "generated_by": "Course Architect Engine v2.0",
+    "science_to_practice_ratio": 3
+  },
+  "phase3_design_spine": [
+    {
+      "module_id": "MOD-007",
+      "module_title": "Robot Perception",
+      "module_title_ar": "إدراك الروبوت",
+      "science_to_practice_ratio": 3,
+      "spine_required": true,
+      "spine_strength": "strong",
+      "design_problem": {
+        "problem_statement": "A Boston Dynamics Spot robot is patrolling an industrial facility. Its camera captures one frame. The frame contains a door. The task: starting from raw pixel values (R, G, B arrays), build the complete software pipeline that ends with the robot's internal representation: 'This is Door-17 at position (x=12.3, y=7.8) relative to me. It is openable. I am moving at 0.3 m/s parallel to it.' Walk through every step of that transformation — one failure mode per pipeline stage.",
+        "real_world_context": "Boston Dynamics Spot Enterprise with Spot CAM+ is deployed at Aker BP offshore oil platforms for daily autonomous inspection patrols. The robot must identify equipment (valves, gauges, doors, panels) and report their state. A complete perception pipeline is the core differentiating technology.",
+        "context_url": "https://www.bostondynamics.com/solutions/inspection",
+        "target_user_role": "engineer"
+      },
+      "concepts_covered": ["S024", "S028", "S029", "S035", "S037"],
+      "failure_modes": [
+        {
+          "failure_id": "F-007-01",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Send raw camera images directly to the object detection algorithm. Skip preprocessing — modern deep learning should handle any input format.",
+          "critical_questions": [
+            "The camera outputs 4K images at 60 fps. The object detector runs at 640×480 at 30 fps. How do you bridge this gap?",
+            "The image is taken in a dark corner of the facility — what preprocessing is needed?",
+            "Where does the perception output (bounding boxes) connect to the robot's motion planning module?",
+            "Who is responsible for managing data flow between sensors and algorithms in the software stack?"
+          ],
+          "why_it_fails": "Without a defined perception pipeline architecture, there is no systematic way to handle format mismatches, synchronize sensor data, allocate compute, and route outputs. Different team members build modules that cannot interoperate. The 4K@60fps raw stream saturates all compute before any algorithm can run.",
+          "failure_consequence": "The object detector receives raw 4K images but expects 640×480 tensor inputs — runtime error, entire perception stack crashes.",
+          "resolving_concept_id": "S024",
+          "resolving_concept_name": "Perception Pipeline Architecture",
+          "resolving_concept_name_ar": "معمارية خط أنابيب الإدراك",
+          "scientific_principle": "A perception pipeline is a directed acyclic graph (DAG) of processing stages: Acquisition → Preprocessing → Feature Extraction → Object Detection/Tracking → Semantic Understanding → Output. Each stage has defined input/output schemas (data types, resolutions, rates). The pipeline must satisfy: (1) throughput ≥ sensor rate; (2) latency ≤ control loop period; (3) modular — stages interchangeable. ROS implements this as a node graph with typed topics.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 4: Sensors for Mobile Robots, Section 4.2, Pages 200–215 — Perception pipeline concepts",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-007-02",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Use the entire image (all pixels) to localize the door. Compare every pixel of the current frame to every pixel of the stored door template.",
+          "critical_questions": [
+            "The door template is 640×480 pixels. The search over the image is O(W×H×W_t×H_t). How slow is this?",
+            "What happens when the door is 20% occluded by a passing worker?",
+            "What part of the image uniquely identifies the door frame vs everything else in the scene?",
+            "Why does a corner or edge remain identifiable even under changes in lighting or viewpoint?"
+          ],
+          "why_it_fails": "Pixel-level template matching is O(WH) per pixel = O(W²H²) per search — for 640×480 images, that is 9.4 × 10¹⁰ operations per frame. At 30 fps, 2.8 × 10¹² operations/second — impossible in real time. It also fails under partial occlusion: 30% occlusion destroys the pixel match even though the door is still visible. Features (corners, edges, descriptors) are sparse, robust, and computationally tractable.",
+          "failure_consequence": "Pixel matching runs at 0.001 fps — 1000× too slow. The robot cannot detect any doors in real time. Additionally, when a worker's arm partially covers the door, the match score drops below threshold — the door 'disappears' from the robot's perception.",
+          "resolving_concept_id": "S028",
+          "resolving_concept_name": "Feature Extraction and Landmark Detection",
+          "resolving_concept_name_ar": "استخراج المميزات واكتشاف المعالم",
+          "scientific_principle": "Feature extraction identifies interest points that are: (1) repeatable (found in the same location across viewpoints/illuminations); (2) distinctive (uniquely identifiable); (3) efficient (few features represent the image). Harris corners detect points with high intensity gradient in two directions: R = det(M) − k·trace²(M) where M is the structure tensor. FAST corners use a circle test for speed. ORB/SIFT/SURF compute local descriptors for each keypoint. Reduction: 640×480 = 307,200 pixels → 200–500 keypoints.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 5: Mobile Robot Localization, Section 5.4.1, Pages 238–248 — Feature extraction, Harris corners, SIFT/SURF overview",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-007-03",
+          "failure_type": "Type 2 — Mathematical infeasibility",
+          "naive_approach": "Use feature keypoints from the current frame. Match them to a database of door images by comparing their (x, y) pixel coordinates — nearest pixel location wins.",
+          "critical_questions": [
+            "The robot moved 1 m closer to the door. All feature pixel positions shifted. Are these the same features?",
+            "The lighting changed (a fluorescent light flickered). The raw RGB values changed. Are these the same features?",
+            "What makes a descriptor 'scale invariant' or 'rotation invariant'?"
+          ],
+          "why_it_fails": "Pixel coordinate matching is not invariant to scale, rotation, or illumination changes. A door feature at pixel (100, 200) in frame N will be at pixel (150, 250) in frame N+1 if the robot moved. Matching by coordinate fails completely. A descriptor must encode the local appearance pattern in a way that is invariant to these transformations.",
+          "failure_consequence": "Feature matching fails to find correspondences between consecutive frames because the robot moved 0.5 m between frames. Visual odometry receives zero matches — no motion estimate, navigation stack stops.",
+          "resolving_concept_id": "S029",
+          "resolving_concept_name": "Feature Matching Methods",
+          "resolving_concept_name_ar": "طرق مطابقة المميزات",
+          "scientific_principle": "Descriptor-based matching: each keypoint is represented by a D-dimensional descriptor vector (ORB: 256-bit binary; SIFT: 128-float). Matching criterion: NNDR (Nearest Neighbor Distance Ratio). For cross-frame matching: (1) compute descriptors in both frames; (2) find nearest neighbor in descriptor space; (3) accept if ratio dist_1/dist_2 < 0.8 (Lowe's ratio test); (4) apply RANSAC to find geometrically consistent match set. Result: robust correspondence set despite scale/rotation/illumination changes.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 5: Mobile Robot Localization, Section 5.4.2, Pages 248–260 — Descriptor matching, RANSAC, Lowe ratio test",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-007-04",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Spot only has a monocular camera in this scenario. To estimate its motion (how fast it is moving), it uses the IMU and wheel encoders. Camera provides only object detection.",
+          "critical_questions": [
+            "IMU drifts over time — it cannot provide accurate long-term motion estimates. Camera images contain motion information — how?",
+            "If you know the 2D pixel displacement of a feature between two frames, and you know the camera focal length, what can you compute?",
+            "What is the difference between egomotion estimation and object tracking?"
+          ],
+          "why_it_fails": "Relying only on IMU and encoders for Spot's motion estimate introduces the same drift problem as in MOD-003. The camera captures rich motion information that is being wasted. Visual odometry can estimate the robot's motion directly from consecutive image pairs — it is more accurate than wheel odometry on rough terrain (stairs, rubble) where Spot typically operates.",
+          "failure_consequence": "On an outdoor inspection route with gravel and slight slopes, wheel encoder odometry accumulates 15 cm error per 10 m. The inspection route ends with the robot pointing at the wrong piece of equipment. With visual odometry (camera-based), error is bounded by SLAM-style loop closure.",
+          "resolving_concept_id": "S035",
+          "resolving_concept_name": "Visual Odometry",
+          "resolving_concept_name_ar": "قياس المسافة البصرية",
+          "scientific_principle": "Visual odometry estimates camera motion from image sequences. Monocular VO: (1) detect and match features between frames t and t+1; (2) compute Essential Matrix E from matched correspondences using 5-point algorithm; (3) decompose E into rotation R and unit translation t; (4) scale recovery via IMU or known object size. Stereo VO: scale directly recoverable from stereo disparity. Error model: drift ≈ 0.1–1% of distance traveled (vs 1–5% for wheel odometry on rough terrain).",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 5: Mobile Robot Localization, Section 5.4.4, Pages 264–278 — Visual odometry pipeline",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          },
+          "real_world_example": {
+            "description": "NASA Mars rovers (Curiosity, Perseverance) use visual odometry as the primary motion estimator because wheel odometry fails on sandy, rocky Martian terrain. VO provides 1% drift vs 5–10% for wheel odometry.",
+            "url": "https://mars.nasa.gov/mars2020/spacecraft/rover/",
+            "relevance_score": 5
+          }
+        },
+        {
+          "failure_id": "F-007-05",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Output bounding boxes from the object detector as the final perception result. Send 'Door detected at pixel (320, 240) with confidence 0.87' to the mission planner.",
+          "critical_questions": [
+            "The mission planner needs to know: 'Is the door open or closed? Can I drive through it? Which building corridor is it in?' Does a bounding box answer any of this?",
+            "A valveometer gauge is detected — the inspector needs to know the reading (0–100 PSI). How does a bounding box encode that?",
+            "How do detected objects relate to each other? (door leads to corridor X which contains pump Y) — what data structure encodes this?"
+          ],
+          "why_it_fails": "Bounding box detection provides what (class label) and where (pixel location), but industrial inspection requires understanding: state (open/closed/damaged), functional relationships (which asset this is part of), physical measurements (gauge reading), and world-model integration (which room, which route). Scene graphs and semantic understanding encode all of this in a queryable structure.",
+          "failure_consequence": "The inspection system reports 'door detected' but cannot report 'Door-17 is ajar — constitutes a safety violation'. The human inspector still needs to manually review all camera footage. The robot automation provides no actionable intelligence, the deployment is deemed unsuccessful.",
+          "resolving_concept_id": "S037",
+          "resolving_concept_name": "Semantic Understanding and Scene Graphs",
+          "resolving_concept_name_ar": "الفهم الدلالي وأشجار المشهد",
+          "scientific_principle": "Scene graphs represent a scene as nodes (objects: door, valve, robot) and edges (spatial/semantic relationships: 'Door-17 is_at (12.3, 7.8)', 'Door-17 state=ajar', 'Corridor-A contains Door-17'). Semantic segmentation (FCN, DeepLab) assigns class labels per pixel. Instance segmentation (Mask R-CNN) additionally separates individual instances. The scene graph enables symbolic reasoning: query('Is there an ajar door in Sector-3?') returns a structured answer.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 4: Sensors for Mobile Robots, Section 4.2.3, Pages 217–228 — Semantic scene understanding overview",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        }
+      ],
+      "concept_coverage_check": {
+        "S024": {"covered": true, "failure_id": "F-007-01"},
+        "S028": {"covered": true, "failure_id": "F-007-02"},
+        "S029": {"covered": true, "failure_id": "F-007-03"},
+        "S035": {"covered": true, "failure_id": "F-007-04"},
+        "S037": {"covered": true, "failure_id": "F-007-05"}
+      },
+      "spine_narrative_arc": "S024 (define the pipeline) → S028 (extract features from the frame) → S029 (match features across frames/database) → S035 (use matched features to estimate robot motion) → S037 (use detected objects to build semantic understanding)",
+      "validation": {
+        "all_concepts_covered": true,
+        "citations_complete": true,
+        "real_world_anchor": "Boston Dynamics Spot at Aker BP offshore industrial inspection",
+        "spine_strength_respected": true,
+        "generated_date": "2026-02-18"
+      }
+    }
+  ]
+}

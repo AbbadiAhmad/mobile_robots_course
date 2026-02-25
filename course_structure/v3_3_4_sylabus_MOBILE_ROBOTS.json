@@ -1,0 +1,2974 @@
+{
+  "course_metadata": {
+    "course_id": "1",
+    "version": "3.4",
+    "title": "Mobile Robots",
+    "specialization": "Mechatronics",
+    "degree_level": "Undergraduate",
+    "duration": "15 weeks",
+    "hours_per_week": 2,
+    "science_to_practice_ratio": 3,
+    "language": "bilingual EN+AR",
+    "prerequisites": [
+      "array of course_ids or concept_ids"
+    ],
+    "created_date": "17.2.2026",
+    "updated_date": "18.2.2026",
+    "created_by": "Ahmad Abbadi"
+  },
+  "phase2_syllabus": {
+    "modules": [
+      {
+        "module_id": "MOD-001",
+        "module_number": 1,
+        "module_title": "Robotics Trends & Industry Landscape",
+        "module_title_ar": "الاتجاهات الحديثة وتطبيقات الروبوتات في الصناعة",
+        "concepts": [
+          "S005"
+        ],
+        "module_titles": [
+          "* Current Trends and Market Domains — الاتجاهات الحديثة والقطاعات الصناعية (S005)",
+          "* Real Deployed Systems: Waymo, Locus Robotics, Boston Dynamics, Amazon Robotics — أمثلة حقيقية (S005)",
+          "* The Full Autonomy Stack: Perception → Localization → Planning → Control — مكدس الاستقلالية (S005)",
+          "* Career Roles & Skills in the Robotics Industry — المهن والمهارات المطلوبة (S005)"
+        ],
+        "total_estimated_hours": 2.0,
+        "cdio_distribution": {
+          "conceive_percent": 70,
+          "design_percent": 10,
+          "implement_percent": 10,
+          "operate_percent": 10
+        },
+        "prerequisite_validation": {
+          "expected_prerequisites_list": [],
+          "all_prerequisites_met": true,
+          "missing_prerequisites": [],
+          "suggested_order_adjustment": null
+        },
+        "design_spine": {
+          "required": false,
+          "strength": "none",
+          "rationale": "This topic IS the motivational hook. Industry examples (Waymo, Boston Dynamics, Amazon Robotics) are the content itself, not a framing device. No spine needed.",
+          "suggested_trigger": null,
+          "spine_scope": null
+        }
+      },
+      {
+        "module_id": "MOD-002",
+        "module_number": 2,
+        "module_title": "Introduction to Mobile Robots",
+        "module_title_ar": "مقدمة في الروبوتات المتنقلة",
+        "concepts": [
+          "S001",
+          "S002",
+          "S003",
+          "S023",
+          "S007",
+          "S008"
+        ],
+        "module_titles": [
+          "* Mobile Robot Locomotion Types and Wheel Configurations — أنواع الحركة وتكوينات العجلات (S001)",
+          "* Non-Wheeled Locomotion: Legged, Tracked & Aerial — الروبوتات الحيوية والجوية والمجنزرة (S001)",
+          "* Robot Morphology Selection and Holonomy Classification — اختيار شكل الروبوت والهولونومية (S002)",
+          "* Degrees of Freedom for Mobile Robots — درجات الحرية (S003)",
+          "* Robot Platforms Overview — منصات الروبوتات (Roomba, Spot, Waymo, DJI Matrice) (S001, S005)",
+          "* Sensor Hardware Survey and Classification — مسح أجهزة الاستشعار وتصنيفها (S023)",
+          "* ROS Architecture — معمارية نظام تشغيل الروبوت (S007)",
+          "* Gazebo Simulation & Software-in-the-Loop Testing — محاكاة جازيبو (S008)"
+        ],
+        "total_estimated_hours": 4.0,
+        "cdio_distribution": {
+          "conceive_percent": 40,
+          "design_percent": 20,
+          "implement_percent": 30,
+          "operate_percent": 10
+        },
+        "prerequisite_validation": {
+          "expected_prerequisites_list": [
+            "S005"
+          ],
+          "all_prerequisites_met": true,
+          "missing_prerequisites": [],
+          "suggested_order_adjustment": null
+        },
+        "design_spine": {
+          "required": true,
+          "strength": "light",
+          "rationale": "Students encounter 8 concepts spanning hardware, locomotion, ROS, and simulation — very scattered. A unifying scenario prevents the topic from feeling like a catalog of disconnected facts.",
+          "suggested_trigger": "You have just received a TurtleBot3. Before writing a single line of code, let us understand every part of what you are holding — how it moves, what it senses, how it thinks, and how to simulate it before risking the real hardware.",
+          "spine_scope": "all_concepts",
+          "spine_scope_note": "The spine should serve as a continuous tour connecting S001 (locomotion) → S002 (morphology) → S003 (DOF) → S023 (sensors) → S007 (ROS) → S008 (Gazebo) as one integrated system."
+        }
+      },
+      {
+        "module_id": "MOD-003",
+        "module_number": 3,
+        "module_title": "Robot Kinematics & Motion Models",
+        "module_title_ar": "الحركيات والنماذج الحركية للروبوت",
+        "concepts": [
+          "S006",
+          "S009",
+          "S010",
+          "S011",
+          "S012",
+          "S013",
+          "S014",
+          "S015"
+        ],
+        "module_titles": [
+          "* Coordinate Frames and Homogeneous Transformations — أطر الإحداثيات والتحولات المتجانسة (S006)",
+          "* Differential Drive Kinematics — حركيات القيادة التفاضلية (S009)",
+          "* Non-Holonomic Constraints — القيود غير الهولونومية (S010)",
+          "* Ackermann Steering Geometry — هندسة توجيه أكرمان (S011)",
+          "* Omnidirectional Robot Kinematics — حركيات الروبوت كامل الاتجاهات (S012)",
+          "* Mobile Robot Maneuverability and Workspace — قابلية المناورة وفضاء العمل (S013)",
+          "* Odometry and Dead Reckoning — قياس المسافات والملاحة بالقياس (S014)",
+          "* Wheel Slip and Traction Control — انزلاق العجلة والسيطرة على الجر (S015)"
+        ],
+        "total_estimated_hours": 4.0,
+        "cdio_distribution": {
+          "conceive_percent": 20,
+          "design_percent": 30,
+          "implement_percent": 40,
+          "operate_percent": 10
+        },
+        "prerequisite_validation": {
+          "expected_prerequisites_list": [
+            "S001",
+            "S002",
+            "S003"
+          ],
+          "all_prerequisites_met": true,
+          "missing_prerequisites": [],
+          "suggested_order_adjustment": null
+        },
+        "design_spine": {
+          "required": true,
+          "strength": "strong",
+          "rationale": "First heavy math topic. Students encounter transforms, constraints, and odometry in rapid succession. Without a concrete problem to anchor to, the equations lose meaning.",
+          "suggested_trigger": "A warehouse robot is commanded to travel exactly 2 m forward and turn 90° right. After executing the command it stops 15 cm off target. Why? Use this overshoot mystery to pull students through every concept from coordinate frames to wheel slip.",
+          "spine_scope": "all_concepts",
+          "spine_scope_note": "S006 (frames) sets the stage → S009/S011/S012 (kinematics) explain the motion → S010/S013 (constraints) explain the limits → S014 (odometry) explains the drift → S015 (slip) closes the mystery."
+        }
+      },
+      {
+        "module_id": "MOD-004",
+        "module_number": 4,
+        "module_title": "Sensor Modeling, Measurement & Fusion",
+        "module_title_ar": "نمذجة المستشعرات والقياس ودمج البيانات",
+        "concepts": [
+          "S025",
+          "S026",
+          "S027",
+          "S028",
+          "S029",
+          "S034",
+          "S014",
+          "S021"
+        ],
+        "module_titles": [
+          "* LIDAR Range Sensing Models — نماذج استشعار LIDAR للمدى (S025)",
+          "* IMU and Inertial Dead Reckoning — وحدات قياس القصور الذاتي (S026)",
+          "* GPS and Global Localization — GPS والتحديد الموقع العالمي (S027)",
+          "* Feature Extraction and Landmark Detection — استخراج الميزات واكتشاف المعالم (S028)",
+          "* Feature Matching Methods — طرق مطابقة الميزات (S029)",
+          "* Sensor Fusion Architecture and Motivation — معمارية الدمج ودوافعها (S034)",
+          "* IMU + Odometry + GPS Fusion — دمج IMU والقياس وGPS (S026, S027, S014)",
+          "* EKF for Multi-Sensor Fusion — مرشح كالمان الممتد لدمج المستشعرات (S021)"
+        ],
+        "total_estimated_hours": 4.0,
+        "cdio_distribution": {
+          "conceive_percent": 25,
+          "design_percent": 25,
+          "implement_percent": 35,
+          "operate_percent": 15
+        },
+        "prerequisite_validation": {
+          "expected_prerequisites_list": [
+            "S006",
+            "S009",
+            "S014"
+          ],
+          "all_prerequisites_met": true,
+          "missing_prerequisites": [],
+          "suggested_order_adjustment": null
+        },
+        "design_spine": {
+          "required": true,
+          "strength": "strong",
+          "rationale": "LIDAR, IMU, GPS, and feature extraction feel unrelated to each other without a narrative. Fusion as the climax of the topic gives the entire module a direction and payoff.",
+          "suggested_trigger": "Same robot, same hallway. We give it its sensors back one at a time — LIDAR only first, then add IMU, then GPS, then features. Watch how the state estimate improves at each step, and understand why no single sensor is ever enough. Fusion is the final answer.",
+          "spine_scope": "all_concepts",
+          "spine_scope_note": "S025/S026/S027 (individual sensor models) build the ingredients → S028/S029 (features) add the landmark layer → S034 (fusion architecture) introduces the need → S014+S021 (EKF fusion) deliver the payoff. The spine must explicitly connect each sensor to the fused estimate."
+        }
+      },
+      {
+        "module_id": "MOD-005",
+        "module_number": 5,
+        "module_title": "Probabilistic Robotics & State Estimation",
+        "module_title_ar": "الروبوتات الاحتمالية وتقدير الحالة",
+        "concepts": [
+          "S016",
+          "S017",
+          "S018",
+          "S019",
+          "S022"
+        ],
+        "module_titles": [
+          "* Probability and Statistics Foundations — أسس الاحتمالية والإحصائيات (S016)",
+          "* Linear Algebra for Robotics — الجبر الخطي للروبوتات (S017)",
+          "* Bayes Filters and Recursive Bayesian Estimation — مرشحات بايز والتقدير الباييسي العودي (S018)",
+          "* Kalman Filter as a State Estimator — مرشح كالمان كمقدّر للحالة (S019)",
+          "* Probabilistic Motion Models — النماذج الحركية الاحتمالية (S022)"
+        ],
+        "total_estimated_hours": 4.0,
+        "cdio_distribution": {
+          "conceive_percent": 30,
+          "design_percent": 20,
+          "implement_percent": 40,
+          "operate_percent": 10
+        },
+        "prerequisite_validation": {
+          "expected_prerequisites_list": [
+            "S014",
+            "S025",
+            "S026",
+            "S027"
+          ],
+          "all_prerequisites_met": true,
+          "missing_prerequisites": [],
+          "suggested_order_adjustment": "Intentionally placed after Topic 4 (Sensor Modeling) so students understand what data the estimators consume before learning how to process it probabilistically."
+        },
+        "design_spine": {
+          "required": true,
+          "strength": "critical",
+          "rationale": "The hardest conceptual leap in the course — from deterministic to probabilistic thinking. Students frequently lose the 'why' entirely. The spine must carry the entire topic or the math becomes meaningless symbol manipulation.",
+          "suggested_trigger": "Your robot is blindfolded in a corridor. It takes 5 steps forward. Where is it now? It does not know exactly — and that uncertainty is the point. We will spend this entire topic learning to represent, update, and reduce that uncertainty mathematically.",
+          "spine_scope": "all_concepts",
+          "spine_scope_note": "The blindfolded robot scenario must persist across all 5 concepts: S016/S017 (math tools to describe uncertainty) → S018 (Bayes updates the belief after each step) → S019 (Kalman filters the noisy measurement) → S022 (motion model explains how uncertainty grows). The blindfold only comes off when the math has earned it."
+        }
+      },
+      {
+        "module_id": "MOD-006",
+        "module_number": 6,
+        "module_title": "Mobile Robot Localization",
+        "module_title_ar": "تحديد موقع الروبوت المتنقل",
+        "concepts": [
+          "S031",
+          "S020",
+          "S032",
+          "S033"
+        ],
+        "module_titles": [
+          "* Markov Localization and Histogram Filter — التحديد الموقع الماركوفي ومرشح الرسم البياني (S031)",
+          "* Extended Kalman Filter for Robot Localization — مرشح كالمان الممتد لتحديد الموقع (S020)",
+          "* Gaussian Localization with EKF — التحديد الموقع الغاوسي (S032)",
+          "* Particle Filters and Monte Carlo Localization (MCL) — مرشحات الجزيئات ومونت كارلو (S033)",
+          "* Global vs. Local Localization — التحديد الكلي مقابل المحلي (S031, S033)"
+        ],
+        "total_estimated_hours": 4.0,
+        "cdio_distribution": {
+          "conceive_percent": 20,
+          "design_percent": 25,
+          "implement_percent": 45,
+          "operate_percent": 10
+        },
+        "prerequisite_validation": {
+          "expected_prerequisites_list": [
+            "S018",
+            "S019",
+            "S022",
+            "S025",
+            "S026",
+            "S027",
+            "S021"
+          ],
+          "all_prerequisites_met": true,
+          "missing_prerequisites": [],
+          "suggested_order_adjustment": null
+        },
+        "design_spine": {
+          "required": true,
+          "strength": "critical",
+          "rationale": "Three distinct algorithms are introduced. Without a spine, students memorize three separate methods with no comparative understanding. The spine must make the comparison the learning.",
+          "suggested_trigger": "The robot wakes up with no GPS in a known building. It has a map but no starting position. We solve this same problem three different ways — Histogram Filter, EKF, Particle Filter. Watch how each algorithm represents and updates uncertainty differently, and discover when each one breaks.",
+          "spine_scope": "all_concepts",
+          "spine_scope_note": "The same localization problem must be solved visibly three times: S031 (Histogram — discrete, intuitive) → S020/S032 (EKF — Gaussian, efficient) → S033 (Particle — nonparametric, flexible). S031 also handles Global vs Local as a natural extension. The comparison IS the learning outcome."
+        }
+      },
+      {
+        "module_id": "MOD-007",
+        "module_number": 7,
+        "module_title": "Robot Perception",
+        "module_title_ar": "إدراك الروبوت للبيئة",
+        "concepts": [
+          "S024",
+          "S028",
+          "S029",
+          "S035",
+          "S037"
+        ],
+        "module_titles": [
+          "* Perception Pipeline Architecture — معمارية خط أنابيب الإدراك (S024)",
+          "* Feature Extraction and Matching in Perception Context — استخراج الميزات في سياق الإدراك (S028, S029)",
+          "* Visual Odometry — قياس المسافة البصري (S035)",
+          "* Object Detection and Point Cloud Processing — اكتشاف الأجسام ومعالجة السحابة النقطية (S024)",
+          "* Semantic Understanding and Scene Graphs — الفهم الدلالي ورسوم المشاهد (S037)"
+        ],
+        "total_estimated_hours": 4.0,
+        "cdio_distribution": {
+          "conceive_percent": 20,
+          "design_percent": 20,
+          "implement_percent": 45,
+          "operate_percent": 15
+        },
+        "prerequisite_validation": {
+          "expected_prerequisites_list": [
+            "S023",
+            "S025",
+            "S028",
+            "S029"
+          ],
+          "all_prerequisites_met": true,
+          "missing_prerequisites": [],
+          "suggested_order_adjustment": null
+        },
+        "design_spine": {
+          "required": true,
+          "strength": "strong",
+          "rationale": "The jump from numerical estimation to semantic understanding is cognitively significant. Without a narrative, the pipeline feels like a sequence of black boxes.",
+          "suggested_trigger": "The robot's camera captures a frame. It contains a door. Walk through every step — from raw pixel values to the robot's internal representation 'that is a door I can open.' Each pipeline stage is one step in that single story.",
+          "spine_scope": "all_concepts",
+          "spine_scope_note": "S024 (pipeline architecture) is the map of the journey → S028/S029 (features/matching) are the first two steps → S035 (visual odometry) shows motion derived from the same image stream → S037 (semantics) is the destination. The spine must be sequential and cumulative."
+        }
+      },
+      {
+        "module_id": "MOD-008",
+        "module_number": 8,
+        "module_title": "Planning & Navigation",
+        "module_title_ar": "التخطيط والملاحة",
+        "concepts": [
+          "S004",
+          "S046",
+          "S047",
+          "S048",
+          "S049",
+          "S050",
+          "S051",
+          "S052"
+        ],
+        "module_titles": [
+          "* Configuration Space and C-Space Obstacles — فضاء التشكيل وعقبات فضاء التشكيل (S004)",
+          "* Dijkstra's and A* Path Planning Algorithms — خوارزميات ديكسترا و A* (S046)",
+          "* RRT and Sampling-Based Motion Planning — أشجار البحث العشوائي السريعة (S047)",
+          "* Trajectory Planning and Quintic Splines — تخطيط المسار الزمني والمنحنيات الخماسية (S048)",
+          "* Collision Detection and Local Obstacle Avoidance (DWA) — كشف التصادم وتجنب العقبات (S049)",
+          "* PID Control and Feedback Linearization — السيطرة PID والخطية الموجهة (S050)",
+          "* Pure Pursuit and Trajectory Tracking Control — السيطرة على تتبع المسار (S051)",
+          "* Model Predictive Control (MPC) — السيطرة التنبؤية للنموذج (S052)"
+        ],
+        "total_estimated_hours": 4.0,
+        "cdio_distribution": {
+          "conceive_percent": 15,
+          "design_percent": 30,
+          "implement_percent": 40,
+          "operate_percent": 15
+        },
+        "prerequisite_validation": {
+          "expected_prerequisites_list": [
+            "S006",
+            "S009",
+            "S014",
+            "S019",
+            "S031",
+            "S033"
+          ],
+          "all_prerequisites_met": true,
+          "missing_prerequisites": [],
+          "suggested_order_adjustment": null
+        },
+        "design_spine": {
+          "required": true,
+          "strength": "critical",
+          "rationale": "Eight concepts spanning three distinct engineering layers (path planning, trajectory planning, control) can easily feel disconnected. The spine must make the layered structure explicit from minute one.",
+          "suggested_trigger": "A logistics robot must navigate a cluttered warehouse from Dock A to Dock B in under 30 seconds, avoid moving obstacles, and arrive smoothly without jerking the payload. Plan it, smooth it, track it.",
+          "spine_scope": "all_concepts",
+          "spine_scope_note": "The mission has three explicit layers and the spine should announce them: LAYER 1 — Where to go: S004 (C-Space) → S046 (A*) → S047 (RRT). LAYER 2 — How to move there: S048 (splines) → S049 (DWA for live obstacles). LAYER 3 — How to stay on track: S050 (PID) → S051 (Pure Pursuit) → S052 (MPC). Students should always know which layer they are in."
+        }
+      },
+      {
+        "module_id": "MOD-009",
+        "module_number": 9,
+        "module_title": "Mapping & SLAM",
+        "module_title_ar": "رسم الخرائط والتحديد المتزامن للموقع",
+        "concepts": [
+          "S040",
+          "S041",
+          "S038",
+          "S030",
+          "S039",
+          "S042",
+          "S043",
+          "S044",
+          "S036"
+        ],
+        "module_titles": [
+          "* Occupancy Grid Mapping — خريطة شبكة الاشغال (S040)",
+          "* Map Representations: Metric vs Topological — تمثيلات الخرائط المترية والطوبولوجية (S041)",
+          "* SLAM Problem Formulation — صياغة مشكلة SLAM (S038)",
+          "* Data Association for SLAM — ربط البيانات في SLAM (S030)",
+          "* EKF-SLAM Algorithm — خوارزمية SLAM بمرشح كالمان الممتد (S039)",
+          "* FastSLAM: Particle Filter SLAM — FastSLAM (S042)",
+          "* Graph-Based SLAM and Pose Graph Optimization — SLAM المستند على الرسم البياني (S043)",
+          "* Loop Closure Detection — كشف إغلاق الحلقة (S044)",
+          "* Visual SLAM — SLAM البصري (S036)"
+        ],
+        "total_estimated_hours": 4.0,
+        "cdio_distribution": {
+          "conceive_percent": 15,
+          "design_percent": 25,
+          "implement_percent": 45,
+          "operate_percent": 15
+        },
+        "prerequisite_validation": {
+          "expected_prerequisites_list": [
+            "S018",
+            "S019",
+            "S020",
+            "S031",
+            "S033",
+            "S025",
+            "S028",
+            "S030"
+          ],
+          "all_prerequisites_met": true,
+          "missing_prerequisites": [],
+          "suggested_order_adjustment": null
+        },
+        "design_spine": {
+          "required": true,
+          "strength": "critical",
+          "rationale": "The densest topic in the course (10 concepts). Highest risk of students losing the thread. Every concept must be explicitly connected to the unfolding story or it will feel like a disconnected algorithm survey.",
+          "suggested_trigger": "The robot is dropped into a completely unknown room. No map. No starting position. Just sensors. We will watch it build the map and figure out where it is — at the same time. Every algorithm we introduce is the robot getting smarter about this same room.",
+          "spine_scope": "all_concepts",
+          "spine_scope_note": "The story has a natural dramatic arc: S040/S041 (how to represent a map) → S038 (formulating the chicken-and-egg problem) → S030 (recognising what you have seen before) → S039/S042/S043 (three algorithms solving the same problem) → S044 (the dramatic turning point: loop closure — the robot recognises a place it has visited before and corrects its entire history) → S036 (the same story with a camera) → S045 (what if there were multiple robots?). Loop closure should be staged as the climax."
+        }
+      }
+    ],
+    "course_topology": {
+      "critical_path": [
+        "S005",
+        "S001",
+        "S002",
+        "S003",
+        "S023",
+        "S007",
+        "S008",
+        "S006",
+        "S009",
+        "S010",
+        "S014",
+        "S025",
+        "S026",
+        "S027",
+        "S034",
+        "S021",
+        "S016",
+        "S018",
+        "S019",
+        "S022",
+        "S031",
+        "S020",
+        "S033",
+        "S024",
+        "S035",
+        "S004",
+        "S046",
+        "S048",
+        "S050",
+        "S052",
+        "S040",
+        "S038",
+        "S030",
+        "S039",
+        "S043",
+        "S044"
+      ],
+      "parallel_tracks": [
+        [
+          "S011",
+          "S012",
+          "S015"
+        ],
+        [
+          "S028",
+          "S029"
+        ],
+        [
+          "S026",
+          "S027"
+        ],
+        [
+          "S047",
+          "S049",
+          "S051"
+        ],
+        [
+          "S042",
+          "S036"
+        ]
+      ],
+      "terminal_concepts": [
+        "S052",
+        "S044",
+        "S036",
+        "S037",
+        "S051"
+      ]
+    }
+  },
+  "capstone_projects_idea": [
+    {
+      "project_id": "CAP-M01",
+      "project_title": "Build and Visualize Your Own Robot — URDF Modeling from Scratch",
+      "project_title_ar": "ابنِ روبوتك وصوّره — نمذجة URDF من الصفر",
+      "estimated_student_hours": 3.0,
+      "gazebo_environment": "Empty Gazebo world — students spawn their own robot model, no pre-built environment",
+      "ros_stack": "ROS 2 Humble | robot_state_publisher | joint_state_publisher_gui | rviz2 | Gazebo Fortress (spawn_entity) | xacro",
+      "problem_statement": "Students build a URDF model of a simple two-wheeled differential drive robot from scratch using only basic geometric shapes (boxes and cylinders). The robot must have a body, two drive wheels, and one caster wheel. Students define all coordinate frames, joint types, and physical dimensions themselves, spawn it in Gazebo, and verify that every link and joint appears correctly in rviz2. The project forces students to confront the relationship between physical geometry, coordinate frames, and the robot's kinematic structure before any motion is attempted.",
+      "concepts_integrated": [
+        "S006",
+        "S001",
+        "S002",
+        "S003",
+        "S007",
+        "S008"
+      ],
+      "concept_language": "coordinate frames, link geometry, joint types, degrees of freedom, robot morphology, ROS robot description, simulation spawning — no motion or control concepts required",
+      "deliverables": [
+        "URDF or xacro file defining the robot with at minimum: base_link, left_wheel, right_wheel, caster_wheel, and all connecting joints with correct types (continuous for drive wheels, fixed or sphere for caster)",
+        "ROS 2 launch file that publishes the robot description, starts joint_state_publisher_gui, and opens rviz2 with TF frames visible",
+        "Gazebo screenshot showing the robot spawned in the empty world from three viewpoints (top, front, side)",
+        "Annotated rviz2 screenshot with all TF frames labelled and explained in the student's own words",
+        "One-page design log: why did you choose those dimensions, what joint type did you use for each joint and why, what would change if you added a third drive wheel?"
+      ],
+      "grading_rubric": [
+        {
+          "criterion": "URDF is syntactically valid and loads without errors",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "xacro/URDF parses cleanly; robot_state_publisher runs with no warnings; all links visible in rviz2",
+            "satisfactory": "URDF loads with minor warnings that do not affect visualization",
+            "needs_improvement": "URDF fails to parse or robot does not appear in rviz2"
+          }
+        },
+        {
+          "criterion": "Robot geometry is physically plausible",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "Dimensions are self-consistent and realistic for a small ground robot (e.g. wheels touch the ground, caster positioned correctly, body proportions sensible)",
+            "satisfactory": "Robot appears but has minor geometric inconsistencies (e.g. wheels slightly floating or intersecting body)",
+            "needs_improvement": "Geometry is implausible or copied directly from TurtleBot3 without modification"
+          }
+        },
+        {
+          "criterion": "Coordinate frames are correct and complete",
+          "weight_percent": 30,
+          "levels": {
+            "excellent": "All joints have correct parent-child relationships; drive wheel joints are 'continuous'; joint origins place each link in the correct geometric position; TF tree is a clean chain with no disconnected frames",
+            "satisfactory": "Frame relationships are mostly correct but one joint origin or type is wrong",
+            "needs_improvement": "Frame relationships are incorrect or TF tree is disconnected"
+          }
+        },
+        {
+          "criterion": "Design log demonstrates understanding",
+          "weight_percent": 30,
+          "levels": {
+            "excellent": "Student explains dimension choices, joint type rationale, and correctly describes what would change with a third wheel (holonomy, DOF, joint count)",
+            "satisfactory": "Log present but third-wheel question is unanswered or incorrect",
+            "needs_improvement": "Log is missing or is a copy of URDF tags without explanation"
+          }
+        }
+      ],
+      "professional_skills_assessed": [
+        "Reading and writing structured XML-based robot description files",
+        "Spatial reasoning about coordinate frames and joint geometry",
+        "Iterative debugging of a simulation model",
+        "Technical design documentation"
+      ]
+    },
+    {
+      "project_id": "CAP-M02",
+      "project_title": "Motion from Math — Implementing Differential Drive Kinematics",
+      "project_title_ar": "الحركة من الرياضيات — تطبيق حركيات القيادة التفاضلية",
+      "estimated_student_hours": 3.0,
+      "gazebo_environment": "Empty Gazebo world with a 5×5 m flat ground plane and four corner markers (colored boxes) as reference points",
+      "ros_stack": "ROS 2 Humble | student's own URDF from CAP-M01 (or provided baseline URDF) | diff_drive_controller (ros2_control) | rviz2 | rqt_plot",
+      "problem_statement": "Students implement the forward kinematics equations for a differential drive robot themselves in a ROS 2 Python node. Given left and right wheel velocities published by the controller, their node computes the robot's linear velocity, angular velocity, and updated pose — and publishes this as a custom odometry estimate on /student_odom. They then compare their computed pose against the Gazebo ground-truth /odom topic by driving a square path, and measure how closely their math matches reality. The project is explicitly about the equations, not about using a pre-built odometry package.",
+      "concepts_integrated": [
+        "S006",
+        "S009",
+        "S010",
+        "S013",
+        "S014",
+        "S003"
+      ],
+      "concept_language": "coordinate frames, differential drive equations, non-holonomic constraints, maneuverability, pose integration over time, degrees of freedom — no sensor or estimation concepts required",
+      "deliverables": [
+        "ROS 2 Python node implementing differential drive forward kinematics from scratch — computes (v, ω) from wheel speeds and integrates pose over time; publishes to /student_odom as nav_msgs/Odometry",
+        "ROS 2 Python node that drives the robot in a square (4 sides × 1 m, 4 turns × 90°) using open-loop wheel velocity commands",
+        "rqt_plot screenshot comparing /student_odom/pose/pose/position/x and /odom/pose/pose/position/x over the full square run",
+        "Annotated diagram of the differential drive geometry showing the variables used in the student's equations (wheel radius, wheelbase, Δt)",
+        "One-page analysis: how large is the error between your kinematic model and ground truth, where does it accumulate fastest, and what physical assumption in your equations causes it?"
+      ],
+      "grading_rubric": [
+        {
+          "criterion": "Forward kinematics node is implemented from scratch and correct",
+          "weight_percent": 35,
+          "levels": {
+            "excellent": "Node correctly implements (v, ω) from wheel speeds using student's own wheelbase/radius values; pose is integrated using the correct discrete update equations; no use of external odometry libraries",
+            "satisfactory": "Equations are mostly correct but wheelbase or radius value is wrong, causing a systematic scaling error",
+            "needs_improvement": "Node uses a pre-built library or the equations are fundamentally incorrect"
+          }
+        },
+        {
+          "criterion": "Square path is executed and both odometry streams are recorded",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "Robot visibly drives a square in Gazebo; both /student_odom and /odom are plotted over the complete run",
+            "satisfactory": "Square attempted but one side or turn is incorrect; plot shows only part of the run",
+            "needs_improvement": "Robot does not drive a square or no plot is produced"
+          }
+        },
+        {
+          "criterion": "Error between student model and ground truth is quantified",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "Final position error and heading error both reported numerically after the full square; plot clearly shows where divergence begins",
+            "satisfactory": "Error reported but only for position or only qualitatively",
+            "needs_improvement": "No error quantification"
+          }
+        },
+        {
+          "criterion": "Geometry diagram is correct and annotated",
+          "weight_percent": 10,
+          "levels": {
+            "excellent": "Diagram shows robot top view with wheelbase (L), wheel radius (r), left/right wheel velocities, ICC point, and the equations linking them",
+            "satisfactory": "Diagram present but missing one or two key variables",
+            "needs_improvement": "Diagram absent or copied without annotation"
+          }
+        },
+        {
+          "criterion": "Error analysis demonstrates physical understanding",
+          "weight_percent": 15,
+          "levels": {
+            "excellent": "Student correctly identifies that the rigid-body no-slip assumption is the key source of error and connects it to the non-holonomic constraint concept",
+            "satisfactory": "Error source identified as 'wheel slip' without connecting to the kinematic model assumption",
+            "needs_improvement": "Analysis blames simulation or software rather than the model"
+          }
+        }
+      ],
+      "professional_skills_assessed": [
+        "Translating mathematical equations directly into working code",
+        "Quantitative comparison between model and ground truth",
+        "Geometric reasoning and diagram annotation",
+        "Root cause analysis of model-reality mismatch"
+      ],
+      "bridge_to_next": {
+        "bridges_to_topic": "Topic 5 — Probabilistic Robotics & State Estimation",
+        "bridges_to_capstone": "CAP-M03 (placeholder)",
+        "grading_weight": "ungraded bonus — optional submission, max 5% extra credit",
+        "estimated_extra_minutes": 15,
+        "prompt": "You just measured your robot's position error after one square. Now imagine running that exact same square 10 times in a row — same starting pose, same velocity commands, same code. Would the robot end up in the exact same place every time? Probably not. In the box below, sketch a top-down view showing where you think the robot would land across those 10 runs. Then answer in 2–3 sentences: what is the shape of that cluster of end-points, and what does that shape tell you about the nature of the error?",
+        "instructor_note": "Do not introduce the word 'Gaussian' or any probability vocabulary here. The goal is purely intuitive. Students who sketch an elongated blob in the heading direction are already thinking correctly. This sketch becomes a direct callback when Topic 5 opens with the blindfolded corridor scenario — the instructor can say: 'Remember the blob you drew at the end of CAP-M02? Today we learn to describe that blob with mathematics.'"
+      }
+    },
+    {
+      "project_id": "CAP-001",
+      "project_title": "Dead Reckoning vs. Sensor-Aided Navigation",
+      "project_title_ar": "الملاحة بالقياس مقابل الملاحة المدعومة بالمستشعرات",
+      "estimated_student_hours": 3.0,
+      "gazebo_environment": "turtlebot3_world — standard flat arena with four walls and two static box obstacles",
+      "ros_stack": "ROS 2 Humble | TurtleBot3 Burger (unified simulation robot) | rviz2 for visualization",
+      "problem_statement": "The robot must travel a fixed L-shaped route (forward 3 m, turn 90°, forward 2 m) using odometry alone. Students observe the accumulated position error, then re-run the same route with LIDAR-aided correction and compare the final pose error. The project makes drift tangible before introducing probabilistic methods.",
+      "concepts_integrated": [
+        "S006",
+        "S009",
+        "S014",
+        "S015",
+        "S025",
+        "S022"
+      ],
+      "concept_language": "coordinate frames, wheel kinematics, odometry, drift, LIDAR sensing, motion uncertainty — no algorithm names required",
+      "deliverables": [
+        "Short ROS 2 node that drives the robot along the L-shaped route using velocity commands",
+        "Recorded /odom topic bag file for both runs (odometry-only and sensor-aided)",
+        "Plotted comparison of estimated vs. ground-truth pose for both runs (x-y trajectory overlay)",
+        "One-page written reflection: where does drift come from and what does the sensor fix?"
+      ],
+      "grading_rubric": [
+        {
+          "criterion": "Robot completes the route in simulation without crashing",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "Route completed cleanly in both runs with correct turn direction",
+            "satisfactory": "Route completed with minor deviations in one run",
+            "needs_improvement": "Robot fails to complete the route or collides"
+          }
+        },
+        {
+          "criterion": "Drift is visible and quantified in the odometry-only run",
+          "weight_percent": 30,
+          "levels": {
+            "excellent": "Final pose error reported numerically and plotted clearly; drift direction explained",
+            "satisfactory": "Error reported but plot or explanation is incomplete",
+            "needs_improvement": "No quantification of drift"
+          }
+        },
+        {
+          "criterion": "Sensor-aided run shows measurable improvement",
+          "weight_percent": 30,
+          "levels": {
+            "excellent": "Improvement demonstrated with overlay plot and numerical comparison",
+            "satisfactory": "Improvement shown qualitatively without numbers",
+            "needs_improvement": "No comparison between runs"
+          }
+        },
+        {
+          "criterion": "Written reflection quality",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "Clear causal explanation of drift sources and sensor role; connects to course concepts",
+            "satisfactory": "Reflection present but surface-level",
+            "needs_improvement": "Missing or off-topic"
+          }
+        }
+      ],
+      "professional_skills_assessed": [
+        "Quantitative analysis and error measurement",
+        "ROS 2 topic recording and data replay",
+        "Technical writing and result interpretation"
+      ]
+    },
+    {
+      "project_id": "CAP-M03",
+      "status": "PLACEHOLDER — not yet developed",
+      "project_title": "How Wrong Is My Robot? — Observing Motion Uncertainty Empirically",
+      "project_title_ar": "كم يخطئ روبوتي؟ — ملاحظة عدم اليقين الحركي تجريبياً",
+      "intended_position_in_course": "Between Topic 4 (Sensor Modeling & Fusion) and Topic 5 (Probabilistic Robotics) — after students have seen individual sensor error, before they learn the mathematical framework to describe it",
+      "estimated_student_hours": 3.0,
+      "core_idea": "Students run the same fixed motion command (e.g. forward 2 m) N times (suggested: 20 runs) using their CAP-M02 kinematics node and record the ending pose from Gazebo ground truth each time. They plot the cloud of N end-points, observe that it forms a rough ellipse, and describe its shape, orientation, and spread — without yet having the mathematical vocabulary to name it. The project creates the empirical foundation that Topic 5 then formalises: the blob is a probability distribution, the ellipse shape is a covariance matrix, and the Kalman filter is the tool that tracks it.",
+      "concepts_to_cover": [
+        "S016",
+        "S017",
+        "S022",
+        "S014",
+        "S009"
+      ],
+      "concept_language": "repeated measurement, spread of outcomes, directional uncertainty, motion model error, pose distribution — no probability vocabulary required in the problem statement",
+      "connection_to_bridge": "Directly extends the CAP-M02 bridge_to_next sketch exercise. Students who did the bonus sketch already have an intuitive prediction — this capstone tests whether their intuition was right and makes it precise.",
+      "key_design_constraints": [
+        "Students must not be told the word 'Gaussian' or 'covariance' before or during the project — those words arrive with Topic 5",
+        "The plot of N end-points is the central deliverable — everything else supports it",
+        "Noise in Gazebo's differential drive simulation is sufficient; no need to inject artificial noise",
+        "The analysis question must ask students to describe the shape and orientation of the cloud in plain language — this is the pre-mathematical version of covariance"
+      ],
+      "placeholder_deliverables_draft": [
+        "Script that runs the same forward motion command 20 times and records Gazebo ground-truth ending pose after each run",
+        "Scatter plot of 20 end-points (x, y) with start point marked",
+        "Separate plot of final heading error across the 20 runs",
+        "One-page plain-language description: what shape is the cloud, which direction is it stretched, and what does the stretching direction tell you about where the error comes from?",
+        "Bonus: overlay the CAP-M02 bonus sketch on top of the actual scatter plot — how close was your intuition?"
+      ],
+      "development_notes": "When building this capstone, the grading rubric should weight the plain-language cloud description at ~40%. The mathematical formalisation is intentionally absent — its absence is the point. The instructor debrief after submission is where the connection to Topic 5 is made explicit."
+    },
+    {
+      "project_id": "CAP-002",
+      "project_title": "Where Am I? — Localizing a Robot in a Known Map",
+      "project_title_ar": "أين أنا؟ — تحديد موقع الروبوت في خريطة معروفة",
+      "estimated_student_hours": 3.0,
+      "gazebo_environment": "turtlebot3_house — indoor multi-room environment with distinct geometric features",
+      "ros_stack": "ROS 2 Humble | TurtleBot3 Burger | Nav2 AMCL localization | rviz2 | pre-built map via map_server",
+      "problem_statement": "Students are given a pre-built map of the Gazebo house environment and spawn the robot at an unknown location. Using only LIDAR readings and the map, the robot must converge on its true position by being teleoperated through the environment. Students observe how the position estimate changes as the robot gathers more sensor evidence, then answer: what made the estimate converge, and what would break it?",
+      "concepts_integrated": [
+        "S025",
+        "S031",
+        "S033",
+        "S022",
+        "S018"
+      ],
+      "concept_language": "range sensing, position belief, particle-based estimation, motion uncertainty, belief update — no algorithm names required",
+      "deliverables": [
+        "Screen recording of rviz2 showing particle cloud converging as the robot is teleoperated",
+        "Annotated screenshots at three stages: initial spread, partial convergence, full convergence",
+        "Short ROS 2 launch file that loads the map, starts localization, and spawns the robot at a random pose",
+        "One-page analysis: what environmental features caused convergence and what scenario would cause it to fail?"
+      ],
+      "grading_rubric": [
+        {
+          "criterion": "Localization system launches and runs without errors",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "Launch file works in one command; map and robot model appear correctly in rviz2",
+            "satisfactory": "System runs with minor manual steps needed",
+            "needs_improvement": "System fails to launch or localization never initializes"
+          }
+        },
+        {
+          "criterion": "Convergence is demonstrated and captured",
+          "weight_percent": 35,
+          "levels": {
+            "excellent": "Three-stage screenshot sequence clearly shows spread → convergence; screen recording included",
+            "satisfactory": "Convergence shown in screenshots but recording missing",
+            "needs_improvement": "No evidence of convergence captured"
+          }
+        },
+        {
+          "criterion": "Environmental features driving convergence are correctly identified",
+          "weight_percent": 25,
+          "levels": {
+            "excellent": "Student identifies specific geometric features (corners, doorways) that reduce ambiguity",
+            "satisfactory": "General description without specific features",
+            "needs_improvement": "Features not identified or incorrectly described"
+          }
+        },
+        {
+          "criterion": "Failure scenario analysis",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "At least two plausible failure scenarios described with reasoning (e.g. symmetric corridors, featureless rooms)",
+            "satisfactory": "One failure scenario with partial reasoning",
+            "needs_improvement": "No failure analysis"
+          }
+        }
+      ],
+      "professional_skills_assessed": [
+        "System integration (map server, localization, visualization)",
+        "Observation and evidence-based reasoning",
+        "Scenario analysis and critical thinking"
+      ]
+    },
+    {
+      "project_id": "CAP-003",
+      "project_title": "Autonomous Point-to-Point Navigation with Obstacle Avoidance",
+      "project_title_ar": "الملاحة الذاتية من نقطة إلى نقطة مع تجنب العقبات",
+      "estimated_student_hours": 3.0,
+      "gazebo_environment": "turtlebot3_world — open arena; students add 3–5 static box obstacles at their own chosen positions",
+      "ros_stack": "ROS 2 Humble | TurtleBot3 Burger | Nav2 (path planning + local obstacle avoidance) | rviz2 | AMCL for localization",
+      "problem_statement": "Students configure a navigation stack to drive the robot autonomously from a start pose to a goal pose in a cluttered arena. They place obstacles themselves, send a 2D Nav Goal from rviz2, and observe the robot plan a path around the obstacles and recover when a new obstacle is placed in front of it mid-mission. The focus is on understanding the separation between global planning (where to go) and local avoidance (what to do right now).",
+      "concepts_integrated": [
+        "S004",
+        "S046",
+        "S049",
+        "S050",
+        "S031",
+        "S033",
+        "S025"
+      ],
+      "concept_language": "free space representation, path planning, local obstacle avoidance, feedback control, localization, range sensing — no algorithm names required",
+      "deliverables": [
+        "Modified Nav2 parameter file with student-tuned local obstacle avoidance and controller settings",
+        "rviz2 screen recording of the full navigation run including mid-mission obstacle insertion",
+        "Annotated path screenshot showing the global planned path and the local deviation caused by the new obstacle",
+        "One-page reflection: what happens when the global plan and local reality disagree, and how does the stack resolve it?"
+      ],
+      "grading_rubric": [
+        {
+          "criterion": "Robot reaches the goal pose autonomously",
+          "weight_percent": 25,
+          "levels": {
+            "excellent": "Goal reached without collision; final pose within 0.2 m and 10° of target",
+            "satisfactory": "Goal reached with minor collision or large final pose error",
+            "needs_improvement": "Robot fails to reach goal or collides terminally"
+          }
+        },
+        {
+          "criterion": "Mid-mission obstacle is handled correctly",
+          "weight_percent": 30,
+          "levels": {
+            "excellent": "Robot detects obstacle, deviates smoothly, recovers path, and continues to goal",
+            "satisfactory": "Robot stops and recovers but with unnecessary oscillation or replanning delay",
+            "needs_improvement": "Robot collides with added obstacle or freezes permanently"
+          }
+        },
+        {
+          "criterion": "Parameter tuning is intentional and documented",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "At least two parameters changed from default with written justification for each choice",
+            "satisfactory": "Parameters changed but justification is thin",
+            "needs_improvement": "Default parameters used with no tuning attempt"
+          }
+        },
+        {
+          "criterion": "Reflection on global vs. local planning",
+          "weight_percent": 25,
+          "levels": {
+            "excellent": "Student clearly explains the two-layer architecture and when each layer has authority",
+            "satisfactory": "Reflection present but conflates the two layers",
+            "needs_improvement": "No reflection or fundamentally incorrect understanding"
+          }
+        }
+      ],
+      "professional_skills_assessed": [
+        "System parameter tuning and justification",
+        "Integration of localization, planning, and control stacks",
+        "Structured technical reflection"
+      ]
+    },
+    {
+      "project_id": "CAP-004",
+      "project_title": "Build Your Own Map — Autonomous Environment Mapping",
+      "project_title_ar": "ابنِ خريطتك — رسم خريطة البيئة بشكل ذاتي",
+      "estimated_student_hours": 3.0,
+      "gazebo_environment": "Custom student-designed Gazebo world: a single enclosed room (~6×6 m) with at least 4 internal wall segments placed by the student using the Gazebo model editor",
+      "ros_stack": "ROS 2 Humble | TurtleBot3 Burger | slam_toolbox (online mapping mode) | teleop_twist_keyboard | rviz2 | map_saver_cli",
+      "problem_statement": "Students design a simple enclosed Gazebo environment, then teleoperate the robot through it while a mapping system builds an occupancy grid in real time. They must cover the entire space (verified by map completeness), save the resulting map, and then critically evaluate it: where is it accurate, where did it fail, and why? Students also deliberately create a loop in their teleoperation path and observe what happens to the map when the robot revisits a known area.",
+      "concepts_integrated": [
+        "S040",
+        "S041",
+        "S038",
+        "S044",
+        "S025",
+        "S014"
+      ],
+      "concept_language": "occupancy grid, map representation, mapping problem formulation, loop revisit effect, range sensing, odometry — no algorithm names required",
+      "deliverables": [
+        "Custom Gazebo .world file with student-designed room layout (SDF format)",
+        "Saved map files (.pgm and .yaml) from the completed mapping run",
+        "Side-by-side comparison image: Gazebo ground-truth layout vs. saved map",
+        "rviz2 screen recording showing the map growing during teleoperation, including the loop revisit moment",
+        "One-page evaluation: identify three specific regions where the map is inaccurate and explain the cause for each"
+      ],
+      "grading_rubric": [
+        {
+          "criterion": "Custom environment is valid and loaded correctly",
+          "weight_percent": 15,
+          "levels": {
+            "excellent": "World loads without errors; contains at least 4 internal wall segments forming distinct rooms or corridors",
+            "satisfactory": "World loads but layout is minimal (fewer than 4 segments)",
+            "needs_improvement": "World fails to load or is just the default empty world"
+          }
+        },
+        {
+          "criterion": "Map coverage is complete",
+          "weight_percent": 25,
+          "levels": {
+            "excellent": "All navigable areas appear as free space; no large unknown regions remain",
+            "satisfactory": "Most areas mapped; one or two corners unexplored",
+            "needs_improvement": "Large portions of the environment remain unmapped"
+          }
+        },
+        {
+          "criterion": "Loop revisit effect is captured and described",
+          "weight_percent": 25,
+          "levels": {
+            "excellent": "Screen recording clearly shows map correction at revisit moment; student explains why the map improved",
+            "satisfactory": "Loop performed but effect not clearly captured or explained",
+            "needs_improvement": "No loop revisit attempted"
+          }
+        },
+        {
+          "criterion": "Map quality evaluation",
+          "weight_percent": 35,
+          "levels": {
+            "excellent": "Three specific inaccurate regions identified with correct causal explanation (e.g. sensor range, motion blur, featureless wall)",
+            "satisfactory": "Two regions identified with partial explanation",
+            "needs_improvement": "Evaluation is generic or missing"
+          }
+        }
+      ],
+      "professional_skills_assessed": [
+        "3D environment design and simulation setup",
+        "Qualitative and spatial data evaluation",
+        "Cause-and-effect reasoning about system limitations"
+      ]
+    },
+    {
+      "project_id": "CAP-005",
+      "project_title": "Full Autonomy Pipeline — From Unknown Environment to Goal",
+      "project_title_ar": "خط أنابيب الاستقلالية الكامل — من بيئة مجهولة إلى الهدف",
+      "estimated_student_hours": 3.0,
+      "gazebo_environment": "turtlebot3_house — multi-room indoor environment; students must not use any pre-built map",
+      "ros_stack": "ROS 2 Humble | TurtleBot3 Burger | slam_toolbox (online) + Nav2 (simultaneous mapping and navigation) | explore_lite or manual frontier selection | rviz2",
+      "problem_statement": "The robot is spawned in an unknown room of the house environment with no map. Students must combine mapping and navigation to autonomously reach a goal location that is not yet visible from the start. The robot must first explore enough of the environment to plan a path to the goal, then execute that path — all within one continuous run. This integrates the full sense → model → map → plan → act pipeline that the course has built toward.",
+      "concepts_integrated": [
+        "S025",
+        "S014",
+        "S040",
+        "S038",
+        "S044",
+        "S031",
+        "S033",
+        "S046",
+        "S049",
+        "S050"
+      ],
+      "concept_language": "range sensing, odometry, occupancy mapping, simultaneous mapping and localization, loop closure, position estimation, path planning, obstacle avoidance, motion control — no algorithm names required",
+      "deliverables": [
+        "ROS 2 launch file that starts the full pipeline (mapping + localization + navigation) in one command",
+        "Full rviz2 screen recording of the run from spawn to goal arrival, showing map growing in real time",
+        "Final saved map of the explored portion of the house",
+        "Timeline diagram (hand-drawn or digital) showing the sequence of pipeline stages the robot went through",
+        "Two-page system report: what worked, what failed, what would break this pipeline in a real building and why"
+      ],
+      "grading_rubric": [
+        {
+          "criterion": "Pipeline launches and all components communicate correctly",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "Single launch file starts everything; no manual intervention needed after launch",
+            "satisfactory": "Pipeline works but requires two or more separate launch commands",
+            "needs_improvement": "Components fail to communicate or pipeline does not start"
+          }
+        },
+        {
+          "criterion": "Robot reaches the goal in an unmapped environment",
+          "weight_percent": 30,
+          "levels": {
+            "excellent": "Goal reached autonomously with map built along the way; final pose within 0.3 m of target",
+            "satisfactory": "Goal reached with significant human assistance (re-sending goal, manual recovery)",
+            "needs_improvement": "Robot fails to reach the goal"
+          }
+        },
+        {
+          "criterion": "Map quality at mission end",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "Map covers all traversed areas cleanly; walls and doorways are recognizable",
+            "satisfactory": "Map is usable but contains visible drift or gaps in traversed areas",
+            "needs_improvement": "Map is corrupted or mostly unknown despite robot movement"
+          }
+        },
+        {
+          "criterion": "Timeline diagram accurately reflects pipeline stages",
+          "weight_percent": 10,
+          "levels": {
+            "excellent": "All five pipeline stages (sense, model, map, plan, act) shown with approximate timing",
+            "satisfactory": "Diagram present but missing one or two stages",
+            "needs_improvement": "Diagram missing or does not reflect actual run"
+          }
+        },
+        {
+          "criterion": "System report quality",
+          "weight_percent": 20,
+          "levels": {
+            "excellent": "Report identifies specific failure modes with root cause analysis; real-world limitations are grounded in course concepts",
+            "satisfactory": "Report describes what happened but analysis is shallow",
+            "needs_improvement": "Report is missing or is a list of steps rather than analysis"
+          }
+        }
+      ],
+      "professional_skills_assessed": [
+        "Full-stack robotics system integration",
+        "Independent debugging and system recovery",
+        "Engineering report writing with root cause analysis",
+        "Pipeline thinking across sense-model-plan-act boundaries"
+      ]
+    }
+  ],
+    "concept_catalog": [
+    {
+      "concept_id": "S001",
+      "concept_name": "Mobile Robot Locomotion Types and Wheel Configurations",
+      "concept_name_ar": "أنواع حركة الروبوت المتنقل وتكوينات العجلات",
+      "concept_category": "Introduction to Mobile Robots",
+      "split_from": "C046",
+      "split_reason": "C046 bundled locomotion taxonomy, wheel types, non-wheeled systems, morphology selection, and holonomy into one entry. This concept covers exclusively the WHAT: what locomotion types exist and how each wheel/leg/track type works mechanically. Morphology selection logic and holonomy classification are separated into S002.",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 2: Locomotion, Pages 35-84 — Wheel types, legged locomotion, terrain interaction",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "Mobile robot locomotion encompasses wheeled, legged, and hybrid mechanisms. Wheeled locomotion is the most common for flat environments due to energy efficiency and simplicity. Legged systems offer superior adaptability to uneven terrain at the cost of mechanical complexity and control overhead. Wheeled configurations: differential drive (two independent driven wheels), Ackermann/car-like steering, omnidirectional (Swedish/mecanum wheels with passive rollers), and synchro drive."
+        },
+        {
+          "source_id": "ETH_MOOC",
+          "location": "Week 1: Robot Locomotion & Kinematics, Module 1.1 — Introduction to locomotion, wheel configurations",
+          "url": "https://online.ethz.ch/courses/course-v1:ETH+AMRx_FS2020+2020_T1/about",
+          "access": "open",
+          "content_snippet": "Overview of mobile robot locomotion: why wheels are efficient on flat terrain, how leg count and gait affect stability (static vs dynamic stability), and why aerial vehicles require different control paradigms. Case examples: iRobot Roomba (differential drive), Boston Dynamics Spot (quadruped), Waymo (Ackermann), DJI Matrice (aerial), Locus Robotics AMR (warehouse)."
+        },
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 1: Introduction to Mobile Robot Autonomy — Robot morphology and locomotion overview",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "A mobile robot's morphology defines what tasks it can perform and in which environments. Wheeled platforms dominate structured environments; tracked robots handle loose terrain; legged robots navigate steps and obstacles; aerial robots operate in three dimensions."
+        },
+        {
+          "source_id": "BOSTON_DYNAMICS_SPOT",
+          "location": "Boston Dynamics Spot Technical Overview — legged locomotion, terrain adaptability, 12-DOF morphology",
+          "url": "https://www.bostondynamics.com/products/spot",
+          "access": "open",
+          "content_snippet": "Spot is a quadruped robot with 12 actuated joints (3 per leg). Its legged morphology allows traversal of stairs, rubble, and uneven terrain inaccessible to wheeled platforms. Dynamic gait switching (walk, amble, bound) enables speed-stability tradeoffs."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 50,
+      "prerequisites": [],
+      "learning_objectives": [
+        "Classify mobile robots by locomotion type: wheeled (differential, Ackermann, omnidirectional, synchro), legged (biped, quadruped, hexapod), tracked, and aerial",
+        "Describe the four wheel types (standard fixed, castor, Swedish/mecanum, ball) and explain their mechanical function",
+        "Explain wheel-ground contact and how terrain properties influence locomotion choice",
+        "Differentiate locomotion from manipulation and describe mobile manipulator architectures",
+        "Connect locomotion type to real deployed systems (Roomba, Spot, Waymo, DJI Matrice, Locus AMR)"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S002",
+      "concept_name": "Robot Morphology Selection and Holonomy Classification",
+      "concept_name_ar": "اختيار شكل الروبوت وتصنيف الهولونومية",
+      "concept_category": "Introduction to Mobile Robots",
+      "split_from": "C046",
+      "split_reason": "Separated from S001 because morphology selection is a design-decision skill (given constraints, choose a platform) while holonomy classification is the mathematical consequence that bridges locomotion to kinematics. These are distinct learning outcomes: one is engineering judgment, the other is a formal property that must be understood before C-space and kinematic modeling.",
+      "sources": [
+        {
+          "source_id": "LYNCH_PARK_BOOK",
+          "location": "Chapter 13: Wheeled Mobile Robots, Pages 445-530 — Locomotion modalities and holonomy classification",
+          "url": "https://modernrobotics.org/",
+          "access": "partially_open",
+          "content_snippet": "Mobile robots are classified by their holonomy: holonomic robots (omnidirectional) can move instantaneously in any direction in their plane; nonholonomic robots (differential drive, car-like) are subject to velocity constraints that restrict instantaneous motion directions. This classification fundamentally shapes planning and control strategies."
+        },
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 2: Locomotion, Pages 35-84 — Morphology selection criteria and holonomy",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "Design constraints (payload, speed, environment, cost) drive morphology selection. Holonomic robots can translate in any direction instantaneously; nonholonomic robots cannot. The choice of morphology directly determines the kinematic model, workspace, and maneuverability of the robot."
+        },
+        {
+          "source_id": "DJI_MATRICE_350",
+          "location": "DJI Matrice 350 RTK Technical Specifications — aerial morphology, holonomic 3D workspace",
+          "url": "https://www.dji.com/matrice-350-rtk",
+          "access": "open",
+          "content_snippet": "The Matrice 350 RTK is a hexarotor aerial robot with a 3D workspace. Its morphology provides redundancy: it can continue flight on 5 rotors. Aerial locomotion offers unrestricted workspace at the cost of limited payload and flight time — a fundamental morphology tradeoff."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 40,
+      "prerequisites": [
+        "S001"
+      ],
+      "learning_objectives": [
+        "Apply design constraints (environment, payload, speed, cost) to select an appropriate locomotion morphology",
+        "Distinguish holonomic from non-holonomic robots and identify which wheel configurations produce each",
+        "Explain why holonomy classification is the bridge between locomotion choice and kinematic modeling",
+        "Evaluate tradeoffs between wheeled, legged, and aerial platforms for a given real-world deployment scenario"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S003",
+      "concept_name": "Degrees of Freedom for Mobile Robots",
+      "concept_name_ar": "درجات الحرية للروبوتات المتنقلة",
+      "concept_category": "Introduction to Mobile Robots",
+      "split_from": "C048",
+      "split_reason": "C048 conflated DOF-counting (a beginner concept for Topic 2) with C-space and C-obstacles (an advanced planning concept for Topic 9). Separated so DOF can be introduced early alongside locomotion and morphology, while C-space is deferred until motion planning.",
+      "sources": [
+        {
+          "source_id": "LYNCH_PARK_BOOK",
+          "location": "Chapter 2: Configuration Space, Pages 11-40 — DOF definition, Grübler's formula",
+          "url": "https://modernrobotics.org/",
+          "access": "partially_open",
+          "content_snippet": "The number of degrees of freedom (DOF) equals the dimension of the configuration space. For a rigid body in 2D: 3 DOF (x, y, θ). For a rigid body in 3D: 6 DOF. Grübler's formula counts DOF for mechanisms: DOF = m(N-1-J) + Σfᵢ."
+        },
+        {
+          "source_id": "LYNCH_PARK_COURSERA",
+          "location": "Course 1: Foundations of Robot Motion, Week 1 — Degrees of Freedom, holonomic vs nonholonomic",
+          "url": "https://www.coursera.org/learn/modernrobotics-course1",
+          "access": "open",
+          "content_snippet": "A robot's DOF is the number of independent parameters needed to specify its configuration. A differential-drive robot has 3 DOF (x, y, θ) but only 2 controllable DOF (forward speed, angular rate) due to the non-holonomic constraint. This distinction — total DOF vs controllable DOF — is fundamental to understanding maneuverability."
+        },
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 3: Kinematics, Pages 85-90 — Mobile robot pose and degrees of freedom in 2D plane",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "A mobile robot moving in the 2D plane has a pose described by three values (x, y, θ), giving 3 degrees of freedom. However, a differential-drive robot cannot move sideways instantaneously — it has 2 controllable DOF. This distinction motivates the concept of non-holonomic constraints and maneuverability analysis."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 40,
+      "prerequisites": [
+        "S001",
+        "S002"
+      ],
+      "learning_objectives": [
+        "Define degrees of freedom and count DOF for a rigid body in 2D and 3D",
+        "Apply Grübler's formula to simple robot mechanisms",
+        "Distinguish total DOF from controllable DOF for non-holonomic robots",
+        "Explain why a differential-drive robot with 3 DOF can still reach any planar configuration"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S004",
+      "concept_name": "Configuration Space and C-Space Obstacles",
+      "concept_name_ar": "فضاء التشكيل وعقبات فضاء التشكيل",
+      "concept_category": "Motion Planning",
+      "split_from": "C048",
+      "split_reason": "C-space as the mathematical foundation for motion planning belongs in Topic 9 (Planning), not Topic 2 (Introduction). Separated from S003 so it can serve as the direct prerequisite for A* (S046) and RRT (S047) in the planning module.",
+      "sources": [
+        {
+          "source_id": "LYNCH_PARK_BOOK",
+          "location": "Chapter 2: Configuration Space, Pages 40-62 — C-space topology, C-obstacles, free space",
+          "url": "https://modernrobotics.org/",
+          "access": "partially_open",
+          "content_snippet": "The configuration space (C-space) is the space of all possible robot configurations. Obstacles in the workspace map to C-obstacles in C-space. The free C-space is the set of configurations not in collision. Motion planning reduces to finding a path in free C-space from start to goal configuration."
+        },
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 7: Motion Planning, Pages 341-350 — Configuration space representation",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "Representing obstacles in C-space rather than workspace allows planning algorithms to ignore robot geometry during search. For a point robot (no size), C-obstacles equal workspace obstacles. For a finite-size robot, C-obstacles are the Minkowski sum of workspace obstacles and the robot shape."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 45,
+      "prerequisites": [
+        "S003",
+        "S006"
+      ],
+      "learning_objectives": [
+        "Define the configuration space and explain how it differs from the workspace",
+        "Construct C-obstacles from workspace obstacles using the Minkowski sum",
+        "Identify the free C-space and formulate motion planning as a path search within it",
+        "Explain why planning in C-space enables algorithms like A* and RRT to ignore robot geometry"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S005",
+      "concept_name": "Robotics Industry Landscape and Autonomy Stack",
+      "concept_name_ar": "المشهد الصناعي للروبوتات ومكدس الاستقلالية",
+      "concept_category": "Introduction to Mobile Robots",
+      "split_from": "C047",
+      "sources": [
+        {
+          "source_id": "WAYMO_BLOG",
+          "location": "Waymo Blog: Demonstrably Safe AI for Autonomous Driving (December 2025)",
+          "url": "https://waymo.com/blog/2025/12/demonstrably-safe-ai-for-autonomous-driving/",
+          "access": "open",
+          "content_snippet": "Waymo's 6th-generation Driver integrates a Sensor Fusion Encoder that processes camera, LiDAR, and radar inputs, and a Driving VLM for semantic scene reasoning. This architecture illustrates the full mobile robot autonomy stack — perception, localization, planning, and control — deployed at commercial scale."
+        },
+        {
+          "source_id": "LOCUS_WAREHOUSE_AI",
+          "location": "Locus Robotics: LocusONE Warehouse Agentic AI, 2025 deployment data",
+          "url": "https://locusrobotics.com/locusone/warehouse-agentic-ai",
+          "access": "open",
+          "content_snippet": "Locus Robotics has surpassed 5 billion picked items across 250+ warehouses globally, deploying differential-drive AMRs that use SLAM for navigation, occupancy-grid mapping, and dynamic obstacle avoidance. The warehouse automation market is projected at $18.2 billion by 2026 with 34.4% CAGR."
+        },
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 1: Introduction, Pages 1-34 — Motivation, autonomy levels, application domains",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "The autonomy stack — perception, world modeling, decision-making, and motion control — defines the structure of modern mobile robot software. Mobile robotics spans autonomous driving, warehouse logistics, agricultural automation, search and rescue, and planetary exploration."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [],
+      "learning_objectives": [
+        "Identify major mobile robotics application domains and their market size and growth",
+        "Describe three real deployed systems and map their functionality to the autonomy stack",
+        "Explain the full autonomy stack: perception → localization → mapping → planning → control",
+        "Recognize key engineering roles in the robotics industry and the skills they require",
+        "Connect the course topic sequence to the autonomy stack"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S006",
+      "concept_name": "Coordinate Frames and Homogeneous Transformations",
+      "concept_name_ar": "أطر الإحداثيات والتحولات المتجانسة",
+      "concept_category": "Mathematical Foundations",
+      "split_from": "C045",
+      "sources": [
+        {
+          "source_id": "LYNCH_PARK_BOOK",
+          "location": "Chapter 3: Rigid-Body Motions, Pages 63-118 — Rotation matrices, homogeneous transforms, SE(2), SE(3)",
+          "url": "https://modernrobotics.org/",
+          "access": "partially_open",
+          "content_snippet": "A rigid-body configuration is described by a rotation matrix R ∈ SO(3) and position vector p. The homogeneous transformation T = [R p; 0 1] ∈ SE(3) encodes both. Composition: T_AC = T_AB × T_BC. Inverse: T⁻¹ = [Rᵀ -Rᵀp; 0 1]. For planar robots SE(2): T = [cos θ -sin θ x; sin θ cos θ y; 0 0 1]."
+        },
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 3: Kinematics, Pages 85-95 — Robot pose representation, world frame vs robot frame",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "The global reference frame {W} and the robot local frame {R} are related by the pose ξ = (x, y, θ)ᵀ in 2D. Sensor readings in the robot frame are transformed to the world frame via the rotation matrix R(θ). Correct frame bookkeeping is essential for odometry integration and sensor fusion."
+        },
+        {
+          "source_id": "ROS_DOCUMENTATION",
+          "location": "ROS TF2 Library: Coordinate frame management in robot software",
+          "url": "http://wiki.ros.org/tf2",
+          "access": "open",
+          "content_snippet": "ROS TF2 maintains a tree of coordinate frames over time. Every sensor, actuator, and map is expressed in its own frame. TF2 looks up the transform between any two frames at any timestamp, enabling sensor fusion and SLAM implementations to compose frame-specific data without manual bookkeeping."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 55,
+      "prerequisites": [
+        "Linear Algebra",
+        "Trigonometry"
+      ],
+      "learning_objectives": [
+        "Construct 2D and 3D rotation matrices and homogeneous transformation matrices",
+        "Compose and invert coordinate frame transformations using matrix multiplication",
+        "Convert sensor measurements and velocities between robot body frame and world frame",
+        "Use ROS TF2 to manage multi-frame transforms in a robot software stack"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S007",
+      "concept_name": "ROS Architecture",
+      "concept_name_ar": "معمارية نظام تشغيل الروبوت",
+      "concept_category": "Software Architecture",
+      "split_from": "C028",
+      "sources": [
+        {
+          "source_id": "ROS_DOCUMENTATION",
+          "location": "ROS Tutorials: Understanding ROS Concepts, Nodes, Topics, Services",
+          "url": "http://wiki.ros.org/ROS/Tutorials",
+          "access": "open",
+          "content_snippet": "ROS: middleware for robot software development. Publish-subscribe architecture (topics), request-response (services), parameters. Nodes communicate via messages. TF library manages coordinate frames. Build system: catkin (CMake-based)."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 90,
+      "prerequisites": [
+        "Python/C++ programming",
+        "Linux basics"
+      ],
+      "learning_objectives": [
+        "Design ROS node architecture for a mobile robot software stack",
+        "Implement publisher/subscriber nodes for sensor data",
+        "Use ROS visualization tools (RViz) for debugging and visualization"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S008",
+      "concept_name": "Gazebo Simulation and Software-in-the-Loop Testing",
+      "concept_name_ar": "محاكاة جازيبو واختبار البرنامج في الحلقة",
+      "concept_category": "Simulation and Testing",
+      "split_from": "C029",
+      "sources": [
+        {
+          "source_id": "ROS_TUTORIALS",
+          "location": "Gazebo tutorials: Physics, Sensors, Plugins",
+          "url": "http://gazebosim.org/tutorials",
+          "access": "open",
+          "content_snippet": "Gazebo: physics simulator for robotics. Models: rigid bodies, joints, sensors (IMU, camera, LIDAR). Plugins interface ROS nodes with simulation. Deterministic replay enables reproducible testing."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 75,
+      "prerequisites": [
+        "S007"
+      ],
+      "learning_objectives": [
+        "Build Gazebo models of wheeled mobile robots",
+        "Implement ROS-Gazebo integration via plugins",
+        "Validate algorithms (SLAM, planning) in simulation before hardware deployment"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S009",
+      "concept_name": "Differential Drive Kinematics",
+      "concept_name_ar": "حركيات القيادة التفاضلية",
+      "concept_category": "Mobile Robot Kinematics",
+      "split_from": "C001",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 3: Kinematics, Pages 85-150",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "The differential drive robot consists of two independently driven wheels separated by distance l, with common wheels of radius r. The relationship between wheel velocities and robot pose is: ẋ = (r/2)(ωl + ωr)cos(θ), ẏ = (r/2)(ωl + ωr)sin(θ), θ̇ = (r/l)(ωr - ωl)."
+        },
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 2: Kinematic Modeling, Pages 45-110",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "Two-wheel differential drive is the most common mobile robot configuration. Forward kinematics maps wheel velocities to Cartesian velocities and angular rates. Inverse kinematics determines required wheel speeds for desired robot motion."
+        },
+        {
+          "source_id": "ETH_MOOC",
+          "location": "Week 1: Robot Locomotion & Kinematics, Module 1.2",
+          "url": "https://online.ethz.ch/courses/course-v1:ETH+AMRx_FS2020+2020_T1/about",
+          "access": "open",
+          "content_snippet": "The differential drive model describes a mobile robot with two independently driven wheels. We derive the kinematic equations relating wheel angular velocities to robot velocity and heading rate."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [
+        "S006",
+        "Linear Algebra",
+        "Vector Calculus"
+      ],
+      "learning_objectives": [
+        "Derive forward kinematics for differential-drive robots",
+        "Compute inverse kinematics to achieve desired velocities",
+        "Understand non-holonomic constraints in wheeled robots"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S010",
+      "concept_name": "Non-Holonomic Constraints",
+      "concept_name_ar": "القيود غير الهولونومية",
+      "concept_category": "Mobile Robot Kinematics",
+      "split_from": "C002",
+      "sources": [
+        {
+          "source_id": "MURRAY_BOOK",
+          "location": "Chapter 8: Nonholonomic Motion Planning, Pages 291-340",
+          "url": "https://www.cse.lehigh.edu/~trink/Courses/RoboticsII/reading/murray-li-sastry-94-complete.pdf",
+          "access": "open",
+          "content_snippet": "A nonholonomic constraint is a velocity constraint that cannot be integrated to yield a position constraint. For the differential drive, the no-slip constraint ẏcos(θ) - ẋsin(θ) = 0 is nonholonomic."
+        },
+        {
+          "source_id": "LYNCH_PARK_COURSERA",
+          "location": "Course 1: Foundations of Robot Motion, Week 1 Lecture",
+          "url": "https://www.coursera.org/learn/modernrobotics-course1",
+          "access": "open",
+          "content_snippet": "Configuration space topology and constraints: holonomic systems have generalized coordinates equal to DOF; nonholonomic systems have additional velocity constraints reducing controllable degrees of freedom."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 75,
+      "prerequisites": [
+        "S009",
+        "Differential Geometry"
+      ],
+      "learning_objectives": [
+        "Distinguish holonomic from nonholonomic constraints",
+        "Apply Pfaffian constraints to wheeled robot systems",
+        "Analyze controllability of nonholonomic systems"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S011",
+      "concept_name": "Ackermann Steering Geometry",
+      "concept_name_ar": "هندسة توجيه أكرمان",
+      "concept_category": "Mobile Robot Kinematics",
+      "split_from": "C003",
+      "sources": [
+        {
+          "source_id": "SICILIANO_BOOK",
+          "location": "Chapter 7: Wheeled Mobile Robots, Pages 379-432",
+          "url": "https://link.springer.com/book/10.1007/978-1-84628-642-1",
+          "access": "paid",
+          "content_snippet": "Ackermann steering is used in cars: front wheels steer while rear wheels provide propulsion. The kinematic model includes steering angle δ and forward speed v, with nonlinear relationship due to turning radius constraints."
+        },
+        {
+          "source_id": "LYNCH_PARK_BOOK",
+          "location": "Chapter 13: Wheeled Mobile Robots, Section 13.3.1, Pages 445-480",
+          "url": "https://modernrobotics.org/",
+          "access": "partially_open",
+          "content_snippet": "Nonholonomic wheeled mobile robots with bicycle model: steering angle δ and speed v are control inputs. The heading rate depends on turning radius = L/tan(δ), where L is wheelbase."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 50,
+      "prerequisites": [
+        "S009",
+        "S010"
+      ],
+      "learning_objectives": [
+        "Model Ackermann steering kinematics using the bicycle model",
+        "Understand steering angle constraints and minimum turning radius",
+        "Apply the bicycle model as a basis for path planning"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S012",
+      "concept_name": "Omnidirectional Robot Kinematics",
+      "concept_name_ar": "حركيات الروبوت كامل الاتجاهات",
+      "concept_category": "Mobile Robot Kinematics",
+      "split_from": "C027",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 3: Kinematics, Pages 85-150 (omnidirectional section)",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "Omnidirectional robots (mecanum wheels, Swedish wheels) have zero instantaneous center of rotation. Kinematic model: [ẋ ẏ ω]^T = J [ω1 ω2 ω3 ω4]^T. Advantages: move in any direction. Disadvantage: more complex control."
+        },
+        {
+          "source_id": "LYNCH_PARK_BOOK",
+          "location": "Chapter 13: Wheeled Mobile Robots, Section 13.2 (omnidirectional robots)",
+          "url": "https://modernrobotics.org/",
+          "access": "partially_open",
+          "content_snippet": "Omnidirectional drive: three or four wheels with different orientations. Forward kinematics: velocity = Jacobian × wheel velocities. No nonholonomic constraint (holonomic). Inverse kinematics unique for 3+ wheels."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 55,
+      "prerequisites": [
+        "S009",
+        "S010"
+      ],
+      "learning_objectives": [
+        "Derive omnidirectional robot forward and inverse kinematics",
+        "Understand wheel configuration tradeoffs (3-wheel vs 4-wheel mecanum)",
+        "Implement control for holonomic mobile platforms"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S013",
+      "concept_name": "Mobile Robot Maneuverability and Workspace",
+      "concept_name_ar": "قابلية المناورة وفضاء العمل للروبوت المتنقل",
+      "concept_category": "Mobile Robot Kinematics",
+      "split_from": "C041",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 3: Kinematics, Pages 85-150 — Section on maneuverability, degrees of freedom, ICR",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "Maneuverability of a robot is characterized by its degree of mobility δm and degree of steerability δs. The overall degree of maneuverability δM = δm + δs determines the robot's ability to independently control position and orientation."
+        },
+        {
+          "source_id": "LYNCH_PARK_BOOK",
+          "location": "Chapter 13: Wheeled Mobile Robots, Section 13.1 — Omnidirectional vs non-holonomic classification",
+          "url": "https://modernrobotics.org/",
+          "access": "partially_open",
+          "content_snippet": "Mobile robot workspace: the set of all reachable configurations. For a non-holonomic robot the workspace equals the full configuration space even though the robot cannot move instantaneously in all directions."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [
+        "S009",
+        "S010"
+      ],
+      "learning_objectives": [
+        "Compute degree of mobility (δm) and degree of steerability (δs) for different robot configurations",
+        "Classify mobile robot types using the maneuverability index δM",
+        "Determine reachable workspace and instantaneous center of rotation (ICR)",
+        "Explain why non-holonomic robots can reach any configuration despite constrained instantaneous motion"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S014",
+      "concept_name": "Odometry and Dead Reckoning",
+      "concept_name_ar": "قياس المسافات والملاحة بالقياس",
+      "concept_category": "Sensor-Based Perception",
+      "split_from": "C004",
+      "sources": [
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 3: Dead Reckoning & Odometry, Pages 111-165",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "Odometry estimates robot position by integrating wheel encoder measurements. Sources of error include wheel slip, unequal wheel radii, and gyro drift. Accumulated error grows over time as O(√t), necessitating periodic correction from other sensors."
+        },
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 5: Localization, Pages 221-310",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "Dead reckoning uses accumulated motion commands to estimate position. Critical for mobile robots in GPS-denied environments. Error sources: wheel slip (1-5% per meter), encoder quantization, uneven terrain."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [
+        "S009",
+        "S006",
+        "Basic Integration"
+      ],
+      "learning_objectives": [
+        "Compute robot position from wheel encoder readings",
+        "Quantify odometry error accumulation over time",
+        "Implement basic odometry integration in simulation"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S015",
+      "concept_name": "Wheel Slip and Traction Control",
+      "concept_name_ar": "انزلاق العجلة والسيطرة على الجر",
+      "concept_category": "Mobile Robot Kinematics",
+      "split_from": "C031",
+      "sources": [
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 2: Kinematic Modeling, Pages 45-110 (slip discussion)",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "Wheel slip: lateral or rolling slip due to low friction, uneven ground. Lateral slip violates no-slip constraint. Effect: odometry error ~1-5% per meter. Mitigation: high-grip wheels, terrain sensing, adaptive control."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 45,
+      "prerequisites": [
+        "S009",
+        "S014"
+      ],
+      "learning_objectives": [
+        "Model wheel slip as a function of terrain, speed, and load",
+        "Detect slip from odometry residuals",
+        "Implement slip compensation or terrain-adaptive odometry correction"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S016",
+      "concept_name": "Probability and Statistics Foundations",
+      "concept_name_ar": "أسس الاحتمالية والإحصائيات",
+      "concept_category": "Mathematical Foundations",
+      "split_from": "C022",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Appendix: Mathematical Background, Probability & Statistics",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Probability basics: joint p(A,B), conditional p(A|B), Bayes rule p(A|B) = p(B|A)p(A)/p(B). Gaussian distribution N(μ,σ²). Expectation E[X], covariance Cov(X,Y). Essential for all probabilistic robotics methods."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 45,
+      "prerequisites": [
+        "Basic Calculus"
+      ],
+      "learning_objectives": [
+        "Apply Bayes rule in probabilistic reasoning",
+        "Compute Gaussian likelihood and derivatives",
+        "Understand joint, conditional, and marginal distributions"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S017",
+      "concept_name": "Linear Algebra for Robotics",
+      "concept_name_ar": "الجبر الخطي للروبوتات",
+      "concept_category": "Mathematical Foundations",
+      "split_from": "C023",
+      "sources": [
+        {
+          "source_id": "LYNCH_PARK_BOOK",
+          "location": "Chapters 2-3: Mathematical Preliminaries",
+          "url": "https://modernrobotics.org/",
+          "access": "partially_open",
+          "content_snippet": "Rotation matrices, homogeneous transformation matrices, matrix exponential. Jacobian matrices relate joint velocities to end-effector velocities. Eigenvalues/eigenvectors for stability analysis. Singular Value Decomposition (SVD) for robust inversion."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [
+        "Multivariable Calculus"
+      ],
+      "learning_objectives": [
+        "Compute homogeneous transformations for rigid motions",
+        "Use Jacobians for velocity and force relationships",
+        "Apply SVD and pseudoinverse for under/overdetermined systems"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S018",
+      "concept_name": "Bayes Filters and Recursive Bayesian Estimation",
+      "concept_name_ar": "مرشحات بايز والتقدير الباييسي العودي",
+      "concept_category": "Probabilistic Robotics",
+      "split_from": "C007",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 6: Bayes Filters, Pages 201-260",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Bayes filter recursively updates belief over robot state given observations and odometry. Two-step cycle: prediction (motion model), correction (observation model). Posterior ∝ likelihood × prior."
+        },
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 5: Estimation Theory, Pages 211-285",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "Recursive Bayesian estimation updates state estimate each timestep. Requires: motion model p(x_t|x_{t-1},u_t), observation model p(z_t|x_t), prior p(x_0). Applications: localization, mapping, sensor fusion."
+        },
+        {
+          "source_id": "UDACITY_AI_ROBOTICS",
+          "location": "Week 2: Localization with Bayes Filters",
+          "url": "https://www.udacity.com/course/artificial-intelligence-for-robotics--cs373",
+          "access": "open",
+          "content_snippet": "Bayes filter algorithm: FOR each timestep: (1) prediction: p(x) = ∫ p(x|x')p(x')dx'; (2) correction: p(x|z) ∝ p(z|x)p(x). Normalization ensures probability sums to 1."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 90,
+      "prerequisites": [
+        "S016",
+        "S017"
+      ],
+      "learning_objectives": [
+        "Implement Bayes filter prediction and correction steps",
+        "Derive likelihood and motion models from sensor and odometry data",
+        "Apply the Bayes filter to robot localization in a known environment"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S019",
+      "concept_name": "Kalman Filter as a State Estimator",
+      "concept_name_ar": "مرشح كالمان كمقدّر للحالة",
+      "concept_category": "Probabilistic Robotics",
+      "split_from": "C008",
+      "split_reason": "C008 bundled the KF mathematical derivation, EKF extension, localization application, and sensor fusion application into one concept. This entry teaches only the Kalman Filter as a mathematical tool — the derivation, assumptions (Gaussian noise, linear dynamics), and prediction-correction equations. Application to localization is S020; application to fusion is S021.",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 7: Kalman Filters, Pages 261-300 — KF derivation and linear case",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Kalman filter assumes Gaussian noise and linear system dynamics. Prediction: μ_t = A_t μ_{t-1} + B_t u_t, Σ_t = A_t Σ_{t-1} A_t^T + R_t. Correction: Kalman gain K_t = Σ_t C_t^T (C_t Σ_t C_t^T + Q_t)^{-1}; μ_t = μ_t + K_t(z_t - C_t μ_t); Σ_t = (I - K_t C_t)Σ_t."
+        },
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 5: Estimation Theory, Pages 211-260 — Kalman filter derivation",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "The Kalman filter is the optimal linear estimator under Gaussian noise assumptions. It minimizes mean squared error of the state estimate. The covariance matrix Σ encodes estimation uncertainty and shrinks as more measurements arrive."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [
+        "S018",
+        "S017",
+        "Multivariate Calculus"
+      ],
+      "learning_objectives": [
+        "Derive the Kalman filter prediction and correction equations from first principles",
+        "Explain the Gaussian assumption and linearity requirements",
+        "Implement a KF for a simple 1D and 2D linear tracking problem",
+        "Interpret the covariance matrix as a measure of estimation uncertainty"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S020",
+      "concept_name": "Extended Kalman Filter for Robot Localization",
+      "concept_name_ar": "مرشح كالمان الممتد لتحديد موقع الروبوت",
+      "concept_category": "Probabilistic Localization",
+      "split_from": "C008",
+      "split_reason": "EKF as applied to the nonlinear robot localization problem is a distinct learning unit from the linear KF derivation (S019). Students need to understand Jacobian linearization, state vector design [x, y, θ], and how to apply EKF in the localization context specifically before encountering it again in fusion (S021).",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 7: Kalman Filters, Pages 300-322 — EKF derivation via Jacobians",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "EKF extends Kalman filter to nonlinear systems via Jacobian linearization. Maintains mean and covariance of state estimate. For robot localization: state = [x, y, θ]; motion model nonlinear (trigonometric); linearize via Jacobian G_t = ∂g/∂x."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "Localization module: EKF implementation, line-by-line example",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "Extended Kalman Filter for mobile robot localization: state = [x, y, θ]. Motion model nonlinear but observation model often linear. Computational complexity O(n²) for n state variables due to covariance matrix operations."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [
+        "S019",
+        "S014"
+      ],
+      "learning_objectives": [
+        "Extend the Kalman filter to nonlinear systems using Jacobian linearization",
+        "Design the state vector and motion/observation models for EKF localization",
+        "Implement EKF for robot pose estimation with LIDAR landmarks",
+        "Analyze linearization error and when EKF assumptions break down"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S021",
+      "concept_name": "EKF for Multi-Sensor Fusion",
+      "concept_name_ar": "مرشح كالمان الممتد لدمج المستشعرات",
+      "concept_category": "Sensor Integration",
+      "split_from": "C008",
+      "split_reason": "Using EKF as a fusion backbone (augmented state combining IMU + odometry + GPS + LIDAR) is a different application from localization. The augmented state design, sensor independence assumptions, and handling of asynchronous measurements are distinct skills not covered in the localization-focused S020.",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 5: Sensor Models, Pages 161-200 — Probabilistic sensor fusion",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Sensor fusion combines measurements from multiple modalities. Probabilistic approach: p(state|z_camera, z_lidar, z_imu) ∝ p(z_camera|state) × p(z_lidar|state) × p(z_imu|state) × p(state). Assumes sensor independence (often violated but practical approximation)."
+        },
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 5: Estimation Theory, Pages 260-285 — Multi-sensor EKF fusion",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "When fusing IMU and odometry: augment state with IMU bias terms. Each sensor provides a separate measurement update step. Asynchronous measurements handled by time-stamping and interpolating the prediction step."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [
+        "S020",
+        "S026",
+        "S027"
+      ],
+      "learning_objectives": [
+        "Design augmented EKF state vectors for multi-sensor fusion (IMU + odometry + GPS)",
+        "Implement sequential measurement updates for asynchronous sensor streams",
+        "Analyze sensor redundancy and design for graceful single-sensor failure",
+        "Compare EKF fusion accuracy vs individual sensor accuracy"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S022",
+      "concept_name": "Probabilistic Motion Models",
+      "concept_name_ar": "النماذج الحركية الاحتمالية",
+      "concept_category": "Probabilistic Robotics",
+      "split_from": "C042",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 5: Robot Motion, Pages 123-160 — Velocity motion model and odometry motion model",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "The velocity motion model p(x_t | u_t, x_{t-1}) characterizes the stochastic effects of motion commands. Noise parameters α1–α6 capture translational and rotational errors. The odometry model uses relative pose change from wheel encoders and is typically more accurate than the velocity model."
+        },
+        {
+          "source_id": "ETH_MOOC",
+          "location": "Week 3: Probabilistic Localization, Module on Motion Models",
+          "url": "https://online.ethz.ch/courses/course-v1:ETH+AMRx_FS2020+2020_T1/about",
+          "access": "open",
+          "content_snippet": "Motion model describes how uncertainty grows as a robot moves. Given control input u and prior pose x, posterior p(x'|x,u) is a Gaussian whose covariance increases with distance traveled and angle turned."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 70,
+      "prerequisites": [
+        "S014",
+        "S018",
+        "S016"
+      ],
+      "learning_objectives": [
+        "Derive the velocity-based probabilistic motion model p(x_t | u_t, x_{t-1})",
+        "Derive the odometry-based probabilistic motion model from encoder readings",
+        "Parameterize motion model noise (α1–α6) from experimental data",
+        "Propagate uncertainty through the motion model using linearization or sampling"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S023",
+      "concept_name": "Sensor Hardware Survey and Classification",
+      "concept_name_ar": "مسح أجهزة الاستشعار وتصنيفها",
+      "concept_category": "Introduction to Mobile Robots",
+      "split_from": "C043",
+      "split_reason": "C043 served two distinct roles: (1) a beginner hardware survey in Topic 2 and (2) a perception pipeline concept in Topic 8. This entry covers only the hardware classification, characteristics, and selection — taught early alongside robot platforms. Perception pipeline design is separated into S024.",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 4: Perception, Pages 151-220 — Sensor classification, encoder, sonar, IR, camera, LIDAR overview",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "Sensors are classified as proprioceptive (measuring internal state: encoders, IMU) or exteroceptive (measuring environment: sonar, LIDAR, camera). Active sensors emit energy (sonar, LIDAR); passive sensors detect ambient energy (camera, thermopile). Each type presents different noise models and use cases."
+        },
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 4: Perception Systems, Pages 166-210 — Sensor comparison table and selection criteria",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "Sensor selection criteria: range, field of view, angular resolution, update rate, cost, and robustness to lighting. Trade-offs: cameras are rich but computationally expensive; sonars are cheap but specular-reflection prone; LIDAR accurate but expensive."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 50,
+      "prerequisites": [
+        "Basic Physics",
+        "S001"
+      ],
+      "learning_objectives": [
+        "Classify sensors as proprioceptive/exteroceptive and active/passive",
+        "Compare sensor characteristics: range, resolution, FOV, update rate, cost",
+        "Select appropriate sensors for indoor, outdoor, and GPS-denied environments",
+        "Understand fundamental noise sources for encoders, sonar, IR, LIDAR, and cameras"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S024",
+      "concept_name": "Perception Pipeline Architecture",
+      "concept_name_ar": "معمارية خط أنابيب الإدراك",
+      "concept_category": "Robot Perception",
+      "split_from": "C043",
+      "split_reason": "How raw sensor streams are processed through detection, segmentation, and object recognition pipelines is a distinct skill from knowing which sensor to buy (S023). This concept belongs in Topic 8 alongside feature extraction and semantic understanding.",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 4: Perception, Pages 151-220 — Perception pipeline, processing stages",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "A perception pipeline transforms raw sensor data into actionable world models. Stages: signal conditioning → feature extraction → object detection → semantic labeling → world model update. Each stage introduces latency and uncertainty that must be managed."
+        },
+        {
+          "source_id": "WAYMO_BLOG",
+          "location": "Waymo Blog: Demonstrably Safe AI, Sensor Fusion Encoder and perception pipeline",
+          "url": "https://waymo.com/blog/2025/12/demonstrably-safe-ai-for-autonomous-driving/",
+          "access": "open",
+          "content_snippet": "Waymo's Sensor Fusion Encoder fuses camera, LIDAR, and radar inputs producing objects, semantics, and rich embeddings as outputs. The pipeline provides multi-modal redundancy: camera for detail, LIDAR for range, radar for velocity in adverse weather."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 50,
+      "prerequisites": [
+        "S023",
+        "S025",
+        "S028"
+      ],
+      "learning_objectives": [
+        "Describe the stages of a mobile robot perception pipeline",
+        "Explain how multi-modal inputs are fused at different pipeline stages",
+        "Identify latency and uncertainty sources at each processing stage",
+        "Design a perception pipeline architecture for a given robot application"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S025",
+      "concept_name": "LIDAR Range Sensing Models",
+      "concept_name_ar": "نماذج استشعار LIDAR للمدى",
+      "concept_category": "Sensor-Based Perception",
+      "split_from": "C005",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 4: Perception, Pages 151-220",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "LIDAR provides high-resolution range measurements in 2D or 3D. Measurement noise follows Gaussian distribution with standard deviation 1-5 cm. Models range error as function of distance and surface reflectivity."
+        },
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 5: Sensor Models, Pages 161-200",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "A probabilistic range sensor model characterizes measurement uncertainty. For LIDAR: p(z|x,m) = measurement probability given robot pose and map. Includes modeling of max-range returns and phantom obstacles."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "Mapping module: Gaussian Grid Map implementation",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "LIDAR scans converted to grid map via inverse sensor model: for each range measurement, mark grid cells as occupied/free. Mark cell as occupied if range endpoints, free along ray path."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 70,
+      "prerequisites": [
+        "S016",
+        "S014"
+      ],
+      "learning_objectives": [
+        "Model LIDAR measurement uncertainty probabilistically",
+        "Implement inverse sensor model for grid mapping",
+        "Distinguish range ambiguity (max-range, phantom obstacles)"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S026",
+      "concept_name": "IMU and Inertial Dead Reckoning",
+      "concept_name_ar": "وحدات قياس القصور الذاتي والملاحة بالقياس",
+      "concept_category": "Sensor-Based Perception",
+      "split_from": "C026",
+      "sources": [
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 3: Dead Reckoning & Odometry, Pages 111-165",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "IMU (accelerometer + gyroscope + magnetometer) provides ego-motion. Accelerometer drift: small errors lead to large position errors after integration. Gyroscope bias causes heading drift. Sensor fusion essential to bound errors."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 50,
+      "prerequisites": [
+        "S014",
+        "Signal Processing"
+      ],
+      "learning_objectives": [
+        "Model IMU errors (bias, scale factor, misalignment)",
+        "Apply complementary filter or Kalman filter for IMU fusion",
+        "Estimate ego-motion from IMU in GPS-denied environments"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S027",
+      "concept_name": "GPS and Global Localization",
+      "concept_name_ar": "GPS والتحديد الموقع العالمي",
+      "concept_category": "Sensor-Based Perception",
+      "split_from": "C025",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 5: Localization, Pages 221-310",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "GPS provides absolute position (lat/lon/alt). Accuracy 5-10m in open sky, worse in urban canyons. GPS-denied environments (indoors, tunnels) require alternative localization (SLAM, maps, beacons)."
+        }
+      ],
+      "difficulty_level": 1,
+      "estimated_teaching_minutes": 40,
+      "prerequisites": [
+        "Basic Navigation"
+      ],
+      "learning_objectives": [
+        "Understand GPS accuracy limitations (urban canyon, multipath)",
+        "Fuse GPS with odometry/IMU for robust localization",
+        "Detect and reject outliers in GPS measurements"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S028",
+      "concept_name": "Feature Extraction and Landmark Detection",
+      "concept_name_ar": "استخراج الميزات واكتشاف المعالم",
+      "concept_category": "Sensor-Based Perception",
+      "split_from": "C006",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 4: Perception, Pages 151-220",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "Features are distinctive elements in sensor data used for localization and mapping. Common features: corners (Harris detector), edges (Sobel filter), line segments (Hough transform). Landmarks must be repeatable and discriminative across revisits."
+        },
+        {
+          "source_id": "SLAM_TUTORIAL",
+          "location": "Part 1: Sensor Modeling & Uncertainty, Feature Extraction section",
+          "url": "https://www.simultaneouslocalizationmapping.com/",
+          "access": "open",
+          "content_snippet": "Feature extraction converts raw sensor data to compact representation. Examples: SIFT keypoints for vision, line segments for LIDAR. Data association matches extracted features across time steps to recognize revisited locations."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 50,
+      "prerequisites": [
+        "S025",
+        "Image Processing basics"
+      ],
+      "learning_objectives": [
+        "Apply standard feature detectors (Harris, SIFT, line detection)",
+        "Evaluate feature quality, repeatability, and discriminability",
+        "Implement feature extraction from LIDAR and camera data"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S029",
+      "concept_name": "Feature Matching Methods",
+      "concept_name_ar": "طرق مطابقة الميزات",
+      "concept_category": "Sensor-Based Perception",
+      "split_from": "C024",
+      "split_reason": "C024 bundled two distinct operations: (1) matching features between two sensor frames (a perception/odometry operation using descriptors and nearest-neighbor search) and (2) associating observations to existing map landmarks in SLAM (a probabilistic filtering operation). Separated so feature matching can be taught in the perception context (Topic 8) and SLAM data association taught in the SLAM context (S030).",
+      "sources": [
+        {
+          "source_id": "SLAM_TUTORIAL",
+          "location": "Part 1: Feature Extraction and Matching section",
+          "url": "https://www.simultaneouslocalizationmapping.com/",
+          "access": "open",
+          "content_snippet": "Feature matching: given two sets of features from different frames, find corresponding pairs. Methods: descriptor distance (L2, Hamming), ratio test (Lowe's ratio), cross-check matching. Robust matching uses RANSAC to reject outliers."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "SLAM module: Feature extraction and matching pipeline",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "SIFT/ORB descriptor matching: extract keypoints and descriptors from each frame; match by minimum descriptor distance; filter with Lowe's ratio test (good match: best distance / second-best < 0.75). Output: list of corresponding point pairs for pose estimation."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 45,
+      "prerequisites": [
+        "S028"
+      ],
+      "learning_objectives": [
+        "Match features between frames using descriptor distance metrics",
+        "Apply Lowe's ratio test and cross-check to filter false matches",
+        "Use RANSAC to reject outlier matches robustly",
+        "Evaluate matching quality using precision-recall metrics"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S030",
+      "concept_name": "Data Association for SLAM",
+      "concept_name_ar": "ربط البيانات في SLAM",
+      "concept_category": "SLAM and Mapping",
+      "split_from": "C024",
+      "split_reason": "SLAM data association — deciding whether an observed landmark matches an existing map landmark or is new — is a probabilistic filtering decision with filter-divergence consequences. It requires knowledge of the SLAM state vector and covariance structure, making it a SLAM-specific concept distinct from the frame-to-frame matching in S029.",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 11: FastSLAM, Pages 461-510 (data association)",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Data association: match observed features to landmarks in map. Nearest neighbor (NN), Mahalanobis distance gating, Hungarian algorithm. Wrong association causes filter divergence. Ambiguity handled via multi-hypothesis tracking."
+        },
+        {
+          "source_id": "SLAM_TUTORIAL",
+          "location": "Part 4: EKF-SLAM Implementation, Data Association section",
+          "url": "https://www.simultaneouslocalizationmapping.com/",
+          "access": "open",
+          "content_snippet": "Challenge: observed landmark may match existing landmark or be new. Use likelihood ratio test or information-theoretic criterion (AIC, MDL). Threshold determines false positive vs false negative rate tradeoff."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 55,
+      "prerequisites": [
+        "S029",
+        "S018",
+        "S028"
+      ],
+      "learning_objectives": [
+        "Apply Mahalanobis distance gating for landmark-to-observation matching",
+        "Use the nearest-neighbor and Hungarian algorithms for data association",
+        "Handle ambiguous associations using multi-hypothesis tracking",
+        "Explain why wrong associations cause EKF-SLAM divergence"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S031",
+      "concept_name": "Markov Localization and Histogram Filter",
+      "concept_name_ar": "التحديد الموقع الماركوفي ومرشح الرسم البياني",
+      "concept_category": "Probabilistic Localization",
+      "split_from": "C044",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 8: Mobile Robot Localization — Grid and Monte Carlo, Pages 241-280",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Markov localization represents the robot's belief bel(x_t) as a piecewise-constant function over a grid of possible poses. The prediction step convolves the prior with the motion model; the update step multiplies by the sensor likelihood. Exact but memory-intensive for high-resolution grids."
+        },
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 5: Localization, Pages 221-310 — Markov Localization section",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "Markov localization assumes the robot state is a Markov process: the current belief depends only on the previous belief, last action, and current observation. Grid-based implementation: discretize pose space, apply Bayes filter update at each cell."
+        },
+        {
+          "source_id": "UDACITY_AI_ROBOTICS",
+          "location": "Week 1: Localization — Histogram filter (1D and 2D examples in Python)",
+          "url": "https://www.udacity.com/course/artificial-intelligence-for-robotics--cs373",
+          "access": "open",
+          "content_snippet": "The histogram filter represents belief as a vector of probabilities over discrete locations. Sense step: multiply each cell probability by measurement likelihood; Move step: convolve with motion model. Normalize after each step."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 65,
+      "prerequisites": [
+        "S018",
+        "S022"
+      ],
+      "learning_objectives": [
+        "Implement the Markov Localization (Histogram Filter) algorithm on a discrete pose grid",
+        "Apply the prediction (motion) and correction (sensor) steps recursively",
+        "Analyse resolution-accuracy trade-offs in grid-based localization",
+        "Compare Markov Localization with EKF and Particle Filter representations"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S032",
+      "concept_name": "Gaussian Localization with EKF",
+      "concept_name_ar": "التحديد الموقع الغاوسي بمرشح كالمان الممتد",
+      "concept_category": "Probabilistic Localization",
+      "split_from": "C008",
+      "split_reason": "Gaussian localization is the application of EKF (S020) to the problem of localizing within a known feature map. It is a distinct learning unit from EKF derivation (S019) and from EKF-SLAM (S039) because the map is assumed known and fixed here — only the robot pose is estimated.",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 8: Mobile Robot Localization, Pages 241-280 — Gaussian localization with known map",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Gaussian localization uses EKF to maintain a unimodal Gaussian belief over robot pose. Assumes a known map; only robot pose is estimated. Efficient O(k) per update for k landmarks. Fails for global localization (multi-modal posterior) — requires particle filter instead."
+        },
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 5: Localization, Pages 221-310 — EKF-based localization",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "EKF localization: state = [x, y, θ], known map provides expected landmark positions. Predict pose from odometry; correct pose from observed landmarks. Consistent if linearization errors small. Diverges if robot kidnapped (pose jumps discontinuously)."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 55,
+      "prerequisites": [
+        "S020",
+        "S022",
+        "S031"
+      ],
+      "learning_objectives": [
+        "Apply EKF to localize a robot within a known feature map",
+        "Implement pose prediction from odometry and correction from LIDAR landmarks",
+        "Explain when Gaussian localization fails (multi-modal, kidnapped robot)",
+        "Compare Gaussian vs Markov vs Particle Filter localization tradeoffs"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S033",
+      "concept_name": "Particle Filters and Monte Carlo Localization",
+      "concept_name_ar": "مرشحات الجزيئات وتحديد الموقع بمونت كارلو",
+      "concept_category": "Probabilistic Localization",
+      "split_from": "C009",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 8: Particle Filters, Pages 323-384",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Particle filter represents belief as set of weighted samples (particles). Resampling: high-weight particles replicated, low-weight discarded. Monte Carlo Localization (MCL) applies particle filters to global localization using pre-built maps and range sensor measurements."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "Localization module: Particle Filter MCL, visualization",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "MCL algorithm: (1) sample particles from motion model; (2) weight by likelihood of observations; (3) resample with replacement. Handles multi-modal distributions and non-Gaussian noise better than EKF."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 80,
+      "prerequisites": [
+        "S018",
+        "S022",
+        "Monte Carlo Methods"
+      ],
+      "learning_objectives": [
+        "Implement particle filter resampling strategies (multinomial, low-variance)",
+        "Apply MCL for global robot localization in a known map",
+        "Compare particle filter vs EKF tradeoffs (accuracy, complexity, multi-modality)"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S034",
+      "concept_name": "Sensor Fusion Architecture and Motivation",
+      "concept_name_ar": "معمارية دمج المستشعرات ودوافعها",
+      "concept_category": "Sensor Integration",
+      "split_from": "C017",
+      "split_reason": "C017 mixed the high-level motivation and architecture of sensor fusion with the mathematical implementation. The motivation (why fuse, what goes wrong with single sensors, complementarity) is a standalone teachable concept. The mathematical implementation is covered by S021 (EKF fusion).",
+      "sources": [
+        {
+          "source_id": "WAYMO_BLOG",
+          "location": "Waymo Blog: Demonstrably Safe AI, Sensor Fusion Encoder",
+          "url": "https://waymo.com/blog/2025/12/demonstrably-safe-ai-for-autonomous-driving/",
+          "access": "open",
+          "content_snippet": "Sensor Fusion Encoder fuses camera, LIDAR, radar inputs over time, producing objects, semantics, and rich embeddings. Multi-modal fusion provides redundancy: camera for detail, LIDAR for range, radar for velocity in adverse weather."
+        },
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 5: Sensor Models, Pages 161-200 — Motivation for fusion",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Sensor fusion combines measurements from multiple modalities. Each sensor has complementary strengths and failure modes. Fusion provides robustness: if one sensor fails (e.g., LIDAR in fog, GPS in tunnel) others maintain the estimate."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 45,
+      "prerequisites": [
+        "S023",
+        "S018"
+      ],
+      "learning_objectives": [
+        "Explain why single-sensor systems fail and how fusion provides robustness",
+        "Describe complementarity between IMU, odometry, LIDAR, camera, and GPS",
+        "Classify fusion architectures: early fusion, late fusion, deep fusion",
+        "Design a fusion strategy for a given robot application and failure scenario"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S035",
+      "concept_name": "Visual Odometry",
+      "concept_name_ar": "قياس المسافة البصري",
+      "concept_category": "Vision-Based Localization",
+      "split_from": "C019",
+      "split_reason": "C019 merged visual odometry (frame-to-frame motion estimation from a camera) with Visual SLAM (building a globally consistent map). These are distinct algorithms with different prerequisites and outputs. Visual odometry only estimates relative motion; Visual SLAM additionally maintains a map and detects loop closures.",
+      "sources": [
+        {
+          "source_id": "SLAM_TUTORIAL",
+          "location": "Part 1: Advanced Topics - Visual Odometry section",
+          "url": "https://www.simultaneouslocalizationmapping.com/",
+          "access": "open",
+          "content_snippet": "Visual odometry estimates robot motion from sequential camera frames. Features: tracking sparse features (corners, SIFT) across frames. Compute essential matrix to recover relative camera pose. Drift accumulates — combine with loop closure for global consistency."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [
+        "S029",
+        "S006",
+        "Camera Calibration"
+      ],
+      "learning_objectives": [
+        "Implement visual odometry using sparse feature tracking",
+        "Estimate relative camera pose from matched feature correspondences",
+        "Quantify drift accumulation and compare to wheel odometry"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S036",
+      "concept_name": "Visual SLAM",
+      "concept_name_ar": "التحديد المتزامن للموقع ورسم الخرائط البصري",
+      "concept_category": "SLAM and Mapping",
+      "split_from": "C019",
+      "split_reason": "Visual SLAM extends visual odometry by maintaining a globally consistent map and performing loop closure. It requires knowledge of SLAM problem formulation (S038) and loop closure concepts (S044), making it a SLAM-module concept rather than a perception-module concept.",
+      "sources": [
+        {
+          "source_id": "MONOCULAR_SLAM_PAPER",
+          "location": "Understanding Monocular SLAM Implementation in Python OpenCV",
+          "url": "https://learnopencv.com/monocular-slam-in-python/",
+          "access": "open",
+          "content_snippet": "Visual SLAM: (1) feature extraction (SIFT, ORB); (2) feature matching across frames; (3) camera pose estimation; (4) triangulation to 3D points; (5) loop closure detection; (6) pose graph optimization."
+        },
+        {
+          "source_id": "SLAM_TUTORIAL",
+          "location": "Part 1: Advanced Topics - Visual SLAM section",
+          "url": "https://www.simultaneouslocalizationmapping.com/",
+          "access": "open",
+          "content_snippet": "Visual SLAM systems (ORB-SLAM2, LSD-SLAM) maintain a keyframe graph. Loop closure: match current keyframe to past keyframes using bag-of-words descriptor. Add constraint to pose graph and re-optimize globally."
+        }
+      ],
+      "difficulty_level": 4,
+      "estimated_teaching_minutes": 70,
+      "prerequisites": [
+        "S035",
+        "S038",
+        "S044"
+      ],
+      "learning_objectives": [
+        "Describe the Visual SLAM pipeline: tracking, local mapping, loop closing",
+        "Apply bag-of-words place recognition for loop closure detection",
+        "Compare Visual SLAM (camera-only) vs LiDAR SLAM tradeoffs",
+        "Identify modern Visual SLAM systems (ORB-SLAM2, LSD-SLAM) and their design choices"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S037",
+      "concept_name": "Semantic Understanding and Scene Graphs",
+      "concept_name_ar": "الفهم الدلالي ورسوم المشاهد",
+      "concept_category": "Robot Perception",
+      "split_from": "C038",
+      "sources": [
+        {
+          "source_id": "WAYMO_FOUNDATION_MODEL",
+          "location": "Waymo Blog: Demonstrably Safe AI, Driving VLM for semantic reasoning",
+          "url": "https://waymo.com/blog/2025/12/demonstrably-safe-ai-for-autonomous-driving/",
+          "access": "open",
+          "content_snippet": "Vision-Language Models (VLM) enable semantic understanding of road scenes. Example: detecting 'car on fire' as a hazard requiring different route. Goes beyond pixel-level detection to scene comprehension."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 70,
+      "prerequisites": [
+        "S024",
+        "Deep Learning basics"
+      ],
+      "learning_objectives": [
+        "Apply foundation models (CLIP, Gemini) for scene understanding",
+        "Convert semantic concepts to robot planning constraints",
+        "Evaluate robustness of learned models to distribution shifts"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S038",
+      "concept_name": "SLAM Problem Formulation",
+      "concept_name_ar": "صياغة مشكلة SLAM",
+      "concept_category": "SLAM and Mapping",
+      "split_from": "C011",
+      "split_reason": "C011 bundled three distinct ideas: (1) the mathematical formulation of SLAM as a probabilistic inference problem, (2) the EKF-SLAM algorithm implementation, and (3) loop closure exploitation. The formulation is a conceptual foundation that must be understood before any SLAM algorithm, so it deserves its own entry.",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 10: Occupancy Grid Mapping, Pages 421-430 — SLAM problem statement",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "SLAM: given a sequence of controls and observations, compute the posterior over map and trajectory. The full SLAM problem: p(x_{1:t}, m | z_{1:t}, u_{1:t}). The online SLAM problem: p(x_t, m | z_{1:t}, u_{1:t}). SLAM is hard because the map depends on the pose and the pose depends on the map."
+        },
+        {
+          "source_id": "SLAM_TUTORIAL",
+          "location": "Part 1: Introduction to SLAM problem formulation",
+          "url": "https://www.simultaneouslocalizationmapping.com/",
+          "access": "open",
+          "content_snippet": "SLAM solves the chicken-and-egg problem: to build a map you need to know where you are; to know where you are you need a map. The problem is formulated as joint estimation of robot trajectory and map landmarks from sensor data and odometry."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 50,
+      "prerequisites": [
+        "S018",
+        "S022",
+        "S025"
+      ],
+      "learning_objectives": [
+        "Formulate the full SLAM and online SLAM problems as probabilistic inference",
+        "Explain why SLAM is a chicken-and-egg problem and why it is hard",
+        "Distinguish feature-based SLAM from occupancy-grid SLAM",
+        "Identify the role of loop closure in achieving globally consistent maps"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S039",
+      "concept_name": "EKF-SLAM Algorithm",
+      "concept_name_ar": "خوارزمية SLAM باستخدام مرشح كالمان الممتد",
+      "concept_category": "SLAM and Mapping",
+      "split_from": "C011",
+      "split_reason": "The EKF-SLAM algorithm — augmented state vector, covariance update, data association steps — is the concrete implementation of SLAM formulation (S038). Separated so it can reference the formulation concept as a prerequisite and focus entirely on the algorithm mechanics and its quadratic complexity scaling.",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 10: EKF-SLAM, Pages 430-460",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "EKF-SLAM maintains augmented state: [robot pose; landmark 1; landmark 2; ...]. Covariance includes cross-terms between robot and landmarks. As landmarks observed from multiple poses, correlation improves localization. Complexity: O(n²) in number of landmarks."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "SLAM module: EKF-SLAM with animation",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "EKF-SLAM pseudocode: prediction: augmented state from motion; correction: for each landmark observation, update state and covariance. Data association critical: ambiguous landmarks cause divergence."
+        },
+        {
+          "source_id": "SLAM_TUTORIAL",
+          "location": "Part 4: EKF-SLAM Implementation, step-by-step with Python",
+          "url": "https://www.simultaneouslocalizationmapping.com/",
+          "access": "open",
+          "content_snippet": "EKF-SLAM: update augmented state and covariance. Loop closure: recognize revisited location, add constraint between poses. Challenge: exponential covariance growth with landmarks — necessitates approximations or replacement with graph-SLAM."
+        }
+      ],
+      "difficulty_level": 4,
+      "estimated_teaching_minutes": 90,
+      "prerequisites": [
+        "S038",
+        "S020",
+        "S030"
+      ],
+      "learning_objectives": [
+        "Derive the EKF-SLAM augmented state and covariance update equations",
+        "Implement the prediction and correction steps for a feature-based map",
+        "Analyze O(n²) complexity scaling and its practical implications",
+        "Compare EKF-SLAM with graph-SLAM in terms of scalability and consistency"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S040",
+      "concept_name": "Occupancy Grid Mapping",
+      "concept_name_ar": "خريطة شبكة الاشغال",
+      "concept_category": "SLAM and Mapping",
+      "split_from": "C010",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 10: Occupancy Grid Mapping, Pages 421-460",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Occupancy grid divides environment into cells, each with probability p(occupied|observations). Inverse sensor model maps range measurements to grid updates using log-odds: log(p/(1-p)). Advantages: flexible, handles uncertainty well. Disadvantage: memory-intensive for large areas."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "Mapping module: Gaussian Grid Map, detailed implementation",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "Algorithm: FOR each LIDAR scan: FOR each range ray: mark cells along ray as free (inverse model); mark end-point as occupied. Log-odds update: l(x) = l(x) + l_occ if occupied, l(x) + l_free if free."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 70,
+      "prerequisites": [
+        "S025",
+        "S016",
+        "Computer Graphics basics"
+      ],
+      "learning_objectives": [
+        "Implement occupancy grid updates from range sensor data using log-odds",
+        "Apply the inverse sensor model to update cell probabilities",
+        "Analyze memory and resolution tradeoffs for grid sizing"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S041",
+      "concept_name": "Map Representations: Metric vs Topological",
+      "concept_name_ar": "تمثيلات الخرائط: المترية مقابل الطوبولوجية",
+      "concept_category": "SLAM and Mapping",
+      "split_from": "C020",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 6: Mapping, Pages 311-380",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "Metric maps (occupancy grids) precise but memory-intensive. Topological maps (graph of places/edges) sparse but lower dimensional. Hybrid approach: combine metric local maps with topological global structure."
+        },
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 6: Mapping, Pages 286-340",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "Topological representation: nodes = rooms/hallways, edges = connectivity. Advantages: compact, human interpretable. Disadvantages: loses metric info. Applications: coarse path planning, loop closure detection."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 50,
+      "prerequisites": [
+        "S040"
+      ],
+      "learning_objectives": [
+        "Compare metric and topological map representations on accuracy, memory, and planning suitability",
+        "Implement a hybrid metric-topological map",
+        "Select the appropriate map representation for a given robot application"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S042",
+      "concept_name": "FastSLAM: Particle Filter SLAM",
+      "concept_name_ar": "FastSLAM: SLAM بمرشح الجزيئات",
+      "concept_category": "SLAM and Mapping",
+      "split_from": "C032",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 11: FastSLAM, Pages 461-510",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "FastSLAM: factorizes posterior into particle filter over poses × EKF over landmarks. Particles represent pose uncertainty; each particle has independent EKF for landmark positions. More scalable than EKF-SLAM; handles multi-modal pose distributions."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "SLAM module: FastSLAM 1.0, FastSLAM 2.0 implementations",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "FastSLAM: (1) sample poses from motion model; (2) weight particles by observation likelihood; (3) resample; (4) update landmark EKF per particle. FastSLAM 2.0 samples poses from filtered posterior for higher efficiency."
+        }
+      ],
+      "difficulty_level": 4,
+      "estimated_teaching_minutes": 110,
+      "prerequisites": [
+        "S033",
+        "S039"
+      ],
+      "learning_objectives": [
+        "Explain the Rao-Blackwellization factorization that makes FastSLAM tractable",
+        "Implement FastSLAM 1.0 (particle filter + per-particle EKF)",
+        "Compare FastSLAM convergence vs EKF-SLAM accuracy and scalability"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S043",
+      "concept_name": "Graph-Based SLAM and Pose Graph Optimization",
+      "concept_name_ar": "SLAM المستند على الرسم البياني وتحسين الرسم البياني للموضع",
+      "concept_category": "SLAM and Mapping",
+      "split_from": "C012",
+      "sources": [
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 11: FastSLAM, Pages 461-510 (graph optimization variants)",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Graph-SLAM represents problem as optimization: nodes = robot poses, edges = constraints (odometry, loop closures). Solves by minimizing edge error: min Σ ||h(x_i, x_j) - z_ij||². More efficient than EKF-SLAM for large maps."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "SLAM module: Graph-based SLAM implementation with optimization loop",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "Pose graph: nodes are robot poses, edges encode relative transformations. Loop closure adds edge between distant poses. Optimization minimizes graph error. Solvers: Levenberg-Marquardt, iSAM, g2o."
+        }
+      ],
+      "difficulty_level": 4,
+      "estimated_teaching_minutes": 100,
+      "prerequisites": [
+        "S038",
+        "Nonlinear Optimization",
+        "Graph Theory"
+      ],
+      "learning_objectives": [
+        "Construct a pose graph from odometry measurements and loop closures",
+        "Apply nonlinear optimization (LM, g2o) to minimize pose graph error",
+        "Compare graph-SLAM vs EKF-SLAM in terms of efficiency and scalability"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S044",
+      "concept_name": "Loop Closure Detection",
+      "concept_name_ar": "كشف إغلاق الحلقة",
+      "concept_category": "SLAM and Mapping",
+      "split_from": "C021",
+      "sources": [
+        {
+          "source_id": "SLAM_TUTORIAL",
+          "location": "Part 4: EKF-SLAM Implementation, Loop Closure section",
+          "url": "https://www.simultaneouslocalizationmapping.com/",
+          "access": "open",
+          "content_snippet": "Loop closure: recognize when robot revisits previously mapped location. Methods: place recognition (Bag-of-Words visual features), geometry matching. Adding loop closure constraint corrects accumulated drift. Critical for consistent large-scale SLAM."
+        },
+        {
+          "source_id": "THRUN_BURGARD_FOX",
+          "location": "Chapter 11: FastSLAM, Pages 461-510",
+          "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/",
+          "access": "paid",
+          "content_snippet": "Loop closure detection algorithms: feature-based (match current landmarks to old), appearance-based (visual bag-of-words), semantic (room type matching). False positives cause catastrophic divergence → multi-hypothesis tracking or verification step required."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 70,
+      "prerequisites": [
+        "S038",
+        "S029"
+      ],
+      "learning_objectives": [
+        "Implement place recognition for loop closure detection using Bag-of-Words",
+        "Add pose graph constraints when a loop closure is detected",
+        "Handle and recover from false loop closure detections"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S045",
+      "concept_name": "Multi-Robot Coordination and Swarm Robotics",
+      "concept_name_ar": "تنسيق متعدد الروبوتات وروبوتات السرب",
+      "concept_category": "Multi-Agent Systems",
+      "split_from": "C040",
+      "sources": [
+        {
+          "source_id": "LOCUS_WAREHOUSE_AI",
+          "location": "Locus Robotics: Warehouse Agentic AI, Multi-Robot Orchestration",
+          "url": "https://locusrobotics.com/locusone/warehouse-agentic-ai",
+          "access": "open",
+          "content_snippet": "Multi-robot coordination in warehouses: task assignment (Hungarian algorithm), collision avoidance (DWA per-robot), traffic management. System-wide AI agents optimize fleet throughput."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 90,
+      "prerequisites": [
+        "S047",
+        "Graph Theory"
+      ],
+      "learning_objectives": [
+        "Implement decentralized collision avoidance for multi-robot systems",
+        "Solve task assignment optimally using the Hungarian algorithm",
+        "Design distributed control respecting communication delays"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S046",
+      "concept_name": "Dijkstra's and A* Path Planning Algorithms",
+      "concept_name_ar": "خوارزميات ديكسترا و A* لتخطيط المسار",
+      "concept_category": "Motion Planning",
+      "split_from": "C013",
+      "sources": [
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 7: Motion Planning, Pages 341-390",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "Dijkstra's algorithm finds shortest path in graph with non-negative edge weights. A* extends Dijkstra with heuristic f(n) = g(n) + h(n). A* optimal if heuristic admissible (≤ true remaining cost)."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "Path Planning module: Dijkstra and A* implementations with grid maps",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "A* pseudocode: open_set = {start}. LOOP: current = min f-score node. IF goal: return path. ELSE: evaluate neighbors, update g/f scores. Time complexity O(b^d) where b = branching factor, d = depth."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 70,
+      "prerequisites": [
+        "S004",
+        "Graph Theory",
+        "Data Structures"
+      ],
+      "learning_objectives": [
+        "Implement A* on occupancy grid maps for obstacle avoidance",
+        "Design admissible heuristics for grid-based planning",
+        "Analyze computational complexity and optimality guarantees"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S047",
+      "concept_name": "RRT and Sampling-Based Motion Planning",
+      "concept_name_ar": "أشجار البحث العشوائي السريعة والتخطيط الحركي القائم على العينات",
+      "concept_category": "Motion Planning",
+      "split_from": "C014",
+      "sources": [
+        {
+          "source_id": "LYNCH_PARK_BOOK",
+          "location": "Chapter 10: Motion Planning, Pages 281-352",
+          "url": "https://modernrobotics.org/",
+          "access": "partially_open",
+          "content_snippet": "RRT builds tree of random configurations, greedily extending toward new samples. RRT* adds local rewiring to optimize path quality. Asymptotically optimal for continuous spaces. Handles high-dimensional and nonholonomic systems."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "Path Planning module: RRT, RRT* implementations",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "RRT: sample random config; find nearest node; extend toward sample; if collision-free, add node. Probabilistic completeness: P(find path) → 1 as iterations → ∞."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 90,
+      "prerequisites": [
+        "S004",
+        "Collision Detection",
+        "Random Sampling"
+      ],
+      "learning_objectives": [
+        "Implement RRT for mobile robot path planning in obstacle fields",
+        "Apply RRT* rewiring for path quality optimization",
+        "Compare RRT (probabilistically complete) vs A* (deterministic optimal) tradeoffs"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S048",
+      "concept_name": "Trajectory Planning and Quintic Splines",
+      "concept_name_ar": "تخطيط المسار الزمني والمنحنيات الخماسية",
+      "concept_category": "Motion Planning",
+      "split_from": "C034",
+      "sources": [
+        {
+          "source_id": "LYNCH_PARK_BOOK",
+          "location": "Chapter 9: Trajectory Generation, Pages 233-280",
+          "url": "https://modernrobotics.org/",
+          "access": "partially_open",
+          "content_snippet": "Quintic splines: 5th-order polynomials ensuring continuous acceleration. Boundary conditions: position, velocity, acceleration at start/end. Cubic splines (3rd-order, continuous velocity) for simpler trajectories."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 65,
+      "prerequisites": [
+        "S046",
+        "Polynomial Interpolation"
+      ],
+      "learning_objectives": [
+        "Construct quintic spline trajectories satisfying boundary constraints",
+        "Evaluate trajectory smoothness (continuity of velocity/acceleration)",
+        "Time-scale trajectories to respect velocity/acceleration limits"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S049",
+      "concept_name": "Collision Detection and Local Obstacle Avoidance",
+      "concept_name_ar": "كشف التصادم وتجنب العقبات المحلي",
+      "concept_category": "Motion Planning",
+      "split_from": "C018",
+      "sources": [
+        {
+          "source_id": "SIEGWART_BOOK",
+          "location": "Chapter 7: Planning and Navigation, Pages 381-450",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/",
+          "access": "paid",
+          "content_snippet": "Local obstacle avoidance: Dynamic Window Approach (DWA), Velocity Obstacles. DWA: evaluate all feasible velocity commands, select safest/most progress-making. Handles dynamic obstacles (moving people). Complements global planner (A*, RRT)."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "Path Planning module: Dynamic Window Approach implementation",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "DWA: enumerate feasible (v,ω) pairs based on robot dynamics. Score each trajectory on safety (distance to obstacles), progress toward goal, comfort. Select highest-scoring (v,ω). Recalculate every ~100ms."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 65,
+      "prerequisites": [
+        "S047",
+        "Computational Geometry"
+      ],
+      "learning_objectives": [
+        "Implement efficient 2D collision detection for mobile robots",
+        "Apply the Dynamic Window Approach (DWA) for reactive obstacle avoidance",
+        "Integrate local (DWA) and global (A*) planning for robust autonomous navigation"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S050",
+      "concept_name": "PID Control and Feedback Linearization",
+      "concept_name_ar": "السيطرة PID والخطية الموجهة",
+      "concept_category": "Motion Control",
+      "split_from": "C016",
+      "sources": [
+        {
+          "source_id": "KELLY_BOOK",
+          "location": "Chapter 8: Control, Pages 391-434",
+          "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091",
+          "access": "paid",
+          "content_snippet": "Feedback linearization: nonlinear system transformed via feedback into linear system. Example: underactuated wheeled robot controlled via virtual forces. Prerequisite: system linearizable (accessibility rank = full)."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [
+        "S009",
+        "Linear Control Theory"
+      ],
+      "learning_objectives": [
+        "Tune PID gains for mobile robot speed and steering control",
+        "Apply feedback linearization to underactuated wheeled systems",
+        "Analyze closed-loop stability using Lyapunov methods"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S051",
+      "concept_name": "Pure Pursuit and Trajectory Tracking Control",
+      "concept_name_ar": "السيطرة على تتبع المسار بالملاحقة النقية",
+      "concept_category": "Motion Control",
+      "split_from": "C015",
+      "sources": [
+        {
+          "source_id": "SICILIANO_BOOK",
+          "location": "Chapter 8: Mobile Robot Control, Pages 433-480",
+          "url": "https://link.springer.com/book/10.1007/978-1-84628-642-1",
+          "access": "paid",
+          "content_snippet": "Pure pursuit: robot steers toward a lookahead point on desired path. Steering command δ = atan2(2L sin(θ_e), l). Simple, stable, widely used in autonomous vehicles."
+        },
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "Path Tracking module: Pure Pursuit, Stanley controller implementations",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "Pure pursuit animation shows robot converging to path. Lookahead distance L: small = responsive but oscillatory; large = smooth but sluggish. Stanley controller: steering = heading_error + atan2(cross_track_error, speed)."
+        }
+      ],
+      "difficulty_level": 2,
+      "estimated_teaching_minutes": 60,
+      "prerequisites": [
+        "S009",
+        "S050"
+      ],
+      "learning_objectives": [
+        "Implement pure pursuit control for differential-drive robots",
+        "Tune lookahead distance for stability vs responsiveness tradeoff",
+        "Apply trajectory tracking to curved paths including obstacle avoidance scenarios"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    },
+    {
+      "concept_id": "S052",
+      "concept_name": "Model Predictive Control",
+      "concept_name_ar": "السيطرة التنبؤية للنموذج",
+      "concept_category": "Motion Control",
+      "split_from": "C037",
+      "sources": [
+        {
+          "source_id": "PYTHONROBOTICS",
+          "location": "Path Tracking module: Model Predictive Control trajectory generation",
+          "url": "https://github.com/AtsushiSakai/PythonRobotics",
+          "access": "open",
+          "content_snippet": "MPC: optimize control inputs over horizon [t, t+T]. Receding horizon: recompute optimal trajectory from current state each timestep. Handles constraints and nonlinearities. Computationally intensive but increasingly practical via GPU."
+        }
+      ],
+      "difficulty_level": 3,
+      "estimated_teaching_minutes": 85,
+      "prerequisites": [
+        "S051",
+        "Optimization"
+      ],
+      "learning_objectives": [
+        "Formulate MPC optimization for mobile robot trajectory tracking",
+        "Implement fast MPC solvers (sequential quadratic programming)",
+        "Tradeoff planning horizon length vs computational cost"
+      ],
+      "user_selected": null,
+      "user_priority": null
+    }
+  ]
+}

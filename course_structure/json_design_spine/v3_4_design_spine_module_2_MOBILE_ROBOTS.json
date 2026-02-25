@@ -1,0 +1,188 @@
+{
+  "course_metadata": {
+    "course_id": "1",
+    "version": "3.4",
+    "title": "Mobile Robots",
+    "phase": "Phase 3 — Design Spine",
+    "generated_date": "2026-02-18",
+    "generated_by": "Course Architect Engine v2.0",
+    "science_to_practice_ratio": 3
+  },
+  "phase3_design_spine": [
+    {
+      "module_id": "MOD-002",
+      "module_title": "Introduction to Mobile Robots",
+      "module_title_ar": "مقدمة في الروبوتات المتنقلة",
+      "science_to_practice_ratio": 3,
+      "spine_required": true,
+      "spine_strength": "light",
+      "design_problem": {
+        "problem_statement": "Your team has just received a TurtleBot3 Burger for a campus navigation project. The project brief: the robot must autonomously travel from the engineering building entrance to the library (120 m, two corridor turns, one elevator). Before writing a single line of code, you must justify every hardware and software choice — locomotion type, DOF classification, sensor selection, and software architecture — in a design review. What do you choose, and why?",
+        "real_world_context": "TurtleBot3 is the global standard educational mobile robot platform. The scenario mirrors real robot deployment decisions made at institutions like MIT CSAIL, ETH Zurich, and Carnegie Mellon Robotics Institute.",
+        "context_url": "https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/",
+        "target_user_role": "engineer"
+      },
+      "concepts_covered": ["S001", "S002", "S003", "S023", "S007", "S008"],
+      "failure_modes": [
+        {
+          "failure_id": "F-002-01",
+          "failure_type": "Type 4 — Safety violation",
+          "naive_approach": "Pick any motorized robot (tracked or omnidirectional) from the lab — it moves, so it must work.",
+          "critical_questions": [
+            "Can the robot physically fit through a standard 80 cm corridor door?",
+            "Will it be able to navigate the 90° turn without getting stuck against the wall?",
+            "What happens if the wheels slip on a polished floor?"
+          ],
+          "why_it_fails": "Different locomotion types impose fundamentally different kinematic constraints. A tracked robot may apply excessive floor pressure indoors. An omnidirectional robot with Swedish wheels may slip on polished corridor floors. The selection must match terrain, environment clearance, and energy budget.",
+          "failure_consequence": "Robot gets physically stuck or damages corridor infrastructure, mission fails at step one.",
+          "resolving_concept_id": "S001",
+          "resolving_concept_name": "Mobile Robot Locomotion Types and Wheel Configurations",
+          "resolving_concept_name_ar": "أنواع حركة الروبوت المتنقل وتكوينات العجلات",
+          "scientific_principle": "Locomotion taxonomy (wheeled, legged, tracked, aerial) combined with wheel-ground contact models determines feasibility in a given environment. Differential drive is optimal for flat indoor corridors: simple kinematics, zero turning radius, low maintenance.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 2: Locomotion, Section 2.1–2.3, Pages 35–62 — Wheel types, terrain interaction, locomotion selection",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          },
+          "real_world_example": {
+            "description": "iRobot Roomba uses differential drive specifically because it enables zero-radius turning in tight spaces, making it ideal for indoor room navigation.",
+            "url": "https://www.irobot.com/en_US/roomba.html",
+            "relevance_score": 5
+          }
+        },
+        {
+          "failure_id": "F-002-02",
+          "failure_type": "Type 2 — Mathematical infeasibility",
+          "naive_approach": "Choose the robot with the most wheels — more wheels means more stability and better control.",
+          "critical_questions": [
+            "How many independent motion commands can this robot actually receive?",
+            "Can it reach any position in the corridor, or only positions along specific paths?",
+            "What does 'holonomic' mean, and does it matter for this task?"
+          ],
+          "why_it_fails": "The number of wheels does not determine controllability. A robot with 4 wheels but non-holonomic constraints (like a car) cannot translate sideways — it cannot correct small lateral errors without a multi-step maneuver. Holonomy determines whether every DOF is independently actuatable.",
+          "failure_consequence": "Robot requires a 3-point turn to correct a 5 cm lateral error, causing time overrun and path deviation.",
+          "resolving_concept_id": "S002",
+          "resolving_concept_name": "Robot Morphology Selection and Holonomy Classification",
+          "resolving_concept_name_ar": "اختيار شكل الروبوت وتصنيف الهولونومية",
+          "scientific_principle": "Holonomic robots (e.g., mecanum wheel) have m = DOF (every degree of freedom independently controllable). Non-holonomic robots (e.g., differential drive) have constraints that reduce instantaneous controllability. For corridor navigation, non-holonomic differential drive is sufficient and preferred.",
+          "citation": {
+            "resource_id": "LYNCH_PARK_BOOK",
+            "location": "Chapter 13: Wheeled Mobile Robots, Section 13.1, Pages 522–532 — Holonomic vs non-holonomic classification",
+            "url": "https://modernrobotics.org/"
+          },
+          "real_world_example": {
+            "description": "Amazon Robotics Kiva/Drive uses differential drive (non-holonomic) rather than mecanum wheels because the constraint-based path planning is computationally simpler at warehouse scale.",
+            "url": "https://www.aboutamazon.com/news/operations/amazon-robotics",
+            "relevance_score": 4
+          }
+        },
+        {
+          "failure_id": "F-002-03",
+          "failure_type": "Type 2 — Mathematical infeasibility",
+          "naive_approach": "The robot has 2 motors so it has 2 degrees of freedom — one for each wheel.",
+          "critical_questions": [
+            "How many numbers are needed to fully describe the robot's state in the corridor?",
+            "Why does a 2-actuator robot need 3 numbers (x, y, θ) to describe its position?",
+            "What is the difference between actuator DOF and configuration DOF?"
+          ],
+          "why_it_fails": "Confusing actuator count with configuration degrees of freedom leads to incorrect kinematic models. A differential drive robot has 2 actuators but 3 configuration DOF (x, y, θ). This distinction is essential for writing the motion model and control law.",
+          "failure_consequence": "Motion model is dimensionally incorrect — controller cannot track orientation, robot drifts into walls on turns.",
+          "resolving_concept_id": "S003",
+          "resolving_concept_name": "Degrees of Freedom for Mobile Robots",
+          "resolving_concept_name_ar": "درجات الحرية للروبوتات المتنقلة",
+          "scientific_principle": "For a rigid body in the plane: 3 DOF (x, y, θ). Grübler's formula counts mechanism DOF. For mobile robots, total DOF ≠ controllable DOF due to non-holonomic constraints. TurtleBot3 has 3 DOF but only 2 controllable — key distinction for all subsequent kinematic analysis.",
+          "citation": {
+            "resource_id": "LYNCH_PARK_BOOK",
+            "location": "Chapter 2: Configuration Space, Section 2.1, Pages 19–30 — DOF definition and counting",
+            "url": "https://modernrobotics.org/"
+          }
+        },
+        {
+          "failure_id": "F-002-04",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Attach only one sensor — a camera is enough; humans navigate with eyes alone.",
+          "critical_questions": [
+            "What happens to camera-based navigation in a dark corridor?",
+            "How does the robot know its distance to the wall if it only has a camera?",
+            "What sensor gives range data directly without complex image processing?"
+          ],
+          "why_it_fails": "Different sensors measure fundamentally different physical quantities. A camera is passive (measures light intensity, not distance) and fails in low-light or textureless corridors. Range sensing (LIDAR, sonar, IR) directly provides distance. Sensor selection requires matching measurement principle to task requirement.",
+          "failure_consequence": "Robot cannot estimate wall distance in dim lighting, triggers false collision avoidance, or crashes.",
+          "resolving_concept_id": "S023",
+          "resolving_concept_name": "Sensor Hardware Survey and Classification",
+          "resolving_concept_name_ar": "مسح أجهزة الاستشعار وتصنيفها",
+          "scientific_principle": "Proprioceptive sensors (wheel encoders, IMU) measure internal state. Exteroceptive sensors (LIDAR, camera, sonar) measure the environment. Active sensors emit energy (LIDAR, sonar); passive sensors detect ambient energy (camera). Sensor selection: match measurement principle to task, environment, and compute budget.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 4: Sensors for Mobile Robots, Section 4.1–4.2, Pages 159–200 — Sensor classification and characteristics",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-002-05",
+          "failure_type": "Type 5 — Economic infeasibility",
+          "naive_approach": "Write monolithic C++ code where everything runs in one loop: read sensor, compute, send command. This is how Arduino projects work.",
+          "critical_questions": [
+            "What happens when the LIDAR publishes at 10 Hz but your control loop runs at 50 Hz?",
+            "How do you add a camera node without rewriting the entire codebase?",
+            "How do you visualize and debug the robot's state while it is running?"
+          ],
+          "why_it_fails": "Monolithic code creates tight coupling between sensor drivers, algorithms, and actuators. Adding a new sensor requires modifying the core loop. Debugging requires custom tools. Rate mismatches between sensors cause data synchronization errors. ROS solves all of these with a publish-subscribe middleware.",
+          "failure_consequence": "Adding the camera sensor requires 3 weeks of integration work; the team misses the deadline. Sensor rate mismatches cause the navigation algorithm to use stale LIDAR data.",
+          "resolving_concept_id": "S007",
+          "resolving_concept_name": "ROS Architecture",
+          "resolving_concept_name_ar": "معمارية نظام تشغيل الروبوت (ROS)",
+          "scientific_principle": "ROS (Robot Operating System) implements a distributed publish-subscribe communication model. Nodes are independent processes; topics carry typed messages; the master manages discovery. This decouples sensors, algorithms, and actuators, enabling modular, rate-independent, debuggable robot software.",
+          "citation": {
+            "resource_id": "ROS_DOCUMENTATION",
+            "location": "ROS Concepts: Nodes, Topics, Messages, Services — ROS Wiki Master Tutorial",
+            "url": "http://wiki.ros.org/ROS/Concepts"
+          },
+          "real_world_example": {
+            "description": "Waymo's onboard software stack uses a modular publish-subscribe architecture for the same reason: independent sensor modules publish data; independent algorithm modules subscribe without knowing hardware details.",
+            "url": "https://waymo.com/research/",
+            "relevance_score": 4
+          }
+        },
+        {
+          "failure_id": "F-002-06",
+          "failure_type": "Type 4 — Safety violation",
+          "naive_approach": "Test the navigation algorithm directly on the real TurtleBot3 in the corridor from day one.",
+          "critical_questions": [
+            "What happens if the path planning algorithm has a bug that sends the robot at full speed into a wall?",
+            "How long does it take to iterate — deploy, crash, fix, redeploy — on physical hardware?",
+            "Can you run 100 test scenarios per hour on real hardware?"
+          ],
+          "why_it_fails": "Algorithm bugs on physical hardware cause real damage (robot, environment, people). Physical deployment cycles take 10–30 minutes each. Simulation allows 1000 test iterations per hour with zero physical risk, and failure modes that are impossible to trigger safely on hardware can be tested freely.",
+          "failure_consequence": "A path planning bug causes the robot to accelerate into a wall. Physical repair takes 2 days; no insurance covers student robot damage.",
+          "resolving_concept_id": "S008",
+          "resolving_concept_name": "Gazebo Simulation and Software-in-the-Loop Testing",
+          "resolving_concept_name_ar": "محاكاة Gazebo واختبار البرمجيات في الحلقة",
+          "scientific_principle": "Software-in-the-Loop (SIL) testing replaces physical hardware with a physics engine (Gazebo) that accurately simulates robot dynamics, sensor noise, and environment geometry. The same ROS nodes run against the simulator before deployment, catching algorithm bugs before they cause physical damage.",
+          "citation": {
+            "resource_id": "ROS_TUTORIALS",
+            "location": "Gazebo ROS Integration Tutorial — Simulating TurtleBot3",
+            "url": "https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/"
+          }
+        }
+      ],
+      "concept_coverage_check": {
+        "S001": {"covered": true, "failure_id": "F-002-01"},
+        "S002": {"covered": true, "failure_id": "F-002-02"},
+        "S003": {"covered": true, "failure_id": "F-002-03"},
+        "S023": {"covered": true, "failure_id": "F-002-04"},
+        "S007": {"covered": true, "failure_id": "F-002-05"},
+        "S008": {"covered": true, "failure_id": "F-002-06"}
+      },
+      "spine_narrative_arc": "S001 (what type of robot?) → S002 (is it holonomic?) → S003 (how many DOF does it have?) → S023 (what sensors does it need?) → S007 (how does the software communicate?) → S008 (how do we test it safely?)",
+      "validation": {
+        "all_concepts_covered": true,
+        "citations_complete": true,
+        "failure_types_diverse": ["Type 4", "Type 2", "Type 2", "Type 3", "Type 5", "Type 4"],
+        "real_world_anchor": "TurtleBot3 campus navigation — campus-scale system mirrors real AMR deployments",
+        "spine_strength_respected": true,
+        "generated_date": "2026-02-18"
+      }
+    }
+  ]
+}

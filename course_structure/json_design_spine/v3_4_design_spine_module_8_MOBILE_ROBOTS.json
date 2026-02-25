@@ -1,0 +1,226 @@
+{
+  "course_metadata": {
+    "course_id": "1",
+    "version": "3.4",
+    "title": "Mobile Robots",
+    "phase": "Phase 3 — Design Spine",
+    "generated_date": "2026-02-18",
+    "generated_by": "Course Architect Engine v2.0",
+    "science_to_practice_ratio": 3
+  },
+  "phase3_design_spine": [
+    {
+      "module_id": "MOD-008",
+      "module_title": "Planning & Navigation",
+      "module_title_ar": "التخطيط والملاحة",
+      "science_to_practice_ratio": 3,
+      "spine_required": true,
+      "spine_strength": "critical",
+      "design_problem": {
+        "problem_statement": "A Locus Robotics LocusOne AMR must navigate a 5,000 m² e-commerce fulfillment warehouse from Receiving Dock A (entry) to Pick Station B7 (120 m path). Constraints: (1) maximum 30 seconds travel time; (2) avoid 12 static shelving units and 8 dynamic obstacles (human pickers moving at 1.5 m/s); (3) arrive at B7 with zero velocity and heading aligned to the station (±5°); (4) payload contains fragile items — no jerky motion (acceleration < 0.5 m/s²). Three engineering layers must be solved: WHERE to go, HOW to move there, HOW to stay on track.",
+        "real_world_context": "Locus Robotics LocusOne is deployed in over 50 warehouses across 6 countries. They report 99.9% task completion rate. The 3-layer navigation architecture (global planning, local planning, tracking control) is the industry standard.",
+        "context_url": "https://locusrobotics.com/locusone/",
+        "target_user_role": "engineer"
+      },
+      "three_layer_architecture": {
+        "layer_1": "LAYER 1 — WHERE TO GO: Global path planning in known static map",
+        "layer_2": "LAYER 2 — HOW TO MOVE THERE: Trajectory smoothing + local dynamic obstacle avoidance",
+        "layer_3": "LAYER 3 — HOW TO STAY ON TRACK: Trajectory tracking control"
+      },
+      "concepts_covered": ["S004", "S046", "S047", "S048", "S049", "S050", "S051", "S052"],
+      "failure_modes": [
+        {
+          "failure_id": "F-008-01",
+          "failure_type": "Type 2 — Mathematical infeasibility",
+          "naive_approach": "LAYER 1: Plan a path by specifying waypoints in (x, y) coordinates through the warehouse. Just avoid the centers of the shelving units.",
+          "critical_questions": [
+            "The robot is 0.5 m wide. Can it pass through a 0.6 m gap between shelves?",
+            "What if the planned path passes 0.05 m from a shelf corner — is the robot safe?",
+            "How do you mathematically represent 'the set of all positions the robot cannot be in'?",
+            "How does a non-holonomic robot's shape change the set of forbidden configurations?"
+          ],
+          "why_it_fails": "Planning in (x, y) space does not account for the robot's physical size or orientation. A path that avoids obstacle centers may still cause the robot body to collide with obstacle edges. The robot's non-holonomic constraint means it cannot pass through certain configurations even if the center point is technically free. Configuration Space (C-Space) is the correct mathematical domain for planning.",
+          "failure_consequence": "The path planner finds a route that passes 5 cm from a shelf corner. The robot's 50 cm radius body hits the corner, causes the AMR to stop and trigger a safety alarm, blocking the aisle.",
+          "resolving_concept_id": "S004",
+          "resolving_concept_name": "Configuration Space and C-Space Obstacles",
+          "resolving_concept_name_ar": "فضاء التهيئة وعوائق فضاء التهيئة",
+          "scientific_principle": "Configuration Space (C-Space): the set of all possible robot configurations q = (x, y, θ) ∈ SE(2). C-Space obstacle (C_obs): the set of all configurations q where the robot body B(q) intersects any obstacle O: C_obs = {q | B(q) ∩ O ≠ ∅}. For a circular robot of radius r, C_obs is the Minkowski sum of each obstacle with a disk of radius r. For non-circular robots, C_obs depends on θ — the obstacle shape in C-Space is orientation-dependent. Free space C_free = C \ C_obs. All planning happens in C_free.",
+          "citation": {
+            "resource_id": "LYNCH_PARK_BOOK",
+            "location": "Chapter 10: Motion Planning, Section 10.1, Pages 384–398 — C-Space formulation, Minkowski sum, C-obs construction",
+            "url": "https://modernrobotics.org/"
+          }
+        },
+        {
+          "failure_id": "F-008-02",
+          "failure_type": "Type 5 — Economic infeasibility",
+          "naive_approach": "LAYER 1: In the C-Space grid, find the path using Breadth-First Search — explore every cell equally until reaching the goal.",
+          "critical_questions": [
+            "The warehouse C-Space is 5000 m² at 10 cm resolution = 500,000 cells. BFS explores all cells uniformly — how many cells are explored before finding the goal?",
+            "Dijkstra's adds edge weights (distance). A* adds a heuristic. What is the heuristic for a 2D grid?",
+            "Why does a good heuristic reduce explored cells from O(N) to O(N^0.5)?",
+            "Is the Euclidean distance heuristic admissible? What does admissible mean?"
+          ],
+          "why_it_fails": "BFS finds the shortest path only if all edge costs are equal. In a warehouse, paths along diagonals cost more than axis-aligned paths. BFS also explores in all directions equally — it will explore 400,000 cells before finding a goal 120 m away. Dijkstra's handles variable costs but still explores all cells with cost ≤ optimal. A* uses a heuristic to focus search toward the goal, exploring only ~1% of cells.",
+          "failure_consequence": "BFS path planning takes 45 seconds for a 120 m path in the 500,000 cell grid. The AMR sits idle for 45 seconds waiting for a path — missing the 30-second SLA completely.",
+          "resolving_concept_id": "S046",
+          "resolving_concept_name": "Dijkstra's and A* Path Planning Algorithms",
+          "resolving_concept_name_ar": "خوارزميتا ديكسترا وA* للتخطيط المسار",
+          "scientific_principle": "Dijkstra's algorithm: explores cells in order of g(n) = cost from start to n. Explores all cells with g(n) ≤ optimal cost. A* algorithm: explores cells in order of f(n) = g(n) + h(n) where h(n) is a heuristic estimate of remaining cost. If h(n) ≤ actual remaining cost (admissible), A* guarantees optimal solution. Euclidean distance heuristic: h(n) = √((x_goal−x_n)² + (y_goal−y_n)²) is admissible on a grid. A* reduces cell expansions from O(N) to O(N^0.5) in the best case.",
+          "citation": {
+            "resource_id": "KELLY_BOOK",
+            "location": "Chapter 8: Navigation and Path Planning, Section 8.2, Pages 310–335 — Dijkstra's, A*, heuristics, admissibility",
+            "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091"
+          }
+        },
+        {
+          "failure_id": "F-008-03",
+          "failure_type": "Type 5 — Economic infeasibility",
+          "naive_approach": "LAYER 1 (alternative): The warehouse layout changes when new products arrive. Rebuild the full occupancy grid and re-run A* every time a shelf moves.",
+          "critical_questions": [
+            "If the warehouse layout changes daily, A* must re-plan on a 500,000-cell grid every day. Is there a smarter approach?",
+            "What if we don't need the globally optimal path — just a good-enough path through free space?",
+            "How can random sampling find feasible paths in high-dimensional C-Spaces where A* would be too slow?",
+            "What is the key idea of the Rapidly-exploring Random Tree (RRT) algorithm?"
+          ],
+          "why_it_fails": "Grid-based A* assumes a static, known map at fixed resolution. When the map changes (dynamic warehouse), the entire graph must be rebuilt — O(N) computation. For high-dimensional C-Spaces (articulated arms, S-DOF systems), A* is computationally intractable. Sampling-based planners (RRT) explore free space by random sampling, achieving polynomial time complexity in high dimensions.",
+          "failure_consequence": "Daily warehouse reconfiguration requires 8 minutes of re-planning per robot. A fleet of 50 robots causes 400 minutes of downtime per day — the warehouse operations director halts the AMR deployment.",
+          "resolving_concept_id": "S047",
+          "resolving_concept_name": "RRT and Sampling-Based Motion Planning",
+          "resolving_concept_name_ar": "الشجرة العشوائية سريعة التوسع والتخطيط بالعينات",
+          "scientific_principle": "RRT algorithm: (1) Initialize tree T with q_start; (2) Sample random q_rand in C_free; (3) Find nearest tree node q_near; (4) Extend toward q_rand by step size δ; (5) If collision-free, add new node; (6) Repeat until q_goal is reached. Probabilistically complete: given enough time, will find a solution if one exists. RRT* adds rewiring for asymptotic optimality. Key advantage: no explicit graph construction — works in C-Spaces of any dimension. Planning time: O(n log n) where n = number of samples.",
+          "citation": {
+            "resource_id": "LYNCH_PARK_BOOK",
+            "location": "Chapter 10: Motion Planning, Section 10.3, Pages 413–432 — RRT algorithm, RRT* optimality, probabilistic completeness",
+            "url": "https://modernrobotics.org/"
+          }
+        },
+        {
+          "failure_id": "F-008-04",
+          "failure_type": "Type 4 — Safety violation",
+          "naive_approach": "LAYER 2: Execute the A* path directly as waypoints. The robot drives at full speed from waypoint to waypoint, stopping at each one and then accelerating to the next.",
+          "critical_questions": [
+            "At each waypoint, the robot must stop (v=0) and start again. What is the resulting acceleration profile?",
+            "The payload contains fragile glass items. At 1 m/s sudden braking, what force acts on the payload?",
+            "Can the resulting jerky path be executed by the robot's control system at all?",
+            "What mathematical tool produces smooth position-time curves through a set of waypoints?"
+          ],
+          "why_it_fails": "A sequence of discrete waypoints produces a piecewise-linear path with infinite acceleration at waypoints (instantaneous velocity direction changes). This violates the payload constraint (acceleration < 0.5 m/s²), damages fragile items, and exceeds motor torque limits. Trajectory planning smooths the path into a time-parameterized curve with bounded velocity, acceleration, and jerk.",
+          "failure_consequence": "At the first 90° turn waypoint, the robot's velocity drops from 1 m/s to 0 and reverses to 1 m/s in 0.1 seconds — acceleration of 20 m/s². The glass inventory slides and shatters. Insurance claim is filed.",
+          "resolving_concept_id": "S048",
+          "resolving_concept_name": "Trajectory Planning and Quintic Splines",
+          "resolving_concept_name_ar": "تخطيط المسار وانحناءات التدرج الخامس",
+          "scientific_principle": "Trajectory planning adds a time dimension: q(t) = [x(t), y(t), θ(t)] with constraints v(t) ≤ v_max, a(t) ≤ a_max, j(t) ≤ j_max. Quintic spline: a degree-5 polynomial q(t) = c₀ + c₁t + c₂t² + c₃t³ + c₄t⁴ + c₅t⁵ with 6 coefficients determined by boundary conditions on position, velocity, and acceleration at each waypoint. Quintic splines guarantee C² continuity (continuous position, velocity, and acceleration). Trapezoidal velocity profiles: simpler, linear acceleration ramp — guaranteed bounded acceleration.",
+          "citation": {
+            "resource_id": "LYNCH_PARK_BOOK",
+            "location": "Chapter 9: Trajectory Generation, Section 9.1–9.3, Pages 340–380 — Spline trajectories, time-optimal planning, smoothness constraints",
+            "url": "https://modernrobotics.org/"
+          }
+        },
+        {
+          "failure_id": "F-008-05",
+          "failure_type": "Type 4 — Safety violation",
+          "naive_approach": "LAYER 2 (local): Execute the global planned path. Ignore dynamic obstacles — the human pickers should know to get out of the way.",
+          "critical_questions": [
+            "A human picker is walking directly into the robot's path at 1.5 m/s. Detection-to-stop distance at robot speed 1 m/s?",
+            "The global path is blocked by a temporary palette. Re-planning the full A* path takes 2 seconds. Is there a faster alternative?",
+            "Dynamic Window Approach (DWA): what is the 'dynamic window' and how does it respect the robot's kinematic constraints?"
+          ],
+          "why_it_fails": "The global plan assumes a static environment. When a human enters the path, a static global planner has no response — the robot will either stop indefinitely (if safety stop is triggered) or continue on the planned path into the human. A local obstacle avoidance layer operates at high frequency (10–50 Hz) and generates velocity commands that avoid immediate obstacles while remaining consistent with the global goal direction.",
+          "failure_consequence": "Human picker Mike steps into the robot's path at 5 m distance. Robot at 1 m/s takes 3 seconds to replan. At 1 m/s, the robot travels 3 m toward Mike before a new path is generated — Mike is now 2 m ahead and decelerating, emergency stop triggered, entire aisle blocked for 5 minutes.",
+          "resolving_concept_id": "S049",
+          "resolving_concept_name": "Collision Detection and Local Obstacle Avoidance",
+          "resolving_concept_name_ar": "كشف التصادم وتجنب العوائق المحلية",
+          "scientific_principle": "Dynamic Window Approach (DWA): (1) Compute achievable velocity window V_a given current v, ω and acceleration limits in time Δt; (2) Sample (v, ω) pairs in V_a; (3) Simulate each pair for horizon T; (4) Score each trajectory: G(v,ω) = α·heading + β·clearance + γ·velocity; (5) Execute highest-scoring (v, ω). Operates at 10–50 Hz, reacts to dynamic obstacles in one control cycle. VFH (Vector Field Histogram) alternative: builds polar obstacle density histogram, selects clearest steering direction.",
+          "citation": {
+            "resource_id": "SIEGWART_BOOK",
+            "location": "Chapter 6: Navigation, Section 6.2.1, Pages 310–328 — Dynamic Window Approach, Vector Field Histogram",
+            "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+          }
+        },
+        {
+          "failure_id": "F-008-06",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "LAYER 3: The robot has a reference trajectory from the planner. Use bang-bang control: when ahead of schedule, stop; when behind schedule, full speed ahead.",
+          "critical_questions": [
+            "Bang-bang control causes the robot to constantly oscillate around the reference trajectory. What is the pattern?",
+            "What is the steady-state error of a proportional controller tracking a moving reference?",
+            "PID: what does each of the three terms (P, I, D) contribute to the controller's behavior?",
+            "How does feedback linearization allow a nonlinear robot model to be controlled with a simple linear controller?"
+          ],
+          "why_it_fails": "Bang-bang control produces oscillation around the reference with large position error. A proportional controller applied to a non-holonomic robot's position error directly produces systematic heading error because it ignores the kinematic constraint. PID control adds integral action (eliminating steady-state error) and derivative action (damping oscillation).",
+          "failure_consequence": "The robot tracks the trajectory with constant 0.3 m oscillation due to proportional-only control. Averaged over 120 m, this adds 40% extra travel distance — the 30-second SLA is violated.",
+          "resolving_concept_id": "S050",
+          "resolving_concept_name": "PID Control and Feedback Linearization",
+          "resolving_concept_name_ar": "التحكم PID والتخطيط الخطي بالتغذية الراجعة",
+          "scientific_principle": "PID controller: u(t) = K_p·e(t) + K_i·∫e dt + K_d·ė(t). Tuning: K_p sets response speed; K_i eliminates steady-state error; K_d reduces overshoot. Feedback linearization for non-holonomic robots: define a virtual output y at a point ahead of the robot: ẏ₁ = v·cos(θ); ẏ₂ = v·sin(θ). The input-output map from (v_new, ω_new) to (ÿ₁, ÿ₂) is linear — allowing linear PID to control the nonlinear robot. This is the input-output linearization technique for mobile robots.",
+          "citation": {
+            "resource_id": "KELLY_BOOK",
+            "location": "Chapter 10: Control of Mobile Robots, Section 10.2–10.3, Pages 395–430 — PID control, feedback linearization for non-holonomic systems",
+            "url": "https://www.cambridge.org/core/books/mobile-robotics/5BF238489F9BC337C0736432C87B3091"
+          }
+        },
+        {
+          "failure_id": "F-008-07",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "LAYER 3: After implementing PID, control the (x, y) position error and heading error independently as three separate PID controllers.",
+          "critical_questions": [
+            "For a curved path, how do you decompose the position error into something a differential drive robot can correct?",
+            "The robot is 0.5 m to the left of the path. What steering command minimizes cross-track error?",
+            "Pure Pursuit: what is the 'lookahead distance' and what does it trade off?"
+          ],
+          "why_it_fails": "Decoupled PID controllers on (x, y, θ) ignore the geometric relationship between lateral error and the steering command needed to correct it. For a differential drive robot following a curved path, the correct command is to steer toward a 'lookahead point' on the reference path. Pure Pursuit geometrically derives this steering command, giving a more natural and robust path tracking behavior.",
+          "failure_consequence": "Decoupled PID commands full lateral velocity to correct a 0.3 m cross-track error — but a non-holonomic robot cannot move sideways. The robot oscillates left-right while the controller tries to correct the uncorrectable lateral command.",
+          "resolving_concept_id": "S051",
+          "resolving_concept_name": "Pure Pursuit and Trajectory Tracking Control",
+          "resolving_concept_name_ar": "المتابعة النقية والتحكم في تتبع المسار",
+          "scientific_principle": "Pure Pursuit algorithm: (1) Find lookahead point P_d on reference path at distance L_d ahead; (2) Compute angle α between current heading and direction to P_d; (3) Compute curvature κ = 2sin(α)/L_d; (4) Compute wheel velocity commands from curvature. Trade-off: large L_d → smooth tracking, poor corner performance; small L_d → tight tracking, oscillation risk. Stanley method (used on Stanford's Junior): minimizes cross-track error and heading error simultaneously using a geometrically-derived steering law.",
+          "citation": {
+            "resource_id": "SICILIANO_BOOK",
+            "location": "Chapter 11: Mobile Robots, Section 11.4, Pages 487–497 — Pure Pursuit, Stanley controller, path tracking",
+            "url": "https://link.springer.com/book/10.1007/978-1-84628-642-1"
+          }
+        },
+        {
+          "failure_id": "F-008-08",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "LAYER 3 (advanced): The PID + Pure Pursuit system works well but cannot account for future constraints — it only reacts to current error.",
+          "critical_questions": [
+            "The robot approaches a tight 90° corner. At the last moment, PID applies full braking — the payload jerks. Could we have slowed down 2 seconds earlier?",
+            "What if we want to minimize total travel time while guaranteeing the acceleration constraint?",
+            "Model Predictive Control: what is the 'prediction horizon' and how does it enable proactive planning?"
+          ],
+          "why_it_fails": "Reactive controllers (PID, Pure Pursuit) only observe current error — they have no foresight. They cannot proactively slow down before a constraint (corner, weight limit, human in path) is encountered. MPC optimizes future control inputs over a prediction horizon, finding the input sequence that minimizes a cost function while satisfying all constraints — achieving smooth, constraint-respecting, optimal behavior.",
+          "failure_consequence": "PID controller reacts to the tight corner at the last moment — full braking at 0.5 m from the corner produces 2 m/s² deceleration, exceeding the 0.5 m/s² payload constraint. Fragile items shift. MPC would have started decelerating 3 seconds earlier.",
+          "resolving_concept_id": "S052",
+          "resolving_concept_name": "Model Predictive Control",
+          "resolving_concept_name_ar": "التحكم التنبؤي بالنموذج",
+          "scientific_principle": "MPC at each timestep k: (1) Build prediction model x_{k+j|k} = A·x_{k+j-1|k} + B·u_{k+j-1}; (2) Solve optimization: min_{U} Σ_{j=1}^{N} ||x_{k+j} − x_ref||²_Q + ||u_{k+j}||²_R subject to |u| ≤ u_max, |a| ≤ a_max; (3) Apply only first control input u_k^*; (4) Repeat at k+1 (receding horizon). MPC handles constraints explicitly and optimizes over a horizon N — enabling proactive slowing before corners and smooth constraint satisfaction.",
+          "citation": {
+            "resource_id": "PYTHONROBOTICS",
+            "location": "MPC Path Tracking Demo — Linear MPC for differential drive path tracking with constraint satisfaction",
+            "url": "https://github.com/AtsushiSakai/PythonRobotics#model-predictive-speed-and-steer-control"
+          }
+        }
+      ],
+      "concept_coverage_check": {
+        "S004": {"covered": true, "failure_id": "F-008-01"},
+        "S046": {"covered": true, "failure_id": "F-008-02"},
+        "S047": {"covered": true, "failure_id": "F-008-03"},
+        "S048": {"covered": true, "failure_id": "F-008-04"},
+        "S049": {"covered": true, "failure_id": "F-008-05"},
+        "S050": {"covered": true, "failure_id": "F-008-06"},
+        "S051": {"covered": true, "failure_id": "F-008-07"},
+        "S052": {"covered": true, "failure_id": "F-008-08"}
+      },
+      "spine_narrative_arc": "LAYER 1: S004 (define free space) → S046 (search efficiently) → S047 (handle dynamic maps). LAYER 2: S048 (smooth the path) → S049 (avoid dynamic obstacles). LAYER 3: S050 (basic feedback control) → S051 (geometry-aware tracking) → S052 (predictive optimal control)",
+      "validation": {
+        "all_concepts_covered": true,
+        "citations_complete": true,
+        "real_world_anchor": "Locus Robotics LocusOne AMR — e-commerce warehouse navigation with time, safety, and payload constraints",
+        "spine_strength_respected": true,
+        "generated_date": "2026-02-18"
+      }
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "course_metadata": {
+    "course_id": "1",
+    "version": "3.4",
+    "title": "Mobile Robots",
+    "phase": "Phase 3 — Design Spine",
+    "generated_date": "2026-02-18",
+    "generated_by": "Course Architect Engine v2.0",
+    "science_to_practice_ratio": 3
+  },
+  "phase3_design_spine": [
+    {
+      "module_id": "MOD-006",
+      "module_title": "Mobile Robot Localization",
+      "module_title_ar": "موقع الروبوت المتنقل",
+      "science_to_practice_ratio": 3,
+      "spine_required": true,
+      "spine_strength": "critical",
+      "design_problem": {
+        "problem_statement": "A hospital delivery robot (Aethon TUG) wakes up from a power failure inside a large hospital with a known floor plan. It has a 2D LIDAR and wheel encoders. It does NOT know its starting position. Task: solve this same localization problem three times, using three fundamentally different algorithms — Histogram Filter, EKF, and Particle Filter — and compare what breaks in each approach as the environment complexity increases.",
+        "real_world_context": "Aethon TUG autonomous hospital robot is deployed in over 140 hospitals worldwide. After a power failure, the robot must re-localize without human intervention to resume medicine and supply delivery. Global localization after power loss is a real operational requirement.",
+        "context_url": "https://www.aethon.com/tug/tughealthcare/",
+        "target_user_role": "engineer"
+      },
+      "concepts_covered": ["S031", "S020", "S032", "S033"],
+      "failure_modes": [
+        {
+          "failure_id": "F-006-01",
+          "failure_type": "Type 5 — Economic infeasibility",
+          "naive_approach": "Discretize the hospital floor plan into a 1 cm grid. Assign equal probability to every grid cell. Update the distribution after each LIDAR scan. Use the highest-probability cell as the position estimate.",
+          "critical_questions": [
+            "A hospital floor plan is 200 m × 100 m. At 1 cm resolution, how many cells are needed?",
+            "How do you update 2 billion cells at 10 Hz?",
+            "What happens to the discrete probability distribution when the robot enters a long, uniform corridor where many cells look identical?",
+            "Is the belief distribution unimodal (single position) or multimodal (multiple possible positions)?"
+          ],
+          "why_it_fails": "A 200 × 100 m hospital at 1 cm resolution requires 200,000,000 cells. Updating each cell at 10 Hz requires 2 × 10⁹ operations per second — impossible on embedded hardware. Additionally, in a symmetric hospital corridor, many grid cells will have identical observation probabilities, creating a multimodal distribution (robot could be at any of several identical-looking locations).",
+          "failure_consequence": "The histogram filter requires 60 GB RAM and cannot run in real time. Even at degraded 10 cm resolution, the robot cannot distinguish its location in a long uniform corridor — it correctly identifies 'a corridor' but not 'which of the 12 identical corridors'.",
+          "resolving_concept_id": "S031",
+          "resolving_concept_name": "Markov Localization and Histogram Filter",
+          "resolving_concept_name_ar": "تحديد مكان ماركوف ومرشح الرسم البياني",
+          "scientific_principle": "Histogram filter (Discrete Bayes Filter): bel(x_t) implemented as a probability table over discrete cells. Algorithm: (1) Predict: redistribute probability across neighbors according to motion model; (2) Update: multiply each cell by p(z|x_cell); (3) Normalize. The Markov assumption: p(x_t | x_{0:t-1}, z_{0:t}, u_{0:t}) = p(x_t | x_{t-1}, z_t, u_t) — state encodes all relevant history. Strength: handles multimodal distributions (global localization). Weakness: O(N) memory and computation where N = number of grid cells.",
+          "citation": {
+            "resource_id": "THRUN_BURGARD_FOX",
+            "location": "Chapter 4: Nonparametric Filters, Section 4.1, Pages 94–101 — Histogram Filter algorithm",
+            "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+          },
+          "comparative_notes": "The histogram filter is the FIRST algorithm — it is intuitive and handles global uncertainty. Its failure (computation cost, resolution limit) motivates the EKF in F-006-02."
+        },
+        {
+          "failure_id": "F-006-02",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "The hospital layout has known wall positions. Represent the robot's position as a Gaussian distribution N(μ, Σ) — just a mean position and a covariance ellipse. Update it when LIDAR scans arrive.",
+          "critical_questions": [
+            "The LIDAR observation model z = h(x) involves arctan() and sqrt() — these are nonlinear functions. What does that do to a Gaussian input?",
+            "The motion model x_next = f(x, u) also involves sin() and cos() — nonlinear. How do you propagate a Gaussian through a nonlinear function?",
+            "When the robot enters a long corridor and could be at multiple positions, can a single Gaussian represent this?",
+            "What is the Jacobian, and what does linearizing the motion model mean?"
+          ],
+          "why_it_fails": "The standard Kalman Filter requires linear dynamics. The robot's motion model (sin, cos) and observation model (range/bearing) are both nonlinear. Passing a Gaussian through a nonlinear function produces a non-Gaussian result. Pretending the output is still Gaussian introduces linearization error. Additionally, a Gaussian cannot represent multimodal uncertainty (two possible positions in a symmetric corridor).",
+          "failure_consequence": "In a corridor junction, the robot is equally likely to be at two positions (symmetric junction). The EKF forces a single Gaussian — it places the mean between the two positions, in an empty hallway. The robot executes a motion based on a position estimate that is 3 m from any wall, causing immediate collision.",
+          "resolving_concept_id": "S020",
+          "resolving_concept_name": "Extended Kalman Filter for Robot Localization",
+          "resolving_concept_name_ar": "مرشح كالمان الموسع لتوطين الروبوت",
+          "scientific_principle": "EKF linearizes the nonlinear functions using first-order Taylor expansion:\n  f(x) ≈ f(μ) + F_x·(x − μ)  where F_x = ∂f/∂x |_{x=μ}\n  h(x) ≈ h(μ) + H_x·(x − μ)  where H_x = ∂h/∂x |_{x=μ}\nThe Jacobians F_x and H_x replace A and H in the standard KF equations. Key insight: linearization error grows with nonlinearity of f/h and with uncertainty σ. EKF is accurate when the uncertainty is small (tracking mode) but fails for large uncertainties (global localization mode).",
+          "citation": {
+            "resource_id": "THRUN_BURGARD_FOX",
+            "location": "Chapter 3: Gaussian Filters, Section 3.3, Pages 53–73 — EKF derivation, Jacobian computation, failure modes",
+            "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+          }
+        },
+        {
+          "failure_id": "F-006-03",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Wrap the EKF in a Gaussian mixture to handle multimodal beliefs. Use 10 Gaussians to track 10 possible positions simultaneously.",
+          "critical_questions": [
+            "After each LIDAR update, how do the 10 Gaussians get reweighted?",
+            "When 9 of the 10 positions are ruled out and only 1 remains, how does the mixture collapse?",
+            "What if the true position is NOT near any of the initial 10 Gaussians?"
+          ],
+          "why_it_fails": "Gaussian mixtures require pre-specifying the number of modes (10), but in global localization the number of possible positions is unknown. If the true position falls between two initial Gaussians, both will drift away — the mixture fails to track the true state. Additionally, managing Gaussian component weights, births, and deaths is algorithmically complex.",
+          "failure_consequence": "In a hospital with 47 rooms that all look identical in LIDAR, the robot initializes 10 Gaussians but the true position is in room 23 — not near any of the 10 initial guesses. All Gaussians drift to wrong positions. The robot delivers medication to the wrong room.",
+          "resolving_concept_id": "S033",
+          "resolving_concept_name": "Particle Filters and Monte Carlo Localization",
+          "resolving_concept_name_ar": "مرشحات الجسيمات وتوطين مونتي كارلو",
+          "scientific_principle": "Particle Filter (Sequential Monte Carlo): represent bel(x) as a set of N weighted particles {<x^[i], w^[i]>}_{i=1:N}. Algorithm:\n  1. Predict: sample x_t^[i] ~ p(x_t | u_t, x_{t-1}^[i])  [apply noisy motion to each particle]\n  2. Weight:  w^[i] = p(z_t | x_t^[i])                   [score each particle by observation likelihood]\n  3. Resample: draw N particles with replacement, weighted by w^[i] [eliminate bad particles]\nMCL exploits: particles automatically concentrate where the probability is high. For global localization, start with N=10,000 particles uniformly covering the floor plan. Strength: nonparametric (any distribution shape), handles multimodal uncertainty. Weakness: particle deprivation when N is too small; computationally O(N) per step.",
+          "citation": {
+            "resource_id": "THRUN_BURGARD_FOX",
+            "location": "Chapter 4: Nonparametric Filters, Section 4.3, Pages 96–122 — Particle Filter, MCL algorithm, convergence",
+            "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+          },
+          "real_world_example": {
+            "description": "The Aethon TUG hospital robot uses a particle filter-based localization system (AMCL) implemented in ROS. It initializes with a uniform distribution over the entire floor plan and typically converges to the correct location within 3–5 meters of travel.",
+            "url": "https://wiki.ros.org/amcl",
+            "relevance_score": 5
+          }
+        },
+        {
+          "failure_id": "F-006-04",
+          "failure_type": "Type 3 — Performance degradation",
+          "naive_approach": "Once MCL converges (particles concentrate around one position), keep running with 10,000 particles to maintain accuracy.",
+          "critical_questions": [
+            "Once the robot knows where it is (tracking mode), do we still need 10,000 particles?",
+            "How does the Gaussian tracking mode (EKF) compare to the particle filter tracking mode?",
+            "Can we switch between EKF (efficient tracking) and MCL (global localization) based on the current belief entropy?"
+          ],
+          "why_it_fails": "Running 10,000 particles in tracking mode wastes computation — once the belief is unimodal and narrow, a single Gaussian requires only 6 numbers vs 10,000 × 3 numbers = 30,000. The GaussianFilter approach (EKF) is far more efficient for tracking. The insight: EKF and particle filter complement each other — particle filter for global localization, EKF for tracking once converged.",
+          "failure_consequence": "The hospital robot uses 10,000 particles at all times. The full compute budget is consumed by localization, leaving no CPU for path planning. The robot freezes every 2 seconds while the particle filter update completes.",
+          "resolving_concept_id": "S032",
+          "resolving_concept_name": "Gaussian Localization with EKF",
+          "resolving_concept_name_ar": "التوطين الغاوسي بمرشح كالمان الموسع",
+          "scientific_principle": "Gaussian localization assumes the belief is unimodal and approximately Gaussian — valid for tracking mode after successful global localization. EKF-localization: state x = [x, y, θ], landmark positions known. Update: for each observed landmark l at relative bearing α:\n  innovation: z̃ = z_observed − h(x̂, l)\n  gain: K = P·H^T·(H·P·H^T + R)^{-1}\n  update: x̂ = x̂ + K·z̃; P = (I − K·H)·P\nEKF localization is O(n) per landmark observation (vs O(N) for particle filter) and is exact for linear-Gaussian systems.",
+          "citation": {
+            "resource_id": "THRUN_BURGARD_FOX",
+            "location": "Chapter 7: Mobile Robot Localization: The Markov Localization Paradigm, Section 7.4, Pages 208–225 — EKF localization with known landmarks",
+            "url": "https://mitpress.mit.edu/9780262201629/probabilistic-robotics/"
+          }
+        }
+      ],
+      "concept_coverage_check": {
+        "S031": {"covered": true, "failure_id": "F-006-01"},
+        "S020": {"covered": true, "failure_id": "F-006-02"},
+        "S033": {"covered": true, "failure_id": "F-006-03"},
+        "S032": {"covered": true, "failure_id": "F-006-04"}
+      },
+      "comparative_learning_table": {
+        "description": "The key learning outcome is the COMPARISON. Students solve the same problem three times and see what breaks.",
+        "algorithms": [
+          {"name": "Histogram Filter", "belief_representation": "Grid of probabilities", "handles_multimodal": true, "scalability": "Poor (exponential in D)", "global_localization": true},
+          {"name": "EKF Localization", "belief_representation": "Gaussian N(μ, Σ)", "handles_multimodal": false, "scalability": "Excellent O(n²)", "global_localization": false},
+          {"name": "Particle Filter (MCL)", "belief_representation": "Weighted particle set", "handles_multimodal": true, "scalability": "Good O(N)", "global_localization": true},
+          {"name": "Gaussian EKF Tracking", "belief_representation": "Gaussian N(μ, Σ)", "handles_multimodal": false, "scalability": "Excellent O(n)", "global_localization": false}
+        ]
+      },
+      "spine_narrative_arc": "S031 (try discrete — works but slow) → S020 (try Gaussian — fast but fails globally) → S033 (particles — handles both) → S032 (EKF tracking after convergence — efficient steady state)",
+      "validation": {
+        "all_concepts_covered": true,
+        "citations_complete": true,
+        "real_world_anchor": "Aethon TUG hospital robot — global localization after power failure in 200m hospital",
+        "spine_strength_respected": true,
+        "generated_date": "2026-02-18"
+      }
+    }
+  ]
+}

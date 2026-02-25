@@ -1,0 +1,93 @@
+{
+  "course_metadata": {
+    "course_id": "1",
+    "version": "3.4",
+    "title": "Mobile Robots",
+    "specialization": "Mechatronics",
+    "degree_level": "Undergraduate",
+    "phase": "Phase 3 — Design Spine",
+    "generated_date": "2026-02-18",
+    "generated_by": "Course Architect Engine v2.0",
+    "science_to_practice_ratio": 2
+  },
+  "phase3_design_spine": [
+    {
+      "module_id": "MOD-001",
+      "module_title": "Robotics Trends & Industry Landscape",
+      "module_title_ar": "اتجاهات الروبوتات والمشهد الصناعي",
+      "science_to_practice_ratio": 2,
+      "spine_required": false,
+      "spine_strength": "none",
+      "spine_rationale": "MOD-001 is the course motivational hook. Industry examples (Waymo, Boston Dynamics, Amazon Robotics) ARE the content, not a framing device. No failure-based spine is pedagogically appropriate here; the module functions as the answer to 'why does this course matter?'",
+      "design_problem": {
+        "problem_statement": "No engineering design problem is posed in this module. Instead, students are confronted with a market question: autonomous mobile robots are being deployed at scale across seven industry verticals — why now, and what does it take to build one? Every concept introduced in subsequent modules traces back to the real systems surveyed here.",
+        "real_world_context": "Global mobile robotics market projected at $215 billion by 2030 (CAGR ~26%). Waymo, Boston Dynamics, Amazon Robotics, Locus Robotics, and DJI represent the five dominant deployment profiles. Each maps to a different engineering challenge that this course resolves.",
+        "context_url": "https://waymo.com/waymo-driver/",
+        "target_user_role": "engineer"
+      },
+      "concepts_covered": ["S005"],
+      "failure_modes": [],
+      "concept_coverage_check": {
+        "S005": {
+          "covered": true,
+          "note": "S005 is the entirety of this module — the autonomy stack survey IS the design spine narrative."
+        }
+      },
+      "industry_anchors": [
+        {
+          "domain": "Autonomous Vehicles / Robotaxis (قيادة ذاتية)",
+          "system": "Waymo Driver 6th Generation",
+          "url": "https://waymo.com/waymo-driver/",
+          "module_connection": "Introduces full autonomy stack: perception → localization → planning → control. Sets the architectural template for the entire course."
+        },
+        {
+          "domain": "Warehouse & Logistics Automation (أتمتة المستودعات)",
+          "system": "Amazon Robotics Proteus AMR",
+          "url": "https://www.aboutamazon.com/news/operations/amazon-robotics",
+          "module_connection": "Demonstrates differential drive at scale — connects to MOD-002 locomotion and MOD-008 navigation."
+        },
+        {
+          "domain": "Inspection & Security Robotics (روبوتات الفحص)",
+          "system": "Boston Dynamics Spot Enterprise",
+          "url": "https://www.bostondynamics.com/products/spot",
+          "module_connection": "Legged locomotion morphology — connects to MOD-002 S001/S002."
+        },
+        {
+          "domain": "Autonomous Delivery (التسليم الذاتي)",
+          "system": "Starship Delivery Robot",
+          "url": "https://www.starship.xyz/",
+          "module_connection": "Last-mile SLAM + local avoidance — connects to MOD-008 and MOD-009."
+        },
+        {
+          "domain": "Agricultural Robotics (الروبوتات الزراعية)",
+          "system": "John Deere See & Spray Ultimate",
+          "url": "https://www.deere.com/en/sprayers/see-spray/",
+          "module_connection": "GPS-denied perception and precision navigation — connects to MOD-004 and MOD-005."
+        }
+      ],
+      "autonomy_stack_overview": {
+        "layers": [
+          {"layer": "Sensing (الاستشعار)", "concepts": ["S023", "S025", "S026", "S027"], "introduced_in": "MOD-002, MOD-004"},
+          {"layer": "Perception (الإدراك)", "concepts": ["S028", "S029", "S035", "S037"], "introduced_in": "MOD-007"},
+          {"layer": "State Estimation (تقدير الحالة)", "concepts": ["S016", "S017", "S018", "S019", "S022"], "introduced_in": "MOD-005"},
+          {"layer": "Localization (التوطين)", "concepts": ["S031", "S020", "S032", "S033"], "introduced_in": "MOD-006"},
+          {"layer": "Mapping & SLAM (رسم الخرائط)", "concepts": ["S038", "S039", "S040", "S042", "S043", "S044"], "introduced_in": "MOD-009"},
+          {"layer": "Planning & Navigation (التخطيط والملاحة)", "concepts": ["S004", "S046", "S047", "S048", "S049"], "introduced_in": "MOD-008"},
+          {"layer": "Control (التحكم)", "concepts": ["S050", "S051", "S052"], "introduced_in": "MOD-008"}
+        ],
+        "citation": {
+          "resource_id": "SIEGWART_BOOK",
+          "location": "Chapter 1: Introduction, Pages 1-34 — Autonomy levels and functional architecture",
+          "url": "https://mitpress.mit.edu/9780262015356/introduction-to-autonomous-mobile-robots/"
+        }
+      },
+      "validation": {
+        "all_concepts_covered": true,
+        "citations_complete": true,
+        "industry_domains_used": ["Autonomous Vehicles", "Warehouse Automation", "Inspection Robotics", "Autonomous Delivery", "Agricultural Robotics"],
+        "spine_strength_respected": true,
+        "generated_date": "2026-02-18"
+      }
+    }
+  ]
+}
