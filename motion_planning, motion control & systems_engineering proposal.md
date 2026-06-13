@@ -1,4 +1,4 @@
-# Publishing Proposal — *Motion Systems Engineering*
+# Publishing Proposal — *Motion Planning, Motion Control and Systems Engineering*
 ### A Tiered, Cross-Domain Book Series on Motion Planning, Control, Estimation, and Integration
 
 ---
@@ -26,6 +26,8 @@ Two further principles shape the structure:
 - **Big picture first, detail on demand.** Each book introduces the full conceptual landscape — including advanced methods — before drilling into the parts that carry the most industrial value. Deep mathematical and research-grade treatment is deferred to a clearly separated advanced tier.
 
 This reduces the previously proposed sixteen-volume concept to a focused core of **four books**, plus two optional companion tiers.
+
+The system engineering part will be included later. 
 
 ---
 
